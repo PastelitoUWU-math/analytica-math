@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MundosRouteImport } from './routes/mundos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
+import { Route as JefeWorldIdRouteImport } from './routes/jefe.$worldId'
 import { Route as NivelWorldIdLevelIdxRouteImport } from './routes/nivel.$worldId.$levelIdx'
 
 const MundosRoute = MundosRouteImport.update({
@@ -29,6 +30,11 @@ const MundoWorldIdRoute = MundoWorldIdRouteImport.update({
   path: '/mundo/$worldId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JefeWorldIdRoute = JefeWorldIdRouteImport.update({
+  id: '/jefe/$worldId',
+  path: '/jefe/$worldId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NivelWorldIdLevelIdxRoute = NivelWorldIdLevelIdxRouteImport.update({
   id: '/nivel/$worldId/$levelIdx',
   path: '/nivel/$worldId/$levelIdx',
@@ -38,12 +44,14 @@ const NivelWorldIdLevelIdxRoute = NivelWorldIdLevelIdxRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/mundos': typeof MundosRoute
+  '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
   '/nivel/$worldId/$levelIdx': typeof NivelWorldIdLevelIdxRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mundos': typeof MundosRoute
+  '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
   '/nivel/$worldId/$levelIdx': typeof NivelWorldIdLevelIdxRoute
 }
@@ -51,18 +59,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/mundos': typeof MundosRoute
+  '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
   '/nivel/$worldId/$levelIdx': typeof NivelWorldIdLevelIdxRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/mundos' | '/mundo/$worldId' | '/nivel/$worldId/$levelIdx'
+  fullPaths:
+    | '/'
+    | '/mundos'
+    | '/jefe/$worldId'
+    | '/mundo/$worldId'
+    | '/nivel/$worldId/$levelIdx'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/mundos' | '/mundo/$worldId' | '/nivel/$worldId/$levelIdx'
+  to:
+    | '/'
+    | '/mundos'
+    | '/jefe/$worldId'
+    | '/mundo/$worldId'
+    | '/nivel/$worldId/$levelIdx'
   id:
     | '__root__'
     | '/'
     | '/mundos'
+    | '/jefe/$worldId'
     | '/mundo/$worldId'
     | '/nivel/$worldId/$levelIdx'
   fileRoutesById: FileRoutesById
@@ -70,6 +90,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MundosRoute: typeof MundosRoute
+  JefeWorldIdRoute: typeof JefeWorldIdRoute
   MundoWorldIdRoute: typeof MundoWorldIdRoute
   NivelWorldIdLevelIdxRoute: typeof NivelWorldIdLevelIdxRoute
 }
@@ -97,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MundoWorldIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jefe/$worldId': {
+      id: '/jefe/$worldId'
+      path: '/jefe/$worldId'
+      fullPath: '/jefe/$worldId'
+      preLoaderRoute: typeof JefeWorldIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nivel/$worldId/$levelIdx': {
       id: '/nivel/$worldId/$levelIdx'
       path: '/nivel/$worldId/$levelIdx'
@@ -110,6 +138,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MundosRoute: MundosRoute,
+  JefeWorldIdRoute: JefeWorldIdRoute,
   MundoWorldIdRoute: MundoWorldIdRoute,
   NivelWorldIdLevelIdxRoute: NivelWorldIdLevelIdxRoute,
 }
