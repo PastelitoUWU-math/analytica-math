@@ -1,0 +1,170 @@
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { Shell } from "@/components/Shell";
+import { getWorld } from "@/lib/content/worlds";
+import { BossPortrait } from "@/components/BossPortrait";
+import { ExerciseRunner } from "@/components/ExerciseRunner";
+import { Rich } from "@/components/Rich";
+import { useState } from "react";
+import { defeatBoss } from "@/lib/game-state";
+
+export const Route = createFileRoute("/jefe/$worldId")({
+  head: ({ params }) => {
+    const w = getWorld(params.worldId);
+    return {
+      meta: [
+        { title: `Jefe ${w?.boss?.name ?? ""} — ${w?.title ?? ""}` },
+        {
+          name: "description",
+          content: `Batalla final de ${w?.title}: enfréntate a ${w?.boss?.name}.`,
+        },
+      ],
+    };
+  },
+  loader: ({ params }) => {
+    const w = getWorld(params.worldId);
+    if (!w || !w.boss) throw notFound();
+    return { worldId: params.worldId };
+  },
+  component: BossPage,
+});
+
+function BossPage() {
+  const { worldId } = Route.useLoaderData();
+  const world = getWorld(worldId)!;
+  const boss = world.boss!;
+  const navigate = useNavigate();
+
+  const [phase, setPhase] = useState<"intro" | "fight" | "win">("intro");
+  const [introLine, setIntroLine] = useState(0);
+  const [exIdx, setExIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [tauntIdx, setTauntIdx] = useState(-1);
+
+  const currentLine =
+    phase === "intro"
+      ? boss.intro[introLine]
+      : phase === "win"
+        ? boss.defeat
+        : tauntIdx >= 0
+          ? boss.taunts[tauntIdx % boss.taunts.length]
+          : `Pregunta ${exIdx + 1} de ${boss.exercises.length}. Resuélvela si te atreves.`;
+
+  return (
+    <Shell>
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <Link
+          to="/mundo/$worldId"
+          params={{ worldId }}
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          ← {world.title}
+        </Link>
+
+        <div className="mt-6 grid md:grid-cols-[260px_1fr] gap-8 items-start">
+          <div className="bg-card border border-border/60 rounded-lg p-4">
+            <div
+              className="aspect-[5/6] rounded overflow-hidden"
+              style={{ background: `linear-gradient(180deg, ${boss.accent}22, transparent)` }}
+            >
+              <BossPortrait
+                name={boss.name}
+                accent={boss.accent}
+                speaking={phase !== "win"}
+              />
+            </div>
+            <div className="mt-3">
+              <div className="text-xs uppercase tracking-widest" style={{ color: boss.accent }}>
+                Jefe
+              </div>
+              <div className="font-display text-lg">{boss.name}</div>
+              <div className="text-xs text-muted-foreground">{boss.era}</div>
+            </div>
+          </div>
+
+          <div>
+            <div
+              className="relative bg-card border border-border/60 rounded-lg p-5 italic text-lg leading-relaxed"
+              style={{ borderLeftColor: boss.accent, borderLeftWidth: 3 }}
+            >
+              <div className="text-xs not-italic uppercase tracking-widest mb-1" style={{ color: boss.accent }}>
+                {boss.name} dice
+              </div>
+              <Rich source={`"${currentLine}"`} />
+            </div>
+
+            {phase === "intro" && (
+              <div className="mt-5 flex justify-end">
+                {introLine + 1 < boss.intro.length ? (
+                  <button
+                    onClick={() => setIntroLine(introLine + 1)}
+                    className="px-5 py-2.5 rounded-md border border-border hover:bg-secondary"
+                  >
+                    Continuar →
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setPhase("fight")}
+                    className="px-5 py-2.5 rounded-md text-accent-foreground hover:opacity-90"
+                    style={{ background: boss.accent }}
+                  >
+                    Comenzar batalla
+                  </button>
+                )}
+              </div>
+            )}
+
+            {phase === "fight" && (
+              <div className="mt-5">
+                <ExerciseRunner
+                  key={exIdx}
+                  exercise={boss.exercises[exIdx]}
+                  index={exIdx}
+                  total={boss.exercises.length}
+                  onComplete={({ correct }) => {
+                    const earned = correct ? 20 : 0;
+                    setScore((s) => s + earned);
+                    if (!correct) setTauntIdx((t) => t + 1);
+                    else setTauntIdx(-1);
+                    if (exIdx + 1 < boss.exercises.length) {
+                      setExIdx(exIdx + 1);
+                    } else {
+                      const bonus = 100;
+                      const total = score + earned + bonus;
+                      defeatBoss(worldId, total);
+                      setScore(total);
+                      setPhase("win");
+                    }
+                  }}
+                />
+              </div>
+            )}
+
+            {phase === "win" && (
+              <div className="mt-6 bg-card border border-success/40 rounded-lg p-6 text-center">
+                <div className="text-xs uppercase tracking-widest text-success mb-1">Victoria</div>
+                <h2 className="text-2xl font-display">+{score} puntos</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Has vencido a {boss.name}. El mundo queda completado.
+                </p>
+                <div className="mt-5 flex gap-3 justify-center">
+                  <Link
+                    to="/mundos"
+                    className="px-5 py-2.5 rounded-md bg-foreground text-background"
+                  >
+                    Ver otros mundos
+                  </Link>
+                  <button
+                    onClick={() => navigate({ to: "/tienda" })}
+                    className="px-5 py-2.5 rounded-md border border-border"
+                  >
+                    Gastar puntos en la tienda
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </Shell>
+  );
+}

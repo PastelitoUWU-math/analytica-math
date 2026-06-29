@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Analytica — Análisis matemático jugando" },
+      { name: "description", content: "Aprende análisis matemático paso a paso: límites, derivadas, integrales y series, en formato de juego con mundos, niveles y jefes históricos." },
+      { name: "author", content: "Analytica" },
+      { property: "og:title", content: "Analytica" },
+      { property: "og:description", content: "Aprende cálculo paso a paso, jugando." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@Analytica" },
     ],
     links: [
       {
