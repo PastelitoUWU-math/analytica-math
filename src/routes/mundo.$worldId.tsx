@@ -1,0 +1,107 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Shell } from "@/components/Shell";
+import { getWorld } from "@/lib/content/worlds";
+import { useProgress } from "@/lib/game-state";
+
+export const Route = createFileRoute("/mundo/$worldId")({
+  head: ({ params }) => {
+    const w = getWorld(params.worldId);
+    return {
+      meta: [
+        { title: `${w?.title ?? "Mundo"} — Analytica` },
+        { name: "description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analytica" },
+      ],
+    };
+  },
+  loader: ({ params }) => {
+    const w = getWorld(params.worldId);
+    if (!w) throw notFound();
+    return { worldId: params.worldId };
+  },
+  component: WorldPage,
+});
+
+function WorldPage() {
+  const { worldId } = Route.useLoaderData();
+  const world = getWorld(worldId)!;
+  const progress = useProgress();
+  const completed = progress.completed[worldId] ?? -1;
+  const bossDone = progress.bossDefeated[worldId];
+
+  return (
+    <Shell>
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        <Link to="/mundos" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Mundos
+        </Link>
+        <h1 className="text-3xl font-display tracking-tight mt-3">{world.title}</h1>
+        <p className="text-muted-foreground italic">{world.subtitle}</p>
+
+        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+          {world.levels.map((lv, idx) => {
+            const unlocked = idx <= completed + 1;
+            const done = idx <= completed;
+            const cls = `relative aspect-square rounded-md border flex flex-col items-center justify-center p-2 text-center transition ${
+              unlocked
+                ? done
+                  ? "bg-success/10 border-success/40 hover:bg-success/15"
+                  : "bg-card border-border hover:border-accent"
+                : "bg-secondary/40 border-border/40 text-muted-foreground/50"
+            }`;
+            const inner = (
+              <>
+                <div className="text-xs uppercase tracking-wider opacity-70">Nivel</div>
+                <div className="text-xl font-display">{idx + 1}</div>
+                {done && <div className="absolute top-1.5 right-1.5 text-success text-xs">✓</div>}
+              </>
+            );
+            if (!unlocked) {
+              return (
+                <div key={lv.id} className={cls} aria-disabled>
+                  {inner}
+                </div>
+              );
+            }
+            return (
+              <Link
+                key={lv.id}
+                to="/nivel/$worldId/$levelIdx"
+                params={{ worldId, levelIdx: String(idx) }}
+                className={cls}
+              >
+                {inner}
+              </Link>
+            );
+          })}
+        </div>
+
+        {world.boss && (
+          <div className="mt-10 border border-accent/40 rounded-lg p-6 bg-gradient-to-br from-accent/5 to-transparent">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <div className="text-xs uppercase tracking-widest text-accent">Jefe del mundo</div>
+                <h2 className="text-2xl font-display mt-1">{world.boss.name}</h2>
+                <p className="text-sm text-muted-foreground">{world.boss.era}</p>
+              </div>
+              <div className="text-right">
+                {completed + 1 >= world.levels.length ? (
+                  <Link
+                    to="/jefe/$worldId"
+                    params={{ worldId }}
+                    className="px-5 py-2.5 rounded-md bg-accent text-accent-foreground hover:opacity-90 transition"
+                  >
+                    {bossDone ? "Revivir batalla" : "Enfrentarte al jefe"}
+                  </Link>
+                ) : (
+                  <div className="text-sm text-muted-foreground">
+                    Completa los {world.levels.length} niveles para desbloquear
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </Shell>
+  );
+}
