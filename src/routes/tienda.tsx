@@ -108,8 +108,8 @@ function ShopPage() {
 
         <h2 className="mt-12 text-xl font-display">Temas visuales</h2>
         <p className="text-sm text-muted-foreground">
-          Cambia la atmósfera de Analytica. (Los temas se aplican como acento decorativo
-          al perfil; el cambio completo de paleta llegará en una próxima actualización.)
+          Cambia la atmósfera de toda la web. Al activar un tema se aplica
+          inmediatamente a todas las páginas.
         </p>
         <div className="mt-4 grid sm:grid-cols-2 gap-4">
           {COSMETICS.map((c) => {
