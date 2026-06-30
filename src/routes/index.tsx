@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
+import { WORLDS } from "@/lib/content/worlds";
+import { useProgress } from "@/lib/game-state";
+import { Rich } from "@/components/Rich";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,7 +17,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Aprende cálculo desde cero con explicaciones rigurosas paso a paso, en formato de juego de mundos y niveles.",
+          "Aprende cálculo desde cero con explicaciones rigurosas paso a paso, en formato de juego.",
       },
     ],
   }),
@@ -22,63 +25,81 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const progress = useProgress();
   return (
     <Shell>
-      <section className="max-w-3xl mx-auto px-6 pt-20 pb-12 text-center">
-        <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground mb-6">
+      <section className="max-w-5xl mx-auto px-6 pt-14 pb-6 text-center">
+        <p className="text-xs uppercase tracking-[0.25em] text-accent mb-4">
           Análisis matemático · Jugando · Paso a paso
         </p>
-        <h1 className="text-5xl md:text-6xl font-display tracking-tight leading-[1.05]">
-          Domina el cálculo
-          <br />
-          <span className="italic text-muted-foreground">como un viaje</span>
+        <h1 className="text-4xl md:text-5xl font-display tracking-tight leading-[1.05]">
+          Bienvenido a <span className="italic">Analytica</span>
         </h1>
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-          Cinco mundos. Niveles que avanzan despacio para que ningún concepto se
-          quede a medias. Y al final de cada mundo, una batalla contra una
-          figura legendaria del análisis.
+        <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          Elige un mundo y empieza a aprender. Las lecciones avanzan despacio para
+          consolidar cada concepto; al final de cada mundo, un matemático legendario te espera.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-3">
-          <Link
-            to="/mundos"
-            className="px-6 py-3 rounded-md bg-foreground text-background hover:opacity-90 transition"
-          >
-            Empezar a jugar
-          </Link>
-          <Link
-            to="/ranking"
-            className="px-6 py-3 rounded-md border border-border hover:bg-secondary transition"
-          >
-            Ver ranking
-          </Link>
-        </div>
       </section>
 
-      <div className="ink-rule max-w-3xl mx-auto my-6" />
+      <div className="ink-rule max-w-3xl mx-auto my-4" />
 
-      <section className="max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-8">
-        <Feature
-          title="Explicaciones primero"
-          body="Antes de cada ejercicio, una lección rigurosa, sencilla y paso a paso. Nada de tirarte a la piscina."
-        />
-        <Feature
-          title="50+ niveles por mundo"
-          body="Para consolidar de verdad. Empezamos por lo trivial y, sin prisa, llegamos a lo avanzado."
-        />
-        <Feature
-          title="Jefes históricos"
-          body="Cauchy, Weierstrass, Leibniz, Newton, Euler. Diálogos en escena y diez ejercicios decisivos."
-        />
+      <section className="max-w-5xl mx-auto px-6 py-8">
+        <div className="grid md:grid-cols-2 gap-5">
+          {WORLDS.map((w, i) => {
+            const completed = progress.completed[w.id] ?? -1;
+            const totalLevels = w.levels.length;
+            const pct = totalLevels ? Math.round(((completed + 1) / totalLevels) * 100) : 0;
+            const bossDone = progress.bossDefeated[w.id];
+            return (
+              <div
+                key={w.id}
+                className={`relative bg-card/90 border border-border/60 rounded-xl p-6 card-lift ${
+                  w.available ? "" : "opacity-70"
+                }`}
+              >
+                <div className="absolute -top-3 left-5 text-[10px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-accent text-accent-foreground">
+                  Mundo {romanize(i + 1)}
+                </div>
+                <h2 className="text-xl font-display mt-1">{w.title.replace(/^Mundo [^—]+— /, "")}</h2>
+                <p className="text-sm text-muted-foreground italic">{w.subtitle}</p>
+                <div className="mt-3 text-[14px] leading-relaxed text-foreground/85">
+                  <Rich source={w.summary} />
+                </div>
+                {w.available ? (
+                  <>
+                    <div className="mt-4 text-xs text-muted-foreground">
+                      {completed + 1} / {totalLevels} niveles · jefe {bossDone ? "vencido" : "pendiente"}
+                    </div>
+                    <div className="mt-1 h-1.5 bg-secondary rounded overflow-hidden">
+                      <div
+                        className="h-full bg-accent transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <div className="mt-5">
+                      <Link
+                        to="/mundo/$worldId"
+                        params={{ worldId: w.id }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-foreground text-background btn-glow"
+                      >
+                        {completed >= 0 ? "Continuar" : "Empezar"} →
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <div className="mt-5 text-xs uppercase tracking-widest text-muted-foreground">
+                    Próximamente
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </section>
     </Shell>
   );
 }
 
-function Feature({ title, body }: { title: string; body: string }) {
-  return (
-    <div>
-      <h3 className="text-lg mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
-    </div>
-  );
+function romanize(n: number) {
+  return ["I", "II", "III", "IV", "V", "VI", "VII"][n - 1] ?? String(n);
 }
