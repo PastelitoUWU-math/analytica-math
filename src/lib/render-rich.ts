@@ -18,9 +18,8 @@ function escapeHtml(s: string) {
     .replace(/>/g, "&gt;");
 }
 
-// Inline parser: handles \$ as literal, $...$ math, **bold**
+// Inline parser: handles \$ as literal, $...$ math, **bold** (may span math).
 function inline(text: string): string {
-  // Split by math first
   const parts: string[] = [];
   let i = 0;
   while (i < text.length) {
@@ -40,16 +39,15 @@ function inline(text: string): string {
       i = end + 1;
       continue;
     }
-    // accumulate plain until next special
     let j = i;
     while (j < text.length && text[j] !== "$" && !(text[j] === "\\" && text[j + 1] === "$")) j++;
-    let chunk = text.slice(i, j);
-    chunk = escapeHtml(chunk).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    parts.push(chunk);
+    parts.push(escapeHtml(text.slice(i, j)));
     i = j;
   }
-  return parts.join("");
+  // Apply bold across the joined result so **...** may wrap inline math.
+  return parts.join("").replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>");
 }
+
 
 export function renderRich(src: string): string {
   // First extract $$...$$ display blocks
