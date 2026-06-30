@@ -62,7 +62,9 @@ function LevelPage({ worldId, idx }: { worldId: string; idx: number }) {
           ← {world.title}
         </Link>
         <div className="mt-3 flex items-baseline justify-between gap-4 flex-wrap">
-          <h1 className="text-3xl font-display tracking-tight">{level.title}</h1>
+          <h1 className="text-3xl font-display tracking-tight">
+            <InlineMath source={level.title} />
+          </h1>
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
             <InlineMath source={level.concept} />
           </span>
