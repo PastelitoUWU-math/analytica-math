@@ -20,61 +20,101 @@ const L = (n: number, title: string, concept: string, body: string, exercises: E
 
 const lv1 = L(
   1,
-  "¿Qué es un límite? (intuición)",
-  "Idea intuitiva de límite",
+  "¿Qué significa acercarse a un número?",
+  "Idea intuitiva: tendencia",
   `
-### El problema que motiva el límite
+### La pregunta más sencilla del mundo
 
-Imagina que tienes una función, por ejemplo $f(x) = x + 3$. Si te pregunto **cuánto vale $f$ cuando $x = 2$**, simplemente sustituyes: $f(2) = 2 + 3 = 5$. Fácil.
+Imagina que tienes un número, por ejemplo $2$. Y imagina que vas escribiendo números **cada vez más cerca de $2$**, sin tocarlo nunca. Por ejemplo:
 
-Pero ahora cambiemos la pregunta: **¿a qué número se acerca $f(x)$ cuando $x$ se acerca a $2$?** Esa es la pregunta del *límite*.
+$$1.9,\\quad 1.99,\\quad 1.999,\\quad 1.9999,\\ldots$$
 
-Lo escribimos así:
-$$\\lim_{x \\to 2} (x+3)$$
+o también desde el otro lado:
 
-Y se lee: *"el límite, cuando $x$ tiende a $2$, de $x+3$"*.
+$$2.1,\\quad 2.01,\\quad 2.001,\\quad 2.0001,\\ldots$$
 
-### Cómo se calcula (paso 1: solo sustituir)
+A esto lo llamamos **acercarse a $2$**, o decir que $x$ **tiende** a $2$. Lo escribimos $x \\to 2$. Importante: $x$ **nunca llega a valer exactamente $2$**; solo se le acerca todo lo que queramos.
 
-Cuando la función es **sencilla y no rota** en ese punto (sin divisiones por cero, sin raíces de números negativos, sin saltos), el límite se calcula **sustituyendo directamente**:
+### El límite, en una frase
 
-$$\\lim_{x \\to 2} (x+3) = 2 + 3 = 5$$
+El **límite** de una función $f(x)$ cuando $x$ tiende a $a$ es **el número al que se acerca $f(x)$** cuando $x$ se acerca a $a$.
 
-Sí, así de simple. En estos primeros niveles vamos a practicar **solo eso**: identificar el valor al que se acerca la función. Más adelante veremos los casos en los que sustituir no funciona y hay que hacer algo más.
+Lo escribimos:
+$$\\lim_{x\\to a} f(x)$$
 
-### Una idea importante
+Y se lee: *"el límite, cuando $x$ tiende a $a$, de $f(x)$"*.
 
-El límite **no pregunta cuánto vale $f$ en el punto**, sino **a qué se acerca** $f$ cuando $x$ se acerca al punto. En las funciones de este nivel ambas cosas coinciden. En niveles posteriores veremos casos donde no.
+### Cómo se "ve" un límite con una tabla
+
+No vamos a calcular nada con fórmulas todavía. Lo único que vamos a hacer es **mirar valores**.
+
+Por ejemplo, tomemos la función $f(x) = x + 3$ y miremos qué pasa cuando $x$ se acerca a $2$:
+
+| $x$ | $f(x) = x + 3$ |
+|---|---|
+| $1.9$ | $4.9$ |
+| $1.99$ | $4.99$ |
+| $1.999$ | $4.999$ |
+| $2.001$ | $5.001$ |
+| $2.01$ | $5.01$ |
+| $2.1$ | $5.1$ |
+
+¿Ves a qué número se acercan los valores de $f(x)$? Se acercan a $\\mathbf{5}$.
+
+> Eso es todo. Hemos "visto" que $\\displaystyle\\lim_{x\\to 2}(x+3) = 5$ **solo mirando una tabla**. En los próximos niveles aprenderemos atajos, pero la idea siempre es la misma: **a qué número se acerca el resultado**.
+
+### En este nivel
+
+Vas a practicar **solo eso**: ver una tabla de valores y decir a qué número se está acercando $f(x)$. No hace falta saber resolver límites todavía; basta con observar.
 `,
   [
     {
-      prompt: "Calcula $\\displaystyle\\lim_{x\\to 1}(x+4)$.",
+      prompt:
+        "Mira los valores: $f(1.9)=4.9$, $f(1.99)=4.99$, $f(1.999)=4.999$, $f(2.001)=5.001$, $f(2.01)=5.01$. ¿A qué número se acerca $f(x)$?",
       answer: 5,
-      hint: "Sustituye $x=1$.",
-      solution: "Sustituimos directamente: $1+4 = 5$. La respuesta es $5.00$.",
+      hint: "Fíjate en a qué decimal se aproximan todos los resultados.",
+      solution:
+        "Todos los valores rodean al número $5$: $4.999$, $5.001$, etc. Por tanto el límite es $5.00$.",
     },
     {
-      prompt: "Calcula $\\displaystyle\\lim_{x\\to 3}(2x)$.",
-      answer: 6,
-      solution: "Sustituyendo: $2\\cdot 3 = 6$. Respuesta: $6.00$.",
-    },
-    {
-      prompt: "Calcula $\\displaystyle\\lim_{x\\to 0}(x+7)$.",
-      answer: 7,
-      solution: "Sustituyendo: $0+7=7$. Respuesta: $7.00$.",
-    },
-    {
-      prompt: "Calcula $\\displaystyle\\lim_{x\\to 5}(x-2)$.",
+      prompt:
+        "Mira los valores: $g(0.9)=2.81$, $g(0.99)=2.9801$, $g(0.999)=2.998$, $g(1.001)=3.002$, $g(1.01)=3.0201$. ¿A qué número se acerca $g(x)$?",
       answer: 3,
-      solution: "Sustituyendo: $5-2=3$. Respuesta: $3.00$.",
+      solution:
+        "Los valores se apretujan alrededor de $3$ por ambos lados. El límite es $3.00$.",
     },
     {
-      prompt: "Calcula $\\displaystyle\\lim_{x\\to 2}(10)$. (La función es constante.)",
+      prompt:
+        "Tabla: $h(2.9)=-0.1$, $h(2.99)=-0.01$, $h(2.999)=-0.001$, $h(3.001)=0.001$, $h(3.01)=0.01$. ¿A qué número tiende $h(x)$?",
+      answer: 0,
+      solution:
+        "Los valores se acercan a $0$ desde ambos lados. El límite es $0.00$.",
+    },
+    {
+      prompt:
+        "Tabla: $f(-0.1)=6.99$, $f(-0.01)=6.9999$, $f(0.01)=7.0001$, $f(0.1)=7.01$. ¿A qué número se acerca $f(x)$?",
+      answer: 7,
+      solution:
+        "Los valores rondan $7$ tan cerca como queramos. El límite es $7.00$.",
+    },
+    {
+      prompt:
+        "Tabla: $u(4.9)=10.05$, $u(4.99)=10.005$, $u(5.001)=9.999$, $u(5.01)=9.99$. ¿A qué número se acerca $u(x)$ cuando $x\\to 5$?",
       answer: 10,
-      solution: "Una función constante siempre vale lo mismo, así que su límite es ese valor: $10.00$.",
+      hint: "Aunque desde un lado decrezca y desde el otro crezca, ambos se aprietan al mismo número.",
+      solution:
+        "Por la izquierda baja hacia $10$ y por la derecha sube hacia $10$. El límite es $10.00$.",
+    },
+    {
+      prompt:
+        "Una función vale siempre $7.5$, sin importar el valor de $x$. ¿Cuál es $\\displaystyle\\lim_{x\\to 12} f(x)$?",
+      answer: 7.5,
+      solution:
+        "Una función constante vale lo mismo en todas partes; el límite es ese valor, $7.50$.",
     },
   ],
 );
+
 
 const lv2 = L(
   2,
