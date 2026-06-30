@@ -18,9 +18,8 @@ function escapeHtml(s: string) {
     .replace(/>/g, "&gt;");
 }
 
-// Inline parser: handles \$ as literal, $...$ math, **bold**
+// Inline parser: handles \$ as literal, $...$ math, **bold** (may span math).
 function inline(text: string): string {
-  // Split by math first
   const parts: string[] = [];
   let i = 0;
   while (i < text.length) {
@@ -40,16 +39,15 @@ function inline(text: string): string {
       i = end + 1;
       continue;
     }
-    // accumulate plain until next special
     let j = i;
     while (j < text.length && text[j] !== "$" && !(text[j] === "\\" && text[j + 1] === "$")) j++;
-    let chunk = text.slice(i, j);
-    chunk = escapeHtml(chunk).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    parts.push(chunk);
+    parts.push(escapeHtml(text.slice(i, j)));
     i = j;
   }
-  return parts.join("");
+  // Apply bold across the joined result so **...** may wrap inline math.
+  return parts.join("").replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>");
 }
+
 
 export function renderRich(src: string): string {
   // First extract $$...$$ display blocks
@@ -69,8 +67,10 @@ export function renderRich(src: string): string {
     // Heading
     const h = joined.match(/^(#{1,4})\s+(.*)$/);
     if (h) {
-      const lvl = h[1].length + 1; // h2..h5
-      out.push(`<h${lvl} class="font-display tracking-tight">${inline(h[2])}</h${lvl}>`);
+      const lvl = Math.min(h[1].length + 1, 6); // h2..h5
+      const sizes = ["", "", "text-2xl mt-7 mb-3", "text-xl mt-6 mb-3 text-accent", "text-lg mt-5 mb-2", "text-base mt-4 mb-2"];
+      const cls = sizes[lvl] ?? "text-base mt-4 mb-2";
+      out.push(`<h${lvl} class="font-display tracking-tight ${cls}">${inline(h[2])}</h${lvl}>`);
       buf = [];
       return;
     }
