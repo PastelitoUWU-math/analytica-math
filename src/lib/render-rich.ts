@@ -67,8 +67,10 @@ export function renderRich(src: string): string {
     // Heading
     const h = joined.match(/^(#{1,4})\s+(.*)$/);
     if (h) {
-      const lvl = h[1].length + 1; // h2..h5
-      out.push(`<h${lvl} class="font-display tracking-tight">${inline(h[2])}</h${lvl}>`);
+      const lvl = Math.min(h[1].length + 1, 6); // h2..h5
+      const sizes = ["", "", "text-2xl mt-7 mb-3", "text-xl mt-6 mb-3 text-accent", "text-lg mt-5 mb-2", "text-base mt-4 mb-2"];
+      const cls = sizes[lvl] ?? "text-base mt-4 mb-2";
+      out.push(`<h${lvl} class="font-display tracking-tight ${cls}">${inline(h[2])}</h${lvl}>`);
       buf = [];
       return;
     }
