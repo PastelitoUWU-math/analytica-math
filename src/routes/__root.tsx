@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Analytica — Análisis matemático jugando" },
+      { title: "Analytica — Análisis matemático" },
       { name: "description", content: "Aprende análisis matemático paso a paso: límites, derivadas, integrales y series, en formato de juego con mundos, niveles y jefes históricos." },
       { name: "author", content: "Analytica" },
-      { property: "og:title", content: "Analytica" },
-      { property: "og:description", content: "Aprende cálculo paso a paso, jugando." },
+      { property: "og:title", content: "Analytica — Análisis matemático" },
+      { property: "og:description", content: "Aprende análisis matemático paso a paso: límites, derivadas, integrales y series, en formato de juego con mundos, niveles y jefes históricos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Analytica" },
+      { name: "twitter:title", content: "Analytica — Análisis matemático" },
+      { name: "twitter:description", content: "Aprende análisis matemático paso a paso: límites, derivadas, integrales y series, en formato de juego con mundos, niveles y jefes históricos." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/c8628e9f-9ac9-4ba7-b6ea-54849127b80d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/c8628e9f-9ac9-4ba7-b6ea-54849127b80d" },
     ],
     links: [
       {
