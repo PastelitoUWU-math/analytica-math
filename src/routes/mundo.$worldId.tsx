@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
 import { getWorld } from "@/lib/content/worlds";
 import { useProgress } from "@/lib/game-state";
+import { InlineMath } from "@/components/InlineMath";
 
 export const Route = createFileRoute("/mundo/$worldId")({
   head: ({ params }) => {
