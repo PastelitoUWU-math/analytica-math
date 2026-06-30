@@ -50,14 +50,12 @@ No vamos a calcular nada con fórmulas todavía. Lo único que vamos a hacer es 
 
 Por ejemplo, tomemos la función $f(x) = x + 3$ y miremos qué pasa cuando $x$ se acerca a $2$:
 
-| $x$ | $f(x) = x + 3$ |
-|---|---|
-| $1.9$ | $4.9$ |
-| $1.99$ | $4.99$ |
-| $1.999$ | $4.999$ |
-| $2.001$ | $5.001$ |
-| $2.01$ | $5.01$ |
-| $2.1$ | $5.1$ |
+- $x = 1.9 \\;\\Rightarrow\\; f(x) = 4.9$
+- $x = 1.99 \\;\\Rightarrow\\; f(x) = 4.99$
+- $x = 1.999 \\;\\Rightarrow\\; f(x) = 4.999$
+- $x = 2.001 \\;\\Rightarrow\\; f(x) = 5.001$
+- $x = 2.01 \\;\\Rightarrow\\; f(x) = 5.01$
+- $x = 2.1 \\;\\Rightarrow\\; f(x) = 5.1$
 
 ¿Ves a qué número se acercan los valores de $f(x)$? Se acercan a $\\mathbf{5}$.
 
