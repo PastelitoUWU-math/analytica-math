@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TiendaRouteImport } from './routes/tienda'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as MundosRouteImport } from './routes/mundos'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
 import { Route as JefeWorldIdRouteImport } from './routes/jefe.$worldId'
@@ -30,6 +31,11 @@ const RankingRoute = RankingRouteImport.update({
 const MundosRoute = MundosRouteImport.update({
   id: '/mundos',
   path: '/mundos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,6 +61,7 @@ const NivelWorldIdLevelIdxRoute = NivelWorldIdLevelIdxRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
   '/tienda': typeof TiendaRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
   '/tienda': typeof TiendaRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
   '/tienda': typeof TiendaRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/mundos'
     | '/ranking'
     | '/tienda'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/mundos'
     | '/ranking'
     | '/tienda'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/mundos'
     | '/ranking'
     | '/tienda'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   MundosRoute: typeof MundosRoute
   RankingRoute: typeof RankingRoute
   TiendaRoute: typeof TiendaRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/mundos'
       fullPath: '/mundos'
       preLoaderRoute: typeof MundosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   MundosRoute: MundosRoute,
   RankingRoute: RankingRoute,
   TiendaRoute: TiendaRoute,
