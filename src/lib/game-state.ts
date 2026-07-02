@@ -1,5 +1,7 @@
 // Local game state: progress, points, purchases. Stored in localStorage.
+// Además, sincroniza (best-effort) puntos con el perfil autenticado.
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { syncPointsToProfile } from "./auth";
 
 export type Progress = {
   // worldId -> highest level index completed (0-based, -1 = none)
