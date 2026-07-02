@@ -44,9 +44,14 @@ function read(): Progress {
   return cache!;
 }
 function write(p: Progress) {
+  const prev = cache;
   cache = p;
   if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(p));
   listeners.forEach((l) => l());
+  // Sincronización de puntos con perfil autenticado (fire-and-forget)
+  if (typeof window !== "undefined" && prev && (prev.points !== p.points || prev.totalCorrect !== p.totalCorrect)) {
+    syncPointsToProfile(p.points, p.totalCorrect).catch(() => {});
+  }
 }
 
 export function useProgress() {

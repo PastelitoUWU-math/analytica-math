@@ -1,12 +1,16 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useProgress } from "@/lib/game-state";
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Backdrop } from "./Backdrop";
 import { ThemeApplier } from "./ThemeApplier";
+import { useAuth } from "@/lib/auth";
+import { installGlobalClickSfx, isMuted, setMuted, sfx } from "@/lib/sfx";
 
 export function Shell({ children }: { children: ReactNode }) {
   const progress = useProgress();
+  const { user, profile } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => { installGlobalClickSfx(); }, []);
   const nav = [
     { to: "/", label: "Inicio" },
     { to: "/mundos", label: "Mundos" },
