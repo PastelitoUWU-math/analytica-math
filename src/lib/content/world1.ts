@@ -1,4 +1,5 @@
 import type { World, Level, Exercise } from "./types";
+import * as ext from "./world1_ext";
 
 // Utilidad: redondea para presentación
 const r = (x: number, k = 4) => Math.round(x * 10 ** k) / 10 ** k;
@@ -420,9 +421,15 @@ Sea $f(x) = 1$ si $x<0$ y $f(x)=-1$ si $x\\geq 0$ (función signo). Entonces:
 
 Como $1 \\neq -1$, $\\lim_{x\\to 0} f(x)$ **no existe**.
 
-### Cómo lo trabajamos aquí
+### Convención de respuestas especiales (¡recuérdala!)
 
-Como nuestras respuestas son numéricas, cuando el límite **no existe** porque los lados difieren, escribiremos por convención **$-999$** como código para "no existe". Cuando el límite sí exista, escribe el valor decimal habitual.
+A partir de ahora, cuando pida un límite y la respuesta **no sea un número finito**, escribe una de estas palabras clave en lugar de un decimal:
+
+- **\`No\`** — cuando el límite **no existe** (por ejemplo, laterales distintos).
+- **\`Inf\`** — cuando el límite tiende a $+\\infty$.
+- **\`-Inf\`** — cuando el límite tiende a $-\\infty$.
+
+Si el límite sí existe y es un número finito, sigue escribiendo su valor decimal como siempre.
 `,
   [
     {
@@ -433,10 +440,10 @@ Como nuestras respuestas son numéricas, cuando el límite **no existe** porque 
     },
     {
       prompt:
-        "$f(x)=x$ si $x<1$, $f(x)=x+5$ si $x\\geq 1$. ¿Cuánto vale $\\displaystyle\\lim_{x\\to 1}f(x)$? (Escribe $-999$ si no existe.)",
-      answer: -999,
+        "$f(x)=x$ si $x<1$, $f(x)=x+5$ si $x\\geq 1$. ¿Cuánto vale $\\displaystyle\\lim_{x\\to 1}f(x)$?",
+      answer: "No" as const,
       solution:
-        "Izquierda: $1$. Derecha: $6$. Son distintos, el límite no existe. Respuesta: $-999.00$.",
+        "Izquierda: $1$. Derecha: $6$. Son distintos, así que el límite no existe. Respuesta: `No`.",
     },
     {
       prompt:
@@ -446,9 +453,9 @@ Como nuestras respuestas son numéricas, cuando el límite **no existe** porque 
     },
     {
       prompt:
-        "$f(x)=3$ si $x<0$, $f(x)=-3$ si $x\\geq 0$. ¿Cuánto vale $\\displaystyle\\lim_{x\\to 0}f(x)$? ($-999$ si no existe.)",
-      answer: -999,
-      solution: "Izquierda $3$, derecha $-3$. No coinciden. Respuesta: $-999.00$.",
+        "$f(x)=3$ si $x<0$, $f(x)=-3$ si $x\\geq 0$. ¿Cuánto vale $\\displaystyle\\lim_{x\\to 0}f(x)$?",
+      answer: "No" as const,
+      solution: "Izquierda $3$, derecha $-3$. No coinciden. Respuesta: `No`.",
     },
     {
       prompt:
