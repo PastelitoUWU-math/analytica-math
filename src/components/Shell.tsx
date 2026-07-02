@@ -1,12 +1,16 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useProgress } from "@/lib/game-state";
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Backdrop } from "./Backdrop";
 import { ThemeApplier } from "./ThemeApplier";
+import { useAuth } from "@/lib/auth";
+import { installGlobalClickSfx, isMuted, setMuted, sfx } from "@/lib/sfx";
 
 export function Shell({ children }: { children: ReactNode }) {
   const progress = useProgress();
+  const { user, profile } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => { installGlobalClickSfx(); }, []);
   const nav = [
     { to: "/", label: "Inicio" },
     { to: "/mundos", label: "Mundos" },
@@ -40,10 +44,29 @@ export function Shell({ children }: { children: ReactNode }) {
                 </Link>
               );
             })}
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-md bg-secondary border border-border/60">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-md bg-secondary border border-border/60 shimmer-chip">
               <span className="text-accent">✦</span>
               <span className="tabular-nums">{progress.points}</span>
             </span>
+            <button
+              type="button"
+              aria-label={isMuted() ? "Activar sonido" : "Silenciar"}
+              onClick={() => { setMuted(!isMuted()); sfx.click(); }}
+              className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-md border border-border/60 hover:bg-secondary text-muted-foreground hover:text-foreground"
+              title={isMuted() ? "Sonido apagado" : "Sonido encendido"}
+            >
+              {isMuted() ? "🔇" : "🔊"}
+            </button>
+            <Link
+              to="/auth"
+              className={`text-sm px-3 py-1.5 rounded-md border transition ${
+                user
+                  ? "border-accent/50 text-accent hover:bg-accent/10"
+                  : "border-border/60 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {user ? profile?.username ?? "Cuenta" : "Entrar"}
+            </Link>
           </nav>
         </div>
       </header>

@@ -1,45 +1,40 @@
 // Tipos del contenido del juego
+export type AnswerValue = number | "No" | "Inf" | "-Inf";
+
 export type Exercise = {
-  // Texto/Enunciado en markdown ligero. Use $...$ para math inline y $$...$$ para display.
+  // Texto/Enunciado en markdown ligero.
   prompt: string;
-  // Respuesta exacta (número real). El usuario debe escribir decimal con >=2 cifras decimales significativas.
-  answer: number;
-  // Pista corta opcional
+  // Respuesta: número o sentinela textual.
+  // - "No" cuando el límite no existe (laterales distintos, ambos finitos)
+  // - "Inf" cuando el límite tiende a +infinito
+  // - "-Inf" cuando el límite tiende a -infinito
+  answer: AnswerValue;
   hint?: string;
-  // Explicación de la solución (paso a paso) - se muestra al acertar, fallar 5 veces o usar saltar.
+  // Explicación paso a paso.
   solution: string;
 };
 
-export type Lesson = {
-  // Markdown ligero con $...$ y $$...$$. Explicación previa, rigurosa y clara.
-  body: string;
-};
+export type Lesson = { body: string };
 
 export type Level = {
   id: string;
   title: string;
-  // Pequeño subtítulo del concepto que cubre
   concept: string;
   lesson: Lesson;
   exercises: Exercise[];
 };
 
-export type BossDialogLine = {
-  // Frase del jefe que se muestra antes/durante la batalla
-  text: string;
-};
+export type BossDialogLine = { text: string };
 
 export type Boss = {
   id: string;
   name: string;
   era: string;
-  // Frases en español que dice antes de la batalla y entre rondas
   intro: string[];
-  taunts: string[]; // se rotan al fallar
-  victory: string; // dice el jugador al ganar
-  defeat: string; // dice el jefe al perder
-  exercises: Exercise[]; // al menos 10
-  // Color de acento para su escena
+  taunts: string[];
+  victory: string;
+  defeat: string;
+  exercises: Exercise[];
   accent: string;
 };
 
