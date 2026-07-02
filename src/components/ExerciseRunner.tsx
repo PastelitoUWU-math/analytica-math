@@ -3,6 +3,7 @@ import { checkAnswer } from "@/lib/answer-check";
 import { Rich } from "./Rich";
 import type { Exercise } from "@/lib/content/types";
 import { useBoost, useProgress } from "@/lib/game-state";
+import { sfx } from "@/lib/sfx";
 
 type Props = {
   exercise: Exercise;
@@ -24,14 +25,17 @@ export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
     const ok = checkAnswer(input, exercise.answer);
     if (ok) {
       setStatus("correct");
+      sfx.correct();
       return;
     }
     const next = attempts + 1;
     setAttempts(next);
     if (next >= 5) {
       setStatus("revealed");
+      sfx.reveal();
     } else {
       setStatus("wrong");
+      sfx.wrong();
     }
   };
 
@@ -99,10 +103,12 @@ export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
         )}
       </form>
 
-      <div className="mt-3 text-xs text-muted-foreground">
-        Formato: decimal con al menos 2 dígitos de precisión (ej. <code className="font-mono">1.23</code>,{" "}
+      <div className="mt-3 text-xs text-muted-foreground leading-relaxed">
+        Formato numérico: decimal con al menos 2 dígitos de precisión (ej. <code className="font-mono">1.23</code>,{" "}
         <code className="font-mono">8.0093</code>). Si vale exactamente $5$, escribe{" "}
-        <code className="font-mono">5.00</code>.
+        <code className="font-mono">5.00</code>. Casos especiales: escribe <code className="font-mono">No</code>{" "}
+        si el límite no existe, <code className="font-mono">Inf</code> si tiende a $+\infty$,{" "}
+        <code className="font-mono">-Inf</code> si tiende a $-\infty$.
       </div>
 
       {status === "wrong" && (
