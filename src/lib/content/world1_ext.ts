@@ -1,3 +1,19 @@
+import type { Level, Exercise } from "./types";
+
+const L = (
+  n: number,
+  title: string,
+  concept: string,
+  body: string,
+  exercises: Exercise[],
+): Level => ({
+  id: `n${n}`,
+  title: `Nivel ${n}: ${title}`,
+  concept,
+  lesson: { body },
+  exercises,
+});
+
 // =====================================================
 // NIVELES 11-50 — Continuación de MUNDO 1: LÍMITES (v2)
 // Solo técnicas que NO requieren derivar ni integrar:
