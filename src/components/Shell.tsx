@@ -4,7 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { Backdrop } from "./Backdrop";
 import { ThemeApplier } from "./ThemeApplier";
 import { useAuth } from "@/lib/auth";
-import { installGlobalClickSfx, isMuted, setMuted, sfx } from "@/lib/sfx";
+import { installGlobalClickSfx } from "@/lib/sfx";
 
 export function Shell({ children }: { children: ReactNode }) {
   const progress = useProgress();
@@ -48,15 +48,6 @@ export function Shell({ children }: { children: ReactNode }) {
               <span className="text-accent">✦</span>
               <span className="tabular-nums">{progress.points}</span>
             </span>
-            <button
-              type="button"
-              aria-label={isMuted() ? "Activar sonido" : "Silenciar"}
-              onClick={() => { setMuted(!isMuted()); sfx.click(); }}
-              className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-md border border-border/60 hover:bg-secondary text-muted-foreground hover:text-foreground"
-              title={isMuted() ? "Sonido apagado" : "Sonido encendido"}
-            >
-              {isMuted() ? "🔇" : "🔊"}
-            </button>
             <Link
               to="/auth"
               className={`text-sm px-3 py-1.5 rounded-md border transition ${

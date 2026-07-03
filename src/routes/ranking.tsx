@@ -2,20 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
 import { useProgress } from "@/lib/game-state";
 import { useEffect, useState } from "react";
-import { useAuth, syncPointsToProfile } from "@/lib/auth";
+import { useAuth, syncProgressToProfile } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/ranking")({
   head: () => ({
     meta: [
       { title: "Clasificación — Analytica" },
-      { name: "description", content: "Clasificación global de los mejores analistas matemáticos de Analytica." },
+      { name: "description", content: "Clasificación global de los mejores analistas matemáticos de Analytica, ordenada por puntos acumulados históricos." },
     ],
   }),
   component: RankingPage,
 });
 
-type Row = { id: string; username: string; points: number; total_correct: number };
+type Row = { id: string; username: string; points: number; lifetime_points: number; total_correct: number };
 
 function RankingPage() {
   const progress = useProgress();
@@ -23,15 +23,18 @@ function RankingPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Sincroniza puntuación local con el perfil cada vez que cambia
+  // Sincroniza el progreso local con el perfil cuando cambian los valores
   useEffect(() => {
-    if (!user) return;
-    if (!profile) return;
-    if (profile.points === progress.points && profile.total_correct === progress.totalCorrect) return;
-    if (progress.points > profile.points || progress.totalCorrect > profile.total_correct) {
-      syncPointsToProfile(progress.points, progress.totalCorrect).then(() => reloadProfile());
+    if (!user || !profile) return;
+    const needsSync =
+      progress.points !== profile.points ||
+      progress.totalCorrect > profile.total_correct ||
+      progress.lifetimePoints > profile.lifetime_points;
+    if (needsSync) {
+      syncProgressToProfile(progress.points, progress.totalCorrect, progress.lifetimePoints)
+        .then(() => reloadProfile());
     }
-  }, [user, profile, progress.points, progress.totalCorrect, reloadProfile]);
+  }, [user, profile, progress.points, progress.totalCorrect, progress.lifetimePoints, reloadProfile]);
 
   useEffect(() => {
     let alive = true;
@@ -39,8 +42,8 @@ function RankingPage() {
       setLoading(true);
       const { data } = await supabase
         .from("profiles")
-        .select("id, username, points, total_correct")
-        .order("points", { ascending: false })
+        .select("id, username, points, lifetime_points, total_correct")
+        .order("lifetime_points", { ascending: false })
         .limit(100);
       if (alive) {
         setRows((data as Row[]) ?? []);
@@ -48,31 +51,29 @@ function RankingPage() {
       }
     })();
     return () => { alive = false; };
-  }, [user, profile?.points]);
+  }, [user, profile?.lifetime_points]);
 
   return (
     <Shell>
       <div className="max-w-2xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-display tracking-tight">Clasificación global</h1>
         <p className="text-muted-foreground mt-2 text-sm">
-          Los mejores analistas. Se ordena por puntos totales.
+          Los mejores analistas. Se ordena por <strong className="text-foreground">puntos acumulados históricos</strong> —
+          gastar puntos en la tienda no afecta a tu posición.
         </p>
 
         {!user && (
           <div className="mt-6 bg-card border border-border/60 rounded-lg p-5">
             <h2 className="font-display text-lg">Entra en la clasificación</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Para aparecer aquí necesitas una cuenta. Es gratis: solo correo electrónico, contraseña y
-              nombre de usuario.
+              Necesitas una cuenta verificada por correo: correo electrónico, contraseña, y un nombre de usuario
+              permanente.
             </p>
             <div className="mt-4">
               <Link
                 to="/auth"
                 className="inline-block px-4 py-2 rounded-md bg-foreground text-background btn-glow"
-                data-sfx="click"
-              >
-                Crear cuenta o iniciar sesión
-              </Link>
+              >Crear cuenta o iniciar sesión</Link>
             </div>
           </div>
         )}
@@ -85,8 +86,11 @@ function RankingPage() {
               <div className="text-xs text-muted-foreground mt-0.5">El nombre de usuario es permanente.</div>
             </div>
             <div className="text-right">
-              <div className="text-xs uppercase tracking-widest text-muted-foreground">Puntos</div>
-              <div className="mt-1 font-display text-2xl tabular-nums">{profile.points}</div>
+              <div className="text-xs uppercase tracking-widest text-muted-foreground">Histórico</div>
+              <div className="mt-1 font-display text-2xl tabular-nums">{profile.lifetime_points}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                saldo actual: <span className="tabular-nums">{profile.points}</span>
+              </div>
             </div>
           </div>
         )}
@@ -113,7 +117,7 @@ function RankingPage() {
                     <span className={me ? "font-semibold" : ""}>{r.username}</span>
                     {me && <span className="text-xs text-accent">tú</span>}
                   </div>
-                  <span className="tabular-nums">{r.points}</span>
+                  <span className="tabular-nums" title="Puntos acumulados históricos">{r.lifetime_points}</span>
                 </li>
               );
             })
@@ -123,3 +127,4 @@ function RankingPage() {
     </Shell>
   );
 }
+
