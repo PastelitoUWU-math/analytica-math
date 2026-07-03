@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          lifetime_points: number
           points: number
           total_correct: number
           updated_at: string
@@ -26,6 +27,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id: string
+          lifetime_points?: number
           points?: number
           total_correct?: number
           updated_at?: string
@@ -34,6 +36,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          lifetime_points?: number
           points?: number
           total_correct?: number
           updated_at?: string
@@ -46,7 +49,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      sync_progress: {
+        Args: { _lifetime: number; _points: number; _total_correct: number }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
