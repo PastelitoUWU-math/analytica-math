@@ -1404,7 +1404,7 @@ Esta técnica —acotar con desigualdades naturales del problema y aplicar sánd
       solution: "$\\dfrac{\\lfloor x\\rfloor}{x}+\\dfrac1x \\to 1+0=1$. Respuesta: $1.00$.",
     },
     {
-      prompt: "$\\displaystyle\\lim_{x\\to 0} x\\left\\lfloor\\dfrac{1}{x}\\right\\rfloor$ (para $x>0$, acercándose por la derecha)",
+      prompt: "$\\displaystyle\\lim_{x\\to 0^+} x\\left\\lfloor\\dfrac{1}{x}\\right\\rfloor$",
       hint: "Usa $\\frac{1}{x}-1 < \\lfloor 1/x \\rfloor \\leq \\frac1x$ y multiplica por $x>0$.",
       answer: 1,
       solution: "Multiplicando la desigualdad por $x>0$: $1-x < x\\lfloor1/x\\rfloor \\leq 1$, y ambas cotas tienden a $1$. Respuesta: $1.00$.",
