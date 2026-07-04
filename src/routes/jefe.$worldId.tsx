@@ -95,11 +95,19 @@ function BossPage() {
               className="aspect-[5/6] rounded overflow-hidden"
               style={{ background: `linear-gradient(180deg, ${boss.accent}22, transparent)` }}
             >
-              <BossPortrait
-                name={boss.name}
-                accent={boss.accent}
-                speaking={phase !== "win"}
-              />
+              {boss.portraitUrl ? (
+                <img
+                  src={boss.portraitUrl}
+                  alt={`Retrato de ${boss.name}`}
+                  className="w-full h-full object-cover grayscale-[15%]"
+                />
+              ) : (
+                <BossPortrait
+                  name={boss.name}
+                  accent={boss.accent}
+                  speaking={phase !== "win"}
+                />
+              )}
             </div>
             <div className="mt-3">
               <div className="text-xs uppercase tracking-widest" style={{ color: boss.accent }}>
