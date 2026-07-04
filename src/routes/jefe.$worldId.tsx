@@ -4,7 +4,7 @@ import { getWorld } from "@/lib/content/worlds";
 import { BossPortrait } from "@/components/BossPortrait";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
 import { Rich } from "@/components/Rich";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { defeatBoss } from "@/lib/game-state";
 
 export const Route = createFileRoute("/jefe/$worldId")({
