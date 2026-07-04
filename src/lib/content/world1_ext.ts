@@ -1276,10 +1276,10 @@ Después de simplificar, **vuelve a comprobar** si sigue habiendo indeterminaci�
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 2}\\dfrac{x^2-4}{(x-2)^2}$",
-      hint: "Tras simplificar una copia, sigue habiendo una división por algo que tiende a $0$; estudia ambos lados.",
-      answer: "Inf",
+      hint: "Tras simplificar una copia de $(x-2)$, estudia el signo del denominador por cada lado.",
+      answer: "No",
       solution:
-        "Simplificando, queda $\\dfrac{x+2}{x-2}$, que cerca de $x=2$ por ambos lados da $+\\infty$ (numerador positivo, denominador al cuadrado siempre positivo... pero aquí ya no está al cuadrado). Por la derecha $\\to+\\infty$ y por la izquierda $\\to-\\infty$; sin embargo el numerador original $(x-2)^2$ siempre positivo hace que el cociente completo sea $+\\infty$ por ambos lados. Respuesta: Inf.",
+        "Simplificando una copia: $\\dfrac{(x-2)(x+2)}{(x-2)^2}=\\dfrac{x+2}{x-2}$. Cerca de $2$ el numerador tiende a $4>0$; el denominador $(x-2)$ tiende a $0^+$ por la derecha (dando $+\\infty$) y a $0^-$ por la izquierda (dando $-\\infty$). Como los laterales no coinciden, el límite **no existe**. Respuesta: `No`.",
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{x^2}{x^3+x^2}$",
