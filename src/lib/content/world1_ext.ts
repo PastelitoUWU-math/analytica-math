@@ -2167,13 +2167,6 @@ Has recorrido un camino largo: desde "mirar tablas de valores" hasta dominar ind
       answer: 2,
       solution: "El límite simplificado es $x+1\\to2$, así que $k=2$ para que coincida. Respuesta: $2.00$.",
     },
-    {
-      prompt: "$\\displaystyle\\lim_{x\\to 0}\\left(\\dfrac{\\sin x}{x}\\right)^{1/x^2}$",
-      hint: "Es forma $1^\\infty$: usa $\\sin x/x - 1 \\approx -x^2/6$ junto con la fórmula del número $e$ (puedes aceptar este dato sin demostrarlo).",
-      answer: 0.85,
-      solution:
-        "Usando que $\\dfrac{\\sin x}{x}-1\\to0$ con la rapidez de $-x^2/6$ y la fórmula del exponente $\\lim \\dfrac{1}{x^2}\\cdot\\left(\\dfrac{\\sin x}{x}-1\\right) = -\\dfrac16$, el límite es $e^{-1/6}\\approx0.85$. Respuesta: $0.85$.",
-    },
   ],
 );
 
