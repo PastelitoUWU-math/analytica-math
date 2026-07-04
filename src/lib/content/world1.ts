@@ -1,5 +1,7 @@
 import type { World, Level, Exercise } from "./types";
 import * as ext from "./world1_ext";
+import cauchyPortrait from "@/assets/cauchy.jpg.asset.json";
+import bossTheme from "@/assets/boss-theme.m4a.asset.json";
 
 // Utilidad: redondea para presentación
 const r = (x: number, k = 4) => Math.round(x * 10 ** k) / 10 ** k;
