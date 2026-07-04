@@ -2121,10 +2121,10 @@ Has recorrido un camino largo: desde "mirar tablas de valores" hasta dominar ind
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 2}\\dfrac{x^3-x^2-4x+4}{x-2}$",
-      hint: "Factoriza el numerador agrupando o probando que $x=2$ es raíz.",
-      answer: 3,
+      hint: "Comprueba que $x=2$ es raíz del numerador y factorízalo.",
+      answer: 4,
       solution:
-        "El numerador se factoriza como $(x-2)(x^2+x-2)=(x-2)(x-1)(x+2)$. Simplificando: $(x-1)(x+2)\\to(1)(4)=... $ revisa con cuidado: en $x=2$, $(x-1)(x+2)=1\\cdot4=4$. Atención: el resultado correcto tras simplificar es $4.00$.",
+        "Como $x=2$ anula el numerador, podemos factorizarlo por $(x-2)$: $x^3-x^2-4x+4=(x-2)(x^2+x-2)=(x-2)(x-1)(x+2)$. Simplificando el $(x-2)$: queda $(x-1)(x+2)$, y sustituyendo $x=2$: $(2-1)(2+2)=1\\cdot 4=4$. Respuesta: $4.00$.",
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 1}\\dfrac{\\sqrt{x+3}-2}{\\sqrt[3]{x}-1}$",
