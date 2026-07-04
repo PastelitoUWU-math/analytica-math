@@ -1433,7 +1433,7 @@ Todas las técnicas que aprendiste (dividir entre la mayor potencia, comparar gr
 
 ### Una diferencia importante
 
-Como $n$ solo toma valores enteros positivos, **no existen los límites laterales**; solo tiene sentido $n\\to\\infty$.
+Como $n$ solo toma valores enteros positivos, **no existen los límites laterales**; solo tiene sentido $n\\to\\infty$. Esto nos permite saber a qué número se acercan los términos de una sucesión infinita y predecir su comportamiento.
 `,
   [
     {
