@@ -1,9 +1,11 @@
 // Validación de respuestas.
 // Acepta números decimales con >= 2 dígitos significativos de precisión (los 0
 // finales cuentan como "no significativos") o los sentinelas textuales:
-//   "No"  → el límite no existe (laterales finitos distintos)
+//   "No"  → el límite no existe / respuesta negativa
 //   "Inf" → el límite es +infinito
 //   "-Inf"→ el límite es -infinito
+//   "Si"  → respuesta afirmativa (acepta "sí", "si", con y sin tilde/mayúsculas)
+//   "N/A" → no aplica / no tiene sentido hablar de continuidad ahí
 import type { AnswerValue } from "./content/types";
 
 export function checkAnswer(userInput: string, exact: AnswerValue): boolean {
@@ -16,7 +18,7 @@ export function checkAnswer(userInput: string, exact: AnswerValue): boolean {
   }
 
   // El usuario podría haber escrito una sentinela — solo se acepta si coincide.
-  if (/^[+-]?(inf|infty|infinito|no)$/i.test(raw)) return false;
+  if (/^[+-]?(inf|infty|infinito|no|si|s[ií]|n\/?a|na)$/i.test(stripAccents(raw))) return false;
 
   const s = raw.replace(",", ".");
   if (!/^-?\d+(\.\d+)?$/.test(s)) return false;
@@ -41,9 +43,15 @@ export function checkAnswer(userInput: string, exact: AnswerValue): boolean {
   return Math.abs(roundedExact - roundedUser) < Math.pow(10, -k) / 2 + 1e-12;
 }
 
-function normalizeSentinel(s: string): "No" | "Inf" | "-Inf" | null {
-  const t = s.replace(/\s+/g, "").toLowerCase();
+function stripAccents(s: string) {
+  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+}
+
+function normalizeSentinel(s: string): "No" | "Inf" | "-Inf" | "Si" | "N/A" | null {
+  const t = stripAccents(s.replace(/\s+/g, "").toLowerCase());
   if (t === "no" || t === "noexiste" || t === "dne") return "No";
+  if (t === "si" || t === "sisi" || t === "yes") return "Si";
+  if (t === "n/a" || t === "na" || t === "noaplica") return "N/A";
   if (t === "inf" || t === "+inf" || t === "infinito" || t === "infty" || t === "+infty" || t === "+infinito")
     return "Inf";
   if (t === "-inf" || t === "-infinito" || t === "-infty") return "-Inf";
