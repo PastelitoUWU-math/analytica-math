@@ -1,5 +1,5 @@
 // Tipos del contenido del juego
-export type AnswerValue = number | "No" | "Inf" | "-Inf";
+export type AnswerValue = number | "No" | "Inf" | "-Inf" | "Si" | "N/A";
 
 export type Exercise = {
   // Texto/Enunciado en markdown ligero.
@@ -8,6 +8,8 @@ export type Exercise = {
   // - "No" cuando el límite no existe (laterales distintos, ambos finitos)
   // - "Inf" cuando el límite tiende a +infinito
   // - "-Inf" cuando el límite tiende a -infinito
+  // - "Si" / "No" para preguntas sí/no
+  // - "N/A" cuando no tiene sentido hablar de continuidad en ese punto
   answer: AnswerValue;
   hint?: string;
   // Explicación paso a paso.
@@ -36,6 +38,10 @@ export type Boss = {
   defeat: string;
   exercises: Exercise[];
   accent: string;
+  // URL opcional a un retrato real que sustituye al retrato SVG genérico
+  portraitUrl?: string;
+  // URL opcional a una pista musical que suena en bucle durante la pelea
+  themeUrl?: string;
 };
 
 export type World = {
