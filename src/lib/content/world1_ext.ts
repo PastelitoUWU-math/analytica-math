@@ -530,11 +530,11 @@ const lv20 = L(
 
 Una función $f$ es **continua en $x=a$** si se cumplen **las tres condiciones** a la vez:
 
-1. $f(a)$ **existe**.
+1. $f(a)$ **existe** (es decir, $a$ pertenece al dominio de $f$).
 2. $\\displaystyle\\lim_{x\\to a} f(x)$ **existe**.
 3. $\\displaystyle\\lim_{x\\to a} f(x) = f(a)$.
 
-Si **falla cualquiera** de las tres, la función es **discontinua** en $a$.
+Si **fallan las dos últimas**, la función es **discontinua** en $a$. Si falla **la primera**, $a$ no pertenece al dominio y **no tiene sentido hablar de continuidad ahí**.
 
 ### Ejemplo
 
@@ -546,33 +546,38 @@ Sea $f(x) = x^2$ si $x\\neq 1$, $f(1) = 50$.
 
 Falla la condición 3, así que $f$ **no es continua** en $x=1$.
 
-En este nivel, responde $1$ si la función es continua en el punto indicado, $0$ si no.
+### Cómo responder en este nivel
+
+Escribe:
+- **\`Sí\`** (o \`Si\`, sin tilde) si la función **es continua** en el punto indicado.
+- **\`No\`** si la función existe en el punto pero **no es continua** ahí.
+- **\`N/A\`** si $a$ **no pertenece al dominio** y por tanto no tiene sentido hablar de continuidad en ese punto.
 `,
   [
     {
-      prompt: "$f(x)=x+1$ en todo punto. ¿Es continua en $x=5$? (1 = sí, 0 = no)",
-      answer: 1,
-      solution: "Es un polinomio, siempre continuo. Respuesta: $1.00$.",
+      prompt: "$f(x)=x+1$ en todo punto. ¿Es continua en $x=5$?",
+      answer: "Si",
+      solution: "Es un polinomio, siempre continuo. Respuesta: `Sí`.",
     },
     {
-      prompt: "$f(x)=x^2$ si $x\\neq 2$, $f(2)=10$. ¿Es continua en $x=2$? (1 = sí, 0 = no)",
-      answer: 0,
-      solution: "$\\lim_{x\\to2}f(x)=4 \\neq f(2)=10$. No es continua. Respuesta: $0.00$.",
+      prompt: "$f(x)=x^2$ si $x\\neq 2$, $f(2)=10$. ¿Es continua en $x=2$?",
+      answer: "No",
+      solution: "$\\lim_{x\\to2}f(x)=4 \\neq f(2)=10$: $2$ está en el dominio pero falla la condición 3. Respuesta: `No`.",
     },
     {
-      prompt: "$f(x)=x$ si $x<1$, $f(x)=x+5$ si $x\\geq 1$. ¿Es continua en $x=1$? (1 = sí, 0 = no)",
-      answer: 0,
-      solution: "Límites laterales distintos ($1$ y $6$): el límite no existe. No es continua. Respuesta: $0.00$.",
+      prompt: "$f(x)=x$ si $x<1$, $f(x)=x+5$ si $x\\geq 1$. ¿Es continua en $x=1$?",
+      answer: "No",
+      solution: "Límites laterales distintos ($1$ y $6$): el límite no existe. $f(1)=6$ sí existe, pero la condición 2 falla. Respuesta: `No`.",
     },
     {
-      prompt: "$f(x)=\\dfrac{1}{x}$, $f(0)$ no definido. ¿Es continua en $x=0$? (1 = sí, 0 = no)",
-      answer: 0,
-      solution: "Falla la condición 1: $f(0)$ no existe. No es continua. Respuesta: $0.00$.",
+      prompt: "$f(x)=\\dfrac{1}{x}$, con $f(0)$ no definido. ¿Es continua en $x=0$?",
+      answer: "N/A",
+      solution: "$0$ no está en el dominio de $\\tfrac1x$: no tiene sentido preguntarse por la continuidad ahí. Respuesta: `N/A`.",
     },
     {
-      prompt: "$f(x)=x^2-1$ si $x\\neq 3$, $f(3)=8$. ¿Es continua en $x=3$? (1 = sí, 0 = no)",
-      answer: 1,
-      solution: "$\\lim_{x\\to3}f(x)=8=f(3)$. Las tres condiciones se cumplen. Respuesta: $1.00$.",
+      prompt: "$f(x)=x^2-1$ si $x\\neq 3$, $f(3)=8$. ¿Es continua en $x=3$?",
+      answer: "Si",
+      solution: "$\\lim_{x\\to3}f(x)=8=f(3)$. Las tres condiciones se cumplen. Respuesta: `Sí`.",
     },
   ],
 );
