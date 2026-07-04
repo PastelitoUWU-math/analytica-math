@@ -29,15 +29,27 @@ function Home() {
   return (
     <Shell>
       <section className="max-w-5xl mx-auto px-6 pt-14 pb-6 text-center">
-        <p className="text-xs uppercase tracking-[0.25em] text-accent mb-4">
-          Análisis matemático · Jugando · Paso a paso
-        </p>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <p className="text-xs uppercase tracking-[0.25em] text-accent">
+            Análisis matemático · Jugando · Paso a paso
+          </p>
+          <span
+            className="text-[10px] font-semibold tracking-[0.3em] uppercase px-2 py-0.5 rounded-sm border border-accent/60 text-accent bg-accent/10"
+            title="Versión beta: quedan funcionalidades y mundos por añadir"
+          >
+            Beta
+          </span>
+        </div>
         <h1 className="text-4xl md:text-5xl font-display tracking-tight leading-[1.05]">
           Bienvenido a <span className="italic">Analytica</span>
         </h1>
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
           Elige un mundo y empieza a aprender. Las lecciones avanzan despacio para
           consolidar cada concepto; al final de cada mundo, un matemático legendario te espera.
+        </p>
+        <p className="mt-3 text-xs text-muted-foreground/80 max-w-xl mx-auto">
+          Esta es la <strong className="text-foreground">versión beta</strong> de Analytica: aún quedan mundos y
+          funcionalidades por incorporar.
         </p>
       </section>
 
