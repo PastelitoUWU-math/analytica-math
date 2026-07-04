@@ -4,7 +4,7 @@ import { getWorld } from "@/lib/content/worlds";
 import { BossPortrait } from "@/components/BossPortrait";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
 import { Rich } from "@/components/Rich";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { defeatBoss } from "@/lib/game-state";
 
 export const Route = createFileRoute("/jefe/$worldId")({
@@ -39,6 +39,35 @@ function BossPage() {
   const [exIdx, setExIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [tauntIdx, setTauntIdx] = useState(-1);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Música del jefe: suena en bucle durante la pelea, se detiene al ganar o salir.
+  useEffect(() => {
+    if (!boss.themeUrl) return;
+    if (phase !== "fight") {
+      const a = audioRef.current;
+      if (a) { a.pause(); a.currentTime = 0; }
+      return;
+    }
+    if (!audioRef.current) {
+      const a = new Audio(boss.themeUrl);
+      a.loop = true;
+      a.volume = 0.55;
+      audioRef.current = a;
+    }
+    audioRef.current.play().catch(() => { /* autoplay puede requerir interacción */ });
+    return () => {
+      const a = audioRef.current;
+      if (a) { a.pause(); a.currentTime = 0; }
+    };
+  }, [phase, boss.themeUrl]);
+
+  // Detén al desmontar (cambio de ruta)
+  useEffect(() => () => {
+    const a = audioRef.current;
+    if (a) { a.pause(); a.src = ""; }
+  }, []);
+
 
   const currentLine =
     phase === "intro"
@@ -66,11 +95,19 @@ function BossPage() {
               className="aspect-[5/6] rounded overflow-hidden"
               style={{ background: `linear-gradient(180deg, ${boss.accent}22, transparent)` }}
             >
-              <BossPortrait
-                name={boss.name}
-                accent={boss.accent}
-                speaking={phase !== "win"}
-              />
+              {boss.portraitUrl ? (
+                <img
+                  src={boss.portraitUrl}
+                  alt={`Retrato de ${boss.name}`}
+                  className="w-full h-full object-cover grayscale-[15%]"
+                />
+              ) : (
+                <BossPortrait
+                  name={boss.name}
+                  accent={boss.accent}
+                  speaking={phase !== "win"}
+                />
+              )}
             </div>
             <div className="mt-3">
               <div className="text-xs uppercase tracking-widest" style={{ color: boss.accent }}>

@@ -1,5 +1,7 @@
 import type { World, Level, Exercise } from "./types";
 import * as ext from "./world1_ext";
+import cauchyPortrait from "@/assets/cauchy.jpg.asset.json";
+import bossTheme from "@/assets/boss-theme.m4a.asset.json";
 
 // Utilidad: redondea para presentación
 const r = (x: number, k = 4) => Math.round(x * 10 ** k) / 10 ** k;
@@ -695,75 +697,103 @@ export const world1Boss = {
   name: "Augustin-Louis Cauchy",
   era: "Francia, siglo XIX",
   accent: "oklch(0.55 0.18 25)",
+  portraitUrl: cauchyPortrait.url,
+  themeUrl: bossTheme.url,
   intro: [
     "Bonjour. Soy Cauchy, el matemático que dio al cálculo su rigor moderno.",
     "Antes de mí, los infinitesimales eran fantasmas. Yo los até con épsilons y deltas.",
+    "Los cincuenta niveles que has vencido eran calentamiento. Aquí no habrá pistas fáciles.",
     "Si pretendes dominar el análisis, debes pasar por mis límites. Comencemos.",
   ],
   taunts: [
     "Mon ami, la imprecisión no se tolera en mi laboratorio.",
     "Recuerda: el límite no es lo que la función vale, es lo que la función promete.",
     "Sustituye. Si rompe, factoriza. Si no factoriza, conjuga. Es un arte.",
+    "Te queda mucho camino, aspirante.",
   ],
   victory: "Bien hecho. Te has ganado tu lugar entre los analistas. Continúa.",
   defeat: "C'est impossible... Tu rigor supera el mío. Toma tu galardón.",
   exercises: [
     {
-      prompt: "$\\displaystyle\\lim_{x\\to 3}\\dfrac{x^2-9}{x-3}$",
-      answer: 6,
-      solution: "Factor: $(x-3)(x+3)/(x-3)=x+3\\to 6$. Respuesta: $6.00$.",
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 1}\\dfrac{\\sqrt[3]{x}-1}{\\sqrt{x}-1}$",
+      hint: "Cambio de variable $t=x^{1/6}$: entonces $\\sqrt[3]{x}=t^2$ y $\\sqrt{x}=t^3$.",
+      answer: 2 / 3,
+      solution:
+        "Con $t=x^{1/6}$: numerador $t^2-1=(t-1)(t+1)$, denominador $t^3-1=(t-1)(t^2+t+1)$. El factor $(t-1)$ se cancela y $t\\to 1$: $\\dfrac{t+1}{t^2+t+1}\\to\\dfrac{2}{3}\\approx 0.67$. Respuesta: $0.67$.",
     },
     {
-      prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\sin(7x)}{x}$",
-      answer: 7,
-      solution: "$7\\cdot\\sin(7x)/(7x)\\to 7$. Respuesta: $7.00$.",
-    },
-    {
-      prompt: "$\\displaystyle\\lim_{x\\to 16}\\dfrac{\\sqrt{x}-4}{x-16}$",
-      answer: 1 / 8,
-      solution: "Conjugado: $1/(\\sqrt{x}+4)\\to 1/8=0.125$. Respuesta: $0.13$.",
-    },
-    {
-      prompt: "$\\displaystyle\\lim_{x\\to\\infty}\\dfrac{5x^2+3x}{2x^2+7}$",
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\sqrt{1+2x}-\\sqrt{1-3x}}{x}$",
+      hint: "Racionaliza multiplicando por la suma de las raíces.",
       answer: 2.5,
-      solution: "Mismo grado: $5/2=2.5$. Respuesta: $2.50$.",
-    },
-    {
-      prompt: "$\\displaystyle\\lim_{x\\to\\infty}\\left(1+\\dfrac{3}{x}\\right)^x$",
-      answer: r(Math.exp(3), 6),
-      solution: `$e^3\\approx 20.086$. Respuesta: ${Math.exp(3).toFixed(4)}.`,
+      solution:
+        "Multiplicando por $\\sqrt{1+2x}+\\sqrt{1-3x}$: numerador $(1+2x)-(1-3x)=5x$. Queda $\\dfrac{5x}{x(\\sqrt{1+2x}+\\sqrt{1-3x})}\\to\\dfrac{5}{2}=2.5$. Respuesta: $2.50$.",
     },
     {
       prompt:
-        "$\\displaystyle\\lim_{x\\to 1}\\dfrac{x^3-1}{x^2-1}$",
-      answer: 1.5,
-      hint: "Factoriza ambos.",
+        "$\\displaystyle\\lim_{x\\to+\\infty}\\Big(\\sqrt{x^2+3x+1}-\\sqrt{x^2-x+2}\\Big)$",
+      hint: "Racionaliza y compara los coeficientes de $x$ en el numerador tras la simplificación.",
+      answer: 2,
       solution:
-        "Numerador: $(x-1)(x^2+x+1)$. Denominador: $(x-1)(x+1)$. Simplifica: $\\dfrac{x^2+x+1}{x+1}\\to 3/2=1.5$. Respuesta: $1.50$.",
+        "Multiplicando por el conjugado: numerador $(x^2+3x+1)-(x^2-x+2)=4x-1$. Denominador $\\sqrt{x^2+3x+1}+\\sqrt{x^2-x+2}$. Dividiendo entre $x$: $\\dfrac{4-1/x}{\\sqrt{1+3/x+1/x^2}+\\sqrt{1-1/x+2/x^2}}\\to\\dfrac{4}{2}=2$. Respuesta: $2.00$.",
     },
     {
-      prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\sin(2x)}{\\sin(5x)}$",
-      answer: 0.4,
-      hint: "Multiplica y divide para que aparezcan dos cocientes tipo $\\sin u/u$.",
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\tan(3x)-\\sin(3x)}{x^3}$",
+      hint: "Escribe $\\tan-\\sin=\\sin\\cdot(1-\\cos)/\\cos$ y usa $1-\\cos u\\sim u^2/2$.",
+      answer: 13.5,
       solution:
-        "$\\dfrac{\\sin(2x)/2x \\cdot 2x}{\\sin(5x)/5x \\cdot 5x} = \\dfrac{2x}{5x}\\cdot 1 = \\dfrac{2}{5}=0.4$. Respuesta: $0.40$.",
+        "$\\tan 3x-\\sin 3x=\\dfrac{\\sin 3x\\,(1-\\cos 3x)}{\\cos 3x}$. Como $\\sin 3x\\sim 3x$, $1-\\cos 3x\\sim (3x)^2/2=9x^2/2$ y $\\cos 3x\\to 1$: $\\dfrac{3x\\cdot 9x^2/2}{x^3}=\\dfrac{27}{2}=13.5$. Respuesta: $13.50$.",
     },
     {
-      prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\sqrt{1+x}-1}{x}$",
+      prompt:
+        "$\\displaystyle\\lim_{x\\to+\\infty}\\left(\\dfrac{x+2}{x-1}\\right)^{2x+1}$",
+      hint: "Forma $1^\\infty$: reescribe la base como $1+\\dfrac{3}{x-1}$.",
+      answer: 403.43,
+      solution:
+        "La base $= 1+\\dfrac{3}{x-1}$. Exponente $\\times$ (base $-1$): $(2x+1)\\cdot\\dfrac{3}{x-1}\\to 6$. Por la fórmula del número $e$: el límite es $e^{6}\\approx 403.43$. Respuesta: $403.43$.",
+    },
+    {
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 2^-}\\dfrac{\\sqrt{x-1}-1}{(x-2)\\,\\lfloor x \\rfloor}$",
+      hint: "Cerca de $2^-$, $\\lfloor x\\rfloor=1$. Racionaliza el numerador.",
       answer: 0.5,
-      solution: "Conjugado: $\\dfrac{x}{x(\\sqrt{1+x}+1)}=\\dfrac{1}{\\sqrt{1+x}+1}\\to 1/2=0.5$. Respuesta: $0.50$.",
-    },
-    {
-      prompt: "$\\displaystyle\\lim_{x\\to\\infty}\\dfrac{3x+1}{x^2+2}$",
-      answer: 0,
-      solution: "Denominador de mayor grado, límite $0$. Respuesta: $0.00$.",
+      solution:
+        "Con $x\\to 2^-$, $\\lfloor x\\rfloor=1$. Racionalizando: $\\dfrac{(x-1)-1}{(x-2)(\\sqrt{x-1}+1)}=\\dfrac{x-2}{(x-2)(\\sqrt{x-1}+1)}=\\dfrac{1}{\\sqrt{x-1}+1}\\to\\dfrac{1}{2}=0.5$. Respuesta: $0.50$.",
     },
     {
       prompt:
-        "$\\displaystyle\\lim_{x\\to 2}\\dfrac{x^3-8}{x-2}$",
-      answer: 12,
-      hint: "$x^3-8=(x-2)(x^2+2x+4)$.",
-      solution: "Simplifica a $x^2+2x+4 \\to 4+4+4=12$. Respuesta: $12.00$.",
+        "$\\displaystyle\\lim_{n\\to\\infty}\\left(\\dfrac{n^2+n+1}{n^2-n+1}\\right)^{n}$",
+      hint: "Reescribe la base como $1+\\dfrac{2n}{n^2-n+1}$ y usa la definición de $e$.",
+      answer: 7.39,
+      solution:
+        "Base $-1 = \\dfrac{2n}{n^2-n+1}$. Producto con el exponente $n$: $\\dfrac{2n^2}{n^2-n+1}\\to 2$. Por tanto el límite es $e^2\\approx 7.39$. Respuesta: $7.39$.",
+    },
+    {
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\ln(1+3x)-\\sin(3x)}{x^2}$",
+      hint: "Usa $\\ln(1+u)\\sim u-u^2/2$ y $\\sin u\\sim u$ hasta orden $2$.",
+      answer: -4.5,
+      solution:
+        "$\\ln(1+3x)=3x-\\dfrac{(3x)^2}{2}+O(x^3)=3x-\\dfrac{9x^2}{2}+\\cdots$; $\\sin(3x)=3x+O(x^3)$. Restando: $-\\dfrac{9x^2}{2}+O(x^3)$. Dividiendo entre $x^2$: $-\\dfrac{9}{2}=-4.5$. Respuesta: $-4.50$.",
+    },
+    {
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 0^+}x^{\\,1/\\ln x}$",
+      hint: "Toma logaritmo: $\\ln(y)=\\dfrac{\\ln x}{\\ln x}$.",
+      answer: 2.72,
+      solution:
+        "$\\ln y=\\dfrac{1}{\\ln x}\\cdot\\ln x=1$, así que $y\\to e\\approx 2.72$. Respuesta: $2.72$.",
+    },
+    {
+      prompt:
+        "$f(x)=\\dfrac{\\sin(ax)}{x}$ si $x\\neq 0$, $f(0)=6$. ¿Qué valor de $a$ hace que $f$ sea continua en $0$? (da la solución positiva)",
+      hint: "El límite es $a$; iguálalo a $f(0)$.",
+      answer: 6,
+      solution:
+        "$\\lim_{x\\to 0}\\dfrac{\\sin(ax)}{x}=a$. Para que $f$ sea continua debe cumplirse $a=6$. Respuesta: $6.00$.",
     },
   ],
 };
+

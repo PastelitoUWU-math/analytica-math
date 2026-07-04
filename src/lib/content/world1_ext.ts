@@ -530,11 +530,11 @@ const lv20 = L(
 
 Una función $f$ es **continua en $x=a$** si se cumplen **las tres condiciones** a la vez:
 
-1. $f(a)$ **existe**.
+1. $f(a)$ **existe** (es decir, $a$ pertenece al dominio de $f$).
 2. $\\displaystyle\\lim_{x\\to a} f(x)$ **existe**.
 3. $\\displaystyle\\lim_{x\\to a} f(x) = f(a)$.
 
-Si **falla cualquiera** de las tres, la función es **discontinua** en $a$.
+Si **fallan las dos últimas**, la función es **discontinua** en $a$. Si falla **la primera**, $a$ no pertenece al dominio y **no tiene sentido hablar de continuidad ahí**.
 
 ### Ejemplo
 
@@ -546,33 +546,38 @@ Sea $f(x) = x^2$ si $x\\neq 1$, $f(1) = 50$.
 
 Falla la condición 3, así que $f$ **no es continua** en $x=1$.
 
-En este nivel, responde $1$ si la función es continua en el punto indicado, $0$ si no.
+### Cómo responder en este nivel
+
+Escribe:
+- **\`Sí\`** (o \`Si\`, sin tilde) si la función **es continua** en el punto indicado.
+- **\`No\`** si la función existe en el punto pero **no es continua** ahí.
+- **\`N/A\`** si $a$ **no pertenece al dominio** y por tanto no tiene sentido hablar de continuidad en ese punto.
 `,
   [
     {
-      prompt: "$f(x)=x+1$ en todo punto. ¿Es continua en $x=5$? (1 = sí, 0 = no)",
-      answer: 1,
-      solution: "Es un polinomio, siempre continuo. Respuesta: $1.00$.",
+      prompt: "$f(x)=x+1$ en todo punto. ¿Es continua en $x=5$?",
+      answer: "Si",
+      solution: "Es un polinomio, siempre continuo. Respuesta: `Sí`.",
     },
     {
-      prompt: "$f(x)=x^2$ si $x\\neq 2$, $f(2)=10$. ¿Es continua en $x=2$? (1 = sí, 0 = no)",
-      answer: 0,
-      solution: "$\\lim_{x\\to2}f(x)=4 \\neq f(2)=10$. No es continua. Respuesta: $0.00$.",
+      prompt: "$f(x)=x^2$ si $x\\neq 2$, $f(2)=10$. ¿Es continua en $x=2$?",
+      answer: "No",
+      solution: "$\\lim_{x\\to2}f(x)=4 \\neq f(2)=10$: $2$ está en el dominio pero falla la condición 3. Respuesta: `No`.",
     },
     {
-      prompt: "$f(x)=x$ si $x<1$, $f(x)=x+5$ si $x\\geq 1$. ¿Es continua en $x=1$? (1 = sí, 0 = no)",
-      answer: 0,
-      solution: "Límites laterales distintos ($1$ y $6$): el límite no existe. No es continua. Respuesta: $0.00$.",
+      prompt: "$f(x)=x$ si $x<1$, $f(x)=x+5$ si $x\\geq 1$. ¿Es continua en $x=1$?",
+      answer: "No",
+      solution: "Límites laterales distintos ($1$ y $6$): el límite no existe. $f(1)=6$ sí existe, pero la condición 2 falla. Respuesta: `No`.",
     },
     {
-      prompt: "$f(x)=\\dfrac{1}{x}$, $f(0)$ no definido. ¿Es continua en $x=0$? (1 = sí, 0 = no)",
-      answer: 0,
-      solution: "Falla la condición 1: $f(0)$ no existe. No es continua. Respuesta: $0.00$.",
+      prompt: "$f(x)=\\dfrac{1}{x}$, con $f(0)$ no definido. ¿Es continua en $x=0$?",
+      answer: "N/A",
+      solution: "$0$ no está en el dominio de $\\tfrac1x$: no tiene sentido preguntarse por la continuidad ahí. Respuesta: `N/A`.",
     },
     {
-      prompt: "$f(x)=x^2-1$ si $x\\neq 3$, $f(3)=8$. ¿Es continua en $x=3$? (1 = sí, 0 = no)",
-      answer: 1,
-      solution: "$\\lim_{x\\to3}f(x)=8=f(3)$. Las tres condiciones se cumplen. Respuesta: $1.00$.",
+      prompt: "$f(x)=x^2-1$ si $x\\neq 3$, $f(3)=8$. ¿Es continua en $x=3$?",
+      answer: "Si",
+      solution: "$\\lim_{x\\to3}f(x)=8=f(3)$. Las tres condiciones se cumplen. Respuesta: `Sí`.",
     },
   ],
 );
@@ -580,53 +585,60 @@ En este nivel, responde $1$ si la función es continua en el punto indicado, $0$
 const lv21 = L(
   21,
   "Tipos de discontinuidad",
-  "Evitable, de salto e infinita",
+  "Evitable, salto finito y singularidad de salto infinito",
   `
 ### Tres "formas" de fallar la continuidad
 
 1. **Discontinuidad evitable**: el límite **existe**, pero no coincide con $f(a)$, o $f(a)$ no está definido. Ejemplo: $\\dfrac{x^2-1}{x-1}$ en $x=1$.
 
-2. **Discontinuidad de salto**: los límites laterales **existen pero son distintos**.
+2. **Discontinuidad de salto finito**: los límites laterales **existen y son finitos**, pero **distintos entre sí**.
 
-3. **Discontinuidad infinita**: al menos un límite lateral es $\\pm\\infty$.
+3. **Singularidad de salto infinito**: aunque no sea una discontinuidad en sí, se usa para referirse a cuando alguno de los límites laterales es $\\pm\\infty$.
 
 ### Cómo identificarlas
 
 Calcula los límites laterales:
 - Ambos finitos e **iguales** entre sí pero distintos de $f(a)$ (o $f(a)$ no existe) → **evitable**.
-- Ambos finitos pero **distintos entre sí** → **salto**.
-- Alguno es $\\pm\\infty$ → **infinita**.
+- Ambos finitos pero **distintos entre sí** → **salto finito**.
+- Alguno es $\\pm\\infty$ → **singularidad de salto infinito**.
 
-En este nivel, responde con un código: $\\mathbf{1}$ = evitable, $\\mathbf{2}$ = salto, $\\mathbf{3}$ = infinita.
+### Código de respuestas de este nivel
+
+Responde con un número:
+- $\\mathbf{1}$ = evitable
+- $\\mathbf{2}$ = salto finito
+- $\\mathbf{3}$ = singularidad de salto infinito
+
+Puedes consultar este código en el enunciado de cada ejercicio.
 `,
   [
     {
       prompt:
-        "$f(x)=\\dfrac{x^2-9}{x-3}$ en $x=3$ (no definida ahí). Tipo de discontinuidad (1, 2 o 3):",
+        "$f(x)=\\dfrac{x^2-9}{x-3}$ en $x=3$ (no definida ahí). Tipo (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 1,
-      solution: "El límite existe ($6$) pero $f(3)$ no está definido: evitable. Respuesta: $1.00$.",
+      solution: "El límite existe ($6$) pero $f(3)$ no está definido: discontinuidad evitable. Respuesta: $1.00$.",
     },
     {
       prompt:
-        "$f(x)=x$ si $x<0$, $f(x)=x+3$ si $x\\geq 0$. Tipo de discontinuidad en $x=0$ (1, 2 o 3):",
+        "$f(x)=x$ si $x<0$, $f(x)=x+3$ si $x\\geq 0$. Tipo en $x=0$ (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 2,
-      solution: "Límites laterales $0$ y $3$, distintos pero finitos: salto. Respuesta: $2.00$.",
+      solution: "Límites laterales $0$ y $3$, distintos pero finitos: salto finito. Respuesta: $2.00$.",
     },
     {
-      prompt: "$f(x)=\\dfrac{1}{(x-2)^2}$. Tipo de discontinuidad en $x=2$ (1, 2 o 3):",
+      prompt: "$f(x)=\\dfrac{1}{(x-2)^2}$ en $x=2$. Tipo (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 3,
-      solution: "Los límites laterales son $+\\infty$: discontinuidad infinita. Respuesta: $3.00$.",
+      solution: "Los límites laterales son $+\\infty$: singularidad de salto infinito. Respuesta: $3.00$.",
     },
     {
       prompt:
-        "$f(x)=x+2$ si $x\\neq 1$, $f(1)=100$. Tipo de discontinuidad en $x=1$ (1, 2 o 3):",
+        "$f(x)=x+2$ si $x\\neq 1$, $f(1)=100$. Tipo en $x=1$ (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 1,
       solution: "El límite existe ($3$) pero no coincide con $f(1)=100$: evitable. Respuesta: $1.00$.",
     },
     {
-      prompt: "$f(x)=1/x$. Tipo de discontinuidad en $x=0$ (1, 2 o 3):",
+      prompt: "$f(x)=1/x$ en $x=0$. Tipo (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 3,
-      solution: "Los laterales son $+\\infty$ y $-\\infty$: discontinuidad infinita. Respuesta: $3.00$.",
+      solution: "Los laterales son $+\\infty$ y $-\\infty$: singularidad de salto infinito. Respuesta: $3.00$.",
     },
   ],
 );
@@ -1264,10 +1276,10 @@ Después de simplificar, **vuelve a comprobar** si sigue habiendo indeterminaci�
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 2}\\dfrac{x^2-4}{(x-2)^2}$",
-      hint: "Tras simplificar una copia, sigue habiendo una división por algo que tiende a $0$; estudia ambos lados.",
-      answer: "Inf",
+      hint: "Tras simplificar una copia de $(x-2)$, estudia el signo del denominador por cada lado.",
+      answer: "No",
       solution:
-        "Simplificando, queda $\\dfrac{x+2}{x-2}$, que cerca de $x=2$ por ambos lados da $+\\infty$ (numerador positivo, denominador al cuadrado siempre positivo... pero aquí ya no está al cuadrado). Por la derecha $\\to+\\infty$ y por la izquierda $\\to-\\infty$; sin embargo el numerador original $(x-2)^2$ siempre positivo hace que el cociente completo sea $+\\infty$ por ambos lados. Respuesta: Inf.",
+        "Simplificando una copia: $\\dfrac{(x-2)(x+2)}{(x-2)^2}=\\dfrac{x+2}{x-2}$. Cerca de $2$ el numerador tiende a $4>0$; el denominador $(x-2)$ tiende a $0^+$ por la derecha (dando $+\\infty$) y a $0^-$ por la izquierda (dando $-\\infty$). Como los laterales no coinciden, el límite **no existe**. Respuesta: `No`.",
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{x^2}{x^3+x^2}$",
@@ -1392,7 +1404,7 @@ Esta técnica —acotar con desigualdades naturales del problema y aplicar sánd
       solution: "$\\dfrac{\\lfloor x\\rfloor}{x}+\\dfrac1x \\to 1+0=1$. Respuesta: $1.00$.",
     },
     {
-      prompt: "$\\displaystyle\\lim_{x\\to 0} x\\left\\lfloor\\dfrac{1}{x}\\right\\rfloor$ (para $x>0$, acercándose por la derecha)",
+      prompt: "$\\displaystyle\\lim_{x\\to 0^+} x\\left\\lfloor\\dfrac{1}{x}\\right\\rfloor$",
       hint: "Usa $\\frac{1}{x}-1 < \\lfloor 1/x \\rfloor \\leq \\frac1x$ y multiplica por $x>0$.",
       answer: 1,
       solution: "Multiplicando la desigualdad por $x>0$: $1-x < x\\lfloor1/x\\rfloor \\leq 1$, y ambas cotas tienden a $1$. Respuesta: $1.00$.",
@@ -1421,7 +1433,7 @@ Todas las técnicas que aprendiste (dividir entre la mayor potencia, comparar gr
 
 ### Una diferencia importante
 
-Como $n$ solo toma valores enteros positivos, **no existen los límites laterales**; solo tiene sentido $n\\to\\infty$.
+Como $n$ solo toma valores enteros positivos, **no existen los límites laterales**; solo tiene sentido $n\\to\\infty$. Esto nos permite saber a qué número se acercan los términos de una sucesión infinita y predecir su comportamiento.
 `,
   [
     {
@@ -2109,10 +2121,10 @@ Has recorrido un camino largo: desde "mirar tablas de valores" hasta dominar ind
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 2}\\dfrac{x^3-x^2-4x+4}{x-2}$",
-      hint: "Factoriza el numerador agrupando o probando que $x=2$ es raíz.",
-      answer: 3,
+      hint: "Comprueba que $x=2$ es raíz del numerador y factorízalo.",
+      answer: 4,
       solution:
-        "El numerador se factoriza como $(x-2)(x^2+x-2)=(x-2)(x-1)(x+2)$. Simplificando: $(x-1)(x+2)\\to(1)(4)=... $ revisa con cuidado: en $x=2$, $(x-1)(x+2)=1\\cdot4=4$. Atención: el resultado correcto tras simplificar es $4.00$.",
+        "Como $x=2$ anula el numerador, podemos factorizarlo por $(x-2)$: $x^3-x^2-4x+4=(x-2)(x^2+x-2)=(x-2)(x-1)(x+2)$. Simplificando el $(x-2)$: queda $(x-1)(x+2)$, y sustituyendo $x=2$: $(2-1)(2+2)=1\\cdot 4=4$. Respuesta: $4.00$.",
     },
     {
       prompt: "$\\displaystyle\\lim_{x\\to 1}\\dfrac{\\sqrt{x+3}-2}{\\sqrt[3]{x}-1}$",
@@ -2154,13 +2166,6 @@ Has recorrido un camino largo: desde "mirar tablas de valores" hasta dominar ind
         "$f(x)=\\dfrac{x^2-1}{x-1}$ si $x\\neq1$, $f(x)=k$ si $x=1$. ¿Qué valor de $k$ hace que $f$ sea continua en $x=1$?",
       answer: 2,
       solution: "El límite simplificado es $x+1\\to2$, así que $k=2$ para que coincida. Respuesta: $2.00$.",
-    },
-    {
-      prompt: "$\\displaystyle\\lim_{x\\to 0}\\left(\\dfrac{\\sin x}{x}\\right)^{1/x^2}$",
-      hint: "Es forma $1^\\infty$: usa $\\sin x/x - 1 \\approx -x^2/6$ junto con la fórmula del número $e$ (puedes aceptar este dato sin demostrarlo).",
-      answer: 0.85,
-      solution:
-        "Usando que $\\dfrac{\\sin x}{x}-1\\to0$ con la rapidez de $-x^2/6$ y la fórmula del exponente $\\lim \\dfrac{1}{x^2}\\cdot\\left(\\dfrac{\\sin x}{x}-1\\right) = -\\dfrac16$, el límite es $e^{-1/6}\\approx0.85$. Respuesta: $0.85$.",
     },
   ],
 );
