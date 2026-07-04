@@ -585,53 +585,60 @@ Escribe:
 const lv21 = L(
   21,
   "Tipos de discontinuidad",
-  "Evitable, de salto e infinita",
+  "Evitable, salto finito y singularidad de salto infinito",
   `
 ### Tres "formas" de fallar la continuidad
 
 1. **Discontinuidad evitable**: el límite **existe**, pero no coincide con $f(a)$, o $f(a)$ no está definido. Ejemplo: $\\dfrac{x^2-1}{x-1}$ en $x=1$.
 
-2. **Discontinuidad de salto**: los límites laterales **existen pero son distintos**.
+2. **Discontinuidad de salto finito**: los límites laterales **existen y son finitos**, pero **distintos entre sí**.
 
-3. **Discontinuidad infinita**: al menos un límite lateral es $\\pm\\infty$.
+3. **Singularidad de salto infinito**: aunque no sea una discontinuidad en sí, se usa para referirse a cuando alguno de los límites laterales es $\\pm\\infty$.
 
 ### Cómo identificarlas
 
 Calcula los límites laterales:
 - Ambos finitos e **iguales** entre sí pero distintos de $f(a)$ (o $f(a)$ no existe) → **evitable**.
-- Ambos finitos pero **distintos entre sí** → **salto**.
-- Alguno es $\\pm\\infty$ → **infinita**.
+- Ambos finitos pero **distintos entre sí** → **salto finito**.
+- Alguno es $\\pm\\infty$ → **singularidad de salto infinito**.
 
-En este nivel, responde con un código: $\\mathbf{1}$ = evitable, $\\mathbf{2}$ = salto, $\\mathbf{3}$ = infinita.
+### Código de respuestas de este nivel
+
+Responde con un número:
+- $\\mathbf{1}$ = evitable
+- $\\mathbf{2}$ = salto finito
+- $\\mathbf{3}$ = singularidad de salto infinito
+
+Puedes consultar este código en el enunciado de cada ejercicio.
 `,
   [
     {
       prompt:
-        "$f(x)=\\dfrac{x^2-9}{x-3}$ en $x=3$ (no definida ahí). Tipo de discontinuidad (1, 2 o 3):",
+        "$f(x)=\\dfrac{x^2-9}{x-3}$ en $x=3$ (no definida ahí). Tipo (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 1,
-      solution: "El límite existe ($6$) pero $f(3)$ no está definido: evitable. Respuesta: $1.00$.",
+      solution: "El límite existe ($6$) pero $f(3)$ no está definido: discontinuidad evitable. Respuesta: $1.00$.",
     },
     {
       prompt:
-        "$f(x)=x$ si $x<0$, $f(x)=x+3$ si $x\\geq 0$. Tipo de discontinuidad en $x=0$ (1, 2 o 3):",
+        "$f(x)=x$ si $x<0$, $f(x)=x+3$ si $x\\geq 0$. Tipo en $x=0$ (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 2,
-      solution: "Límites laterales $0$ y $3$, distintos pero finitos: salto. Respuesta: $2.00$.",
+      solution: "Límites laterales $0$ y $3$, distintos pero finitos: salto finito. Respuesta: $2.00$.",
     },
     {
-      prompt: "$f(x)=\\dfrac{1}{(x-2)^2}$. Tipo de discontinuidad en $x=2$ (1, 2 o 3):",
+      prompt: "$f(x)=\\dfrac{1}{(x-2)^2}$ en $x=2$. Tipo (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 3,
-      solution: "Los límites laterales son $+\\infty$: discontinuidad infinita. Respuesta: $3.00$.",
+      solution: "Los límites laterales son $+\\infty$: singularidad de salto infinito. Respuesta: $3.00$.",
     },
     {
       prompt:
-        "$f(x)=x+2$ si $x\\neq 1$, $f(1)=100$. Tipo de discontinuidad en $x=1$ (1, 2 o 3):",
+        "$f(x)=x+2$ si $x\\neq 1$, $f(1)=100$. Tipo en $x=1$ (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 1,
       solution: "El límite existe ($3$) pero no coincide con $f(1)=100$: evitable. Respuesta: $1.00$.",
     },
     {
-      prompt: "$f(x)=1/x$. Tipo de discontinuidad en $x=0$ (1, 2 o 3):",
+      prompt: "$f(x)=1/x$ en $x=0$. Tipo (1 = evitable, 2 = salto finito, 3 = singularidad de salto infinito):",
       answer: 3,
-      solution: "Los laterales son $+\\infty$ y $-\\infty$: discontinuidad infinita. Respuesta: $3.00$.",
+      solution: "Los laterales son $+\\infty$ y $-\\infty$: singularidad de salto infinito. Respuesta: $3.00$.",
     },
   ],
 );
