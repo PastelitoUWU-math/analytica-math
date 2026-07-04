@@ -39,6 +39,35 @@ function BossPage() {
   const [exIdx, setExIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [tauntIdx, setTauntIdx] = useState(-1);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Música del jefe: suena en bucle durante la pelea, se detiene al ganar o salir.
+  useEffect(() => {
+    if (!boss.themeUrl) return;
+    if (phase !== "fight") {
+      const a = audioRef.current;
+      if (a) { a.pause(); a.currentTime = 0; }
+      return;
+    }
+    if (!audioRef.current) {
+      const a = new Audio(boss.themeUrl);
+      a.loop = true;
+      a.volume = 0.55;
+      audioRef.current = a;
+    }
+    audioRef.current.play().catch(() => { /* autoplay puede requerir interacción */ });
+    return () => {
+      const a = audioRef.current;
+      if (a) { a.pause(); a.currentTime = 0; }
+    };
+  }, [phase, boss.themeUrl]);
+
+  // Detén al desmontar (cambio de ruta)
+  useEffect(() => () => {
+    const a = audioRef.current;
+    if (a) { a.pause(); a.src = ""; }
+  }, []);
+
 
   const currentLine =
     phase === "intro"
