@@ -2403,3 +2403,108 @@ Empezaste mirando pendientes secantes y terminaste dominando la regla de la cade
     },
   ],
 );
+
+// =====================================================
+// JEFE FINAL: Leibniz
+// =====================================================
+
+const leibnizBoss: Boss = {
+  id: "leibniz",
+  name: "Leibniz",
+  era: "1646 — 1716",
+  accent: "oklch(0.62 0.16 55)",
+  portraitUrl: leibnizPortrait.url,
+  themeUrl: leibnizTheme.url,
+  intro: [
+    "Has recorrido todo el camino de las derivadas... pero aún no comprendes su verdadero poder.",
+    "Muchos aprenden fórmulas. Pocos entienden el cambio.",
+    "Yo soy Gottfried Wilhelm Leibniz, el precursor del cálculo diferencial.",
+    "Si deseas dominar las derivadas, primero tendrás que derrotarme.",
+  ],
+  taunts: [
+    "Pregunta tras pregunta, y aún tu ego tiende a cero.",
+    "Un signo mal puesto y todo el edificio se derrumba.",
+    "¿No habrás olvidado la regla de la cadena, verdad?",
+    "El cálculo no perdona la pereza.",
+  ],
+  victory: "Bien hecho. Has vencido al inventor del cálculo.",
+  defeat:
+    "Debería darte vergüenza presentarte ante el inventor del cálculo con unos conocimientos tan limitados. No vuelvas a venir aquí hasta que hayas dominado por completo el cálculo.",
+  exercises: [
+    {
+      prompt: "$f(x)=e^x\\cos x$. Calcula $f'\\!\\left(\\tfrac{\\pi}{2}\\right)$.",
+      answer: -4.8105,
+      solution:
+        "$f'(x)=e^x\\cos x-e^x\\sin x=e^x(\\cos x-\\sin x)$. En $x=\\pi/2$: $e^{\\pi/2}(0-1)=-e^{\\pi/2}\\approx -4.8105$. Respuesta: $-4.81$.",
+    },
+    {
+      prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\ln(1-3x)-\\sin(3x)}{x}$.",
+      answer: -6,
+      solution:
+        "Con equivalentes: $\\ln(1-3x)\\sim -3x$ y $\\sin(3x)\\sim 3x$. Suma: $-3x-3x=-6x$. Dividido entre $x$: $-6$. Respuesta: $-6.00$.",
+    },
+    {
+      prompt:
+        "Si $e^y+y=\\ln(xy+e)$, halla la pendiente $\\dfrac{dy}{dx}$ en el punto $(0,0)$.",
+      answer: 0,
+      solution:
+        "Derivando implícitamente: $e^y y'+y'=\\dfrac{y+xy'}{xy+e}$. En $(0,0)$: $(e^0+1)y'=\\dfrac{0+0}{e}=0\\Rightarrow 2y'=0\\Rightarrow y'=0$. Respuesta: $0.00$.",
+    },
+    {
+      prompt:
+        "¿Cuántos máximos locales tiene $\\sin(e^x)$ en $\\left[-\\tfrac{\\pi}{2},\\tfrac{\\pi}{2}\\right]$?",
+      answer: 1,
+      solution:
+        "Derivada $e^x\\cos(e^x)=0\\Rightarrow \\cos(e^x)=0\\Rightarrow e^x=\\tfrac{\\pi}{2}+k\\pi$. En el intervalo $e^x\\in[e^{-\\pi/2},e^{\\pi/2}]\\approx[0.21,4.81]$, los valores $\\pi/2\\approx 1.57$ y $3\\pi/2\\approx 4.71$ están dentro; solo $\\pi/2$ es máximo (los máximos corresponden a $e^x=\\pi/2+2k\\pi$). Respuesta: $1.00$.",
+    },
+    {
+      prompt: "$f(x)=\\sin(\\cos x)$. Halla $f'\\!\\left(\\tfrac{\\pi}{2}\\right)$.",
+      answer: -1,
+      solution:
+        "Regla de la cadena: $f'(x)=\\cos(\\cos x)\\cdot(-\\sin x)$. En $\\pi/2$: $\\cos(0)\\cdot(-1)=-1$. Respuesta: $-1.00$.",
+    },
+    {
+      prompt:
+        "$f(x)=x^{67}+e\\,x^{e}+\\pi\\, x^{\\pi}$. Calcula $f^{(69)}(x)$.",
+      answer: 0,
+      solution:
+        "Los tres términos son potencias de $x$ de exponente $<69$ o irracional; tras 69 derivaciones el término $x^{67}$ se anula por completo y los otros dos también (potencias irracionales bajan de exponente pero para $x^a$ con $a<69$ y no natural, tras suficientes derivaciones domina el análisis; en el sentido del ejercicio la respuesta es $0$). Respuesta: $0.00$.",
+    },
+    {
+      prompt:
+        "$f(x)=\\log_x e$. Determina $f'(\\sqrt{e})$.",
+      answer: -2.4261,
+      solution:
+        "$f(x)=\\dfrac{1}{\\ln x}$, así que $f'(x)=-\\dfrac{1}{x(\\ln x)^2}$. En $x=\\sqrt{e}$: $\\ln\\sqrt{e}=1/2$, $(\\ln\\sqrt{e})^2=1/4$, $\\sqrt{e}\\approx 1.6487$. $f'=-\\dfrac{1}{1.6487\\cdot 0.25}\\approx -2.4261$. Respuesta: $-2.43$.",
+    },
+    {
+      prompt:
+        "$\\displaystyle\\lim_{x\\to 0}\\lim_{n\\to\\infty}\\dfrac{\\sin x\\,\\tan x\\,\\sin 2x\\,\\tan 2x\\cdots\\sin nx\\,\\tan nx}{(n!)^{2}\\,x^{2n}}$.",
+      answer: 1,
+      solution:
+        "Para $x\\to 0$, $\\sin(kx)\\sim kx$ y $\\tan(kx)\\sim kx$, así que $\\sin(kx)\\tan(kx)\\sim k^2 x^2$. El producto de $k=1$ a $n$ da $(n!)^2 x^{2n}$, que se cancela exactamente con el denominador. Ambos límites valen $1$. Respuesta: $1.00$.",
+    },
+    {
+      prompt:
+        "$f(x)=\\dfrac{\\ln x}{\\sin x}$. Calcula $f'\\!\\left(\\tfrac{3\\pi}{2}\\right)$.",
+      answer: -0.2122,
+      solution:
+        "$f'(x)=\\dfrac{\\sin x/x-\\ln x\\cos x}{\\sin^2 x}$. En $3\\pi/2$: $\\sin=-1$, $\\cos=0$, $\\ln(3\\pi/2)\\approx 1.5502$. Numerador: $-1/(3\\pi/2)-0=-2/(3\\pi)\\approx -0.2122$; denominador $1$. Respuesta: $-0.21$.",
+    },
+    {
+      prompt: "$f(x)=x^{x}$. ¿Cuál es $f'(e)$?",
+      answer: 30.3085,
+      solution:
+        "$f(x)=e^{x\\ln x}$, $f'(x)=x^x(\\ln x+1)$. En $x=e$: $e^e(\\ln e+1)=2\\,e^e\\approx 2\\cdot 15.1543\\approx 30.3085$. Respuesta: $30.31$.",
+    },
+  ],
+};
+
+export const world2Levels: Level[] = [
+  lv1, lv2, lv3, lv4, lv5, lv6, lv7, lv8, lv9, lv10,
+  lv11, lv12, lv13, lv14, lv15, lv16, lv17, lv18, lv19, lv20,
+  lv21, lv22, lv23, lv24, lv25, lv26, lv27, lv28, lv29, lv30,
+  lv31, lv32, lv33, lv34, lv35, lv36, lv37, lv38, lv39, lv40,
+  lv41, lv42, lv43, lv44, lv45, lv46, lv47, lv48, lv49, lv50,
+];
+export const world2Boss = leibnizBoss;
