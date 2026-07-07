@@ -34,10 +34,11 @@ function BossPage() {
   const boss = world.boss!;
   const navigate = useNavigate();
 
-  const [phase, setPhase] = useState<"intro" | "fight" | "win">("intro");
+  const [phase, setPhase] = useState<"intro" | "fight" | "win" | "lose">("intro");
   const [introLine, setIntroLine] = useState(0);
   const [exIdx, setExIdx] = useState(0);
   const [score, setScore] = useState(0);
+  const [fails, setFails] = useState(0);
   const [tauntIdx, setTauntIdx] = useState(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
