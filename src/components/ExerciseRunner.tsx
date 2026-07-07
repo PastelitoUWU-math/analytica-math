@@ -96,7 +96,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
         >
           Comprobar
         </button>
-        {status !== "correct" && status !== "revealed" && progress.boosts.skip > 0 && (
+        {!bossMode && status !== "correct" && status !== "revealed" && progress.boosts.skip > 0 && (
           <button
             type="button"
             onClick={useSkip}
@@ -117,7 +117,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
 
       {status === "wrong" && (
         <div className="mt-4 p-3 rounded border border-destructive/40 bg-destructive/5 text-destructive text-sm">
-          No es correcto. Revisa los cálculos. Te quedan {5 - attempts} intentos antes de que te revele la solución.
+          No es correcto. Te quedan {(bossMode ? 2 : 5) - attempts} intento(s) antes de que te revele la solución.
         </div>
       )}
 
