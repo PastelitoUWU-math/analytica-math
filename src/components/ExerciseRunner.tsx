@@ -9,10 +9,11 @@ type Props = {
   exercise: Exercise;
   index: number;
   total: number;
+  bossMode?: boolean;
   onComplete: (result: { correct: boolean; revealed: boolean; attempts: number }) => void;
 };
 
-export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
+export function ExerciseRunner({ exercise, index, total, bossMode = false, onComplete }: Props) {
   const [input, setInput] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState<"idle" | "correct" | "wrong" | "revealed">("idle");
@@ -30,7 +31,8 @@ export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
     }
     const next = attempts + 1;
     setAttempts(next);
-    if (next >= 5) {
+    const maxAttempts = bossMode ? 2 : 5;
+    if (next >= maxAttempts) {
       setStatus("revealed");
       sfx.reveal();
     } else {
@@ -52,11 +54,13 @@ export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
         <span className="text-xs uppercase tracking-widest text-muted-foreground">
           Ejercicio {index + 1} de {total}
         </span>
-        <span className="text-xs text-muted-foreground">Intentos: {attempts}/5</span>
+        <span className="text-xs text-muted-foreground">
+          Intentos: {attempts}/{bossMode ? 2 : 5}
+        </span>
       </div>
       <Rich source={exercise.prompt} className="text-lg" />
 
-      {exercise.hint && (showHint || progress.boosts.hint > 0) && (
+      {!bossMode && exercise.hint && (showHint || progress.boosts.hint > 0) && (
         <div className="mt-3">
           {showHint ? (
             <div className="text-sm bg-secondary/60 border border-border/60 rounded p-3">
@@ -92,7 +96,7 @@ export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
         >
           Comprobar
         </button>
-        {status !== "correct" && status !== "revealed" && progress.boosts.skip > 0 && (
+        {!bossMode && status !== "correct" && status !== "revealed" && progress.boosts.skip > 0 && (
           <button
             type="button"
             onClick={useSkip}
@@ -113,7 +117,7 @@ export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
 
       {status === "wrong" && (
         <div className="mt-4 p-3 rounded border border-destructive/40 bg-destructive/5 text-destructive text-sm">
-          No es correcto. Revisa los cálculos. Te quedan {5 - attempts} intentos antes de que te revele la solución.
+          No es correcto. Te quedan {(bossMode ? 2 : 5) - attempts} intento(s) antes de que te revele la solución.
         </div>
       )}
 

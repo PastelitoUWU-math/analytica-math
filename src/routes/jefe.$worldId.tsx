@@ -34,10 +34,11 @@ function BossPage() {
   const boss = world.boss!;
   const navigate = useNavigate();
 
-  const [phase, setPhase] = useState<"intro" | "fight" | "win">("intro");
+  const [phase, setPhase] = useState<"intro" | "fight" | "win" | "lose">("intro");
   const [introLine, setIntroLine] = useState(0);
   const [exIdx, setExIdx] = useState(0);
   const [score, setScore] = useState(0);
+  const [fails, setFails] = useState(0);
   const [tauntIdx, setTauntIdx] = useState(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -74,9 +75,11 @@ function BossPage() {
       ? boss.intro[introLine]
       : phase === "win"
         ? boss.defeat
-        : tauntIdx >= 0
-          ? boss.taunts[tauntIdx % boss.taunts.length]
-          : `Pregunta ${exIdx + 1} de ${boss.exercises.length}. Resuélvela si te atreves.`;
+        : phase === "lose"
+          ? boss.victory
+          : tauntIdx >= 0
+            ? boss.taunts[tauntIdx % boss.taunts.length]
+            : `Pregunta ${exIdx + 1} de ${boss.exercises.length}. Resuélvela si te atreves. (Fallos: ${fails}/3)`;
 
   return (
     <Shell>
@@ -157,16 +160,27 @@ function BossPage() {
                   exercise={boss.exercises[exIdx]}
                   index={exIdx}
                   total={boss.exercises.length}
+                  bossMode
                   onComplete={({ correct }) => {
                     const earned = correct ? 20 : 0;
-                    setScore((s) => s + earned);
-                    if (!correct) setTauntIdx((t) => t + 1);
-                    else setTauntIdx(-1);
+                    const newScore = score + earned;
+                    setScore(newScore);
+                    const newFails = correct ? fails : fails + 1;
+                    if (!correct) {
+                      setFails(newFails);
+                      setTauntIdx((t) => t + 1);
+                    } else {
+                      setTauntIdx(-1);
+                    }
+                    if (newFails >= 3) {
+                      setPhase("lose");
+                      return;
+                    }
                     if (exIdx + 1 < boss.exercises.length) {
                       setExIdx(exIdx + 1);
                     } else {
                       const bonus = 100;
-                      const total = score + earned + bonus;
+                      const total = newScore + bonus;
                       defeatBoss(worldId, total);
                       setScore(total);
                       setPhase("win");
@@ -196,6 +210,38 @@ function BossPage() {
                   >
                     Gastar puntos en la tienda
                   </button>
+                </div>
+              </div>
+            )}
+
+            {phase === "lose" && (
+              <div className="mt-6 bg-card border border-destructive/40 rounded-lg p-6 text-center">
+                <div className="text-xs uppercase tracking-widest text-destructive mb-1">Derrota</div>
+                <h2 className="text-2xl font-display">Has sido vencido</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Fallaste 3 ejercicios. {boss.name} conserva su corona. Vuelve cuando estés preparado.
+                </p>
+                <div className="mt-5 flex gap-3 justify-center">
+                  <button
+                    onClick={() => {
+                      setPhase("intro");
+                      setIntroLine(0);
+                      setExIdx(0);
+                      setScore(0);
+                      setFails(0);
+                      setTauntIdx(-1);
+                    }}
+                    className="px-5 py-2.5 rounded-md bg-foreground text-background"
+                  >
+                    Reintentar
+                  </button>
+                  <Link
+                    to="/mundo/$worldId"
+                    params={{ worldId }}
+                    className="px-5 py-2.5 rounded-md border border-border"
+                  >
+                    Volver al mundo
+                  </Link>
                 </div>
               </div>
             )}
