@@ -1,5 +1,6 @@
 import type { World } from "./types";
 import { world1Levels, world1Boss } from "./world1";
+import { world2Levels, world2Boss } from "./world2";
 
 export const WORLDS: World[] = [
   {
@@ -13,28 +14,18 @@ export const WORLDS: World[] = [
     boss: world1Boss,
   },
   {
-    id: "continuidad",
-    title: "Mundo II — Continuidad",
-    subtitle: "Funciones sin saltos",
-    summary:
-      "Definición rigurosa de continuidad, tipos de discontinuidades, teoremas de Bolzano y Weierstrass. Jefe: Weierstrass.",
-    available: false,
-    levels: [],
-    boss: null,
-  },
-  {
     id: "derivadas",
-    title: "Mundo III — Derivadas",
+    title: "Mundo II — Derivadas",
     subtitle: "La tasa de cambio",
     summary:
       "Desde la pendiente de la tangente hasta las reglas de derivación, regla de la cadena, derivadas implícitas y aplicaciones. Jefe: Leibniz.",
-    available: false,
-    levels: [],
-    boss: null,
+    available: true,
+    levels: world2Levels,
+    boss: world2Boss,
   },
   {
     id: "integrales",
-    title: "Mundo IV — Integrales",
+    title: "Mundo III — Integrales",
     subtitle: "Sumar lo infinitamente pequeño",
     summary:
       "La integral definida y el teorema fundamental, técnicas de integración y aplicaciones. Jefe: Newton.",
@@ -44,7 +35,7 @@ export const WORLDS: World[] = [
   },
   {
     id: "series",
-    title: "Mundo V — Series",
+    title: "Mundo IV — Series",
     subtitle: "Sumas infinitas",
     summary:
       "Convergencia, criterios, series de potencias y de Taylor. Jefe: Euler.",

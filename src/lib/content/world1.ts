@@ -772,11 +772,10 @@ export const world1Boss = {
     },
     {
       prompt:
-        "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\ln(1+3x)-\\sin(3x)}{x^2}$",
-      hint: "Usa $\\ln(1+u)\\sim u-u^2/2$ y $\\sin u\\sim u$ hasta orden $2$.",
-      answer: -4.5,
+        "$\\displaystyle\\lim_{x\\to 0}\\lim_{n\\to\\infty}\\dfrac{\\sin x\\,\\tan x\\,\\sin 2x\\,\\tan 2x\\cdots\\sin nx\\,\\tan nx}{(n!)^{2}\\,x^{2n}}$",
+      answer: 1,
       solution:
-        "$\\ln(1+3x)=3x-\\dfrac{(3x)^2}{2}+O(x^3)=3x-\\dfrac{9x^2}{2}+\\cdots$; $\\sin(3x)=3x+O(x^3)$. Restando: $-\\dfrac{9x^2}{2}+O(x^3)$. Dividiendo entre $x^2$: $-\\dfrac{9}{2}=-4.5$. Respuesta: $-4.50$.",
+        "Para $x\\to 0$, $\\sin(kx)\\sim kx$ y $\\tan(kx)\\sim kx$, luego $\\sin(kx)\\tan(kx)\\sim k^{2}x^{2}$. El producto para $k=1,\\ldots,n$ es $(n!)^{2}x^{2n}$, que se cancela con el denominador. Los dos límites valen $1$. Respuesta: $1.00$.",
     },
     {
       prompt:
