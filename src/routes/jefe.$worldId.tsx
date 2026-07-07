@@ -72,8 +72,6 @@ function BossPage() {
 
   const currentLine =
     phase === "intro"
-  const currentLine =
-    phase === "intro"
       ? boss.intro[introLine]
       : phase === "win"
         ? boss.defeat
