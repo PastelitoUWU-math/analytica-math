@@ -9,10 +9,11 @@ type Props = {
   exercise: Exercise;
   index: number;
   total: number;
+  bossMode?: boolean;
   onComplete: (result: { correct: boolean; revealed: boolean; attempts: number }) => void;
 };
 
-export function ExerciseRunner({ exercise, index, total, onComplete }: Props) {
+export function ExerciseRunner({ exercise, index, total, bossMode = false, onComplete }: Props) {
   const [input, setInput] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState<"idle" | "correct" | "wrong" | "revealed">("idle");
