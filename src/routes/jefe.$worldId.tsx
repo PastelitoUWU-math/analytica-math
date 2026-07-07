@@ -72,12 +72,16 @@ function BossPage() {
 
   const currentLine =
     phase === "intro"
+  const currentLine =
+    phase === "intro"
       ? boss.intro[introLine]
       : phase === "win"
         ? boss.defeat
-        : tauntIdx >= 0
-          ? boss.taunts[tauntIdx % boss.taunts.length]
-          : `Pregunta ${exIdx + 1} de ${boss.exercises.length}. Resuélvela si te atreves.`;
+        : phase === "lose"
+          ? boss.victory
+          : tauntIdx >= 0
+            ? boss.taunts[tauntIdx % boss.taunts.length]
+            : `Pregunta ${exIdx + 1} de ${boss.exercises.length}. Resuélvela si te atreves. (Fallos: ${fails}/3)`;
 
   return (
     <Shell>
