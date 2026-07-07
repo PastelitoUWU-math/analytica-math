@@ -31,7 +31,8 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
     }
     const next = attempts + 1;
     setAttempts(next);
-    if (next >= 5) {
+    const maxAttempts = bossMode ? 2 : 5;
+    if (next >= maxAttempts) {
       setStatus("revealed");
       sfx.reveal();
     } else {
@@ -53,11 +54,13 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
         <span className="text-xs uppercase tracking-widest text-muted-foreground">
           Ejercicio {index + 1} de {total}
         </span>
-        <span className="text-xs text-muted-foreground">Intentos: {attempts}/5</span>
+        <span className="text-xs text-muted-foreground">
+          Intentos: {attempts}/{bossMode ? 2 : 5}
+        </span>
       </div>
       <Rich source={exercise.prompt} className="text-lg" />
 
-      {exercise.hint && (showHint || progress.boosts.hint > 0) && (
+      {!bossMode && exercise.hint && (showHint || progress.boosts.hint > 0) && (
         <div className="mt-3">
           {showHint ? (
             <div className="text-sm bg-secondary/60 border border-border/60 rounded p-3">
