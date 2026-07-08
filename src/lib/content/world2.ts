@@ -2121,45 +2121,60 @@ Si $\\dfrac{dr}{dt}=3\\,\\text{cm/s}$ y $r=5\\,\\text{cm}$ (usando $\\pi\\approx
 
 const lv45 = L(
   45,
-  "Problemas de optimización",
-  "Encontrar el máximo o el mínimo posible",
+  "Repaso: producto, cociente y cadena combinadas",
+  "Reconocer qué regla aplicar y en qué orden",
   `
-### Estrategia general
+### Un solo problema, varias reglas
 
-1. Escribe la cantidad que quieres optimizar como función de una variable.
-2. Usa cualquier restricción para eliminar variables extra.
-3. Deriva e iguala a $0$ para hallar puntos críticos.
-4. Verifica que sea máximo o mínimo (segunda derivada, o el criterio del nivel 37).
+Muchas derivadas del mundo real combinan **producto**, **cociente** y **cadena** en la misma expresión. La clave no es memorizar más fórmulas, sino identificar la estructura:
 
-### Ejemplo
+1. Mira la operación **más externa** (¿es un producto?, ¿un cociente?, ¿una potencia?, ¿una composición?).
+2. Aplica esa regla, tratando los "trozos" como bloques que luego derivarás con la regla que les toque.
+3. Repite hasta llegar a derivadas elementales.
 
-Un rectángulo tiene perímetro $20$. Maximiza su área. Si los lados son $x,y$: $2x+2y=20 \\Rightarrow y=10-x$. Área: $A(x)=x(10-x)=10x-x^2$. $A'(x)=10-2x=0\\Rightarrow x=5$. Como $A''(x)=-2<0$, es un máximo. El área máxima es $A(5)=25$, con $x=y=5$ (¡un cuadrado!).
+### Ejemplo guiado
+
+Deriva $g(x)=x^2\\sqrt{x^2+1}$.
+
+**Paso 1 — Estructura externa:** es un producto $u\\cdot v$ con $u=x^2$ y $v=\\sqrt{x^2+1}$.
+
+**Paso 2 — Regla del producto:** $g'=u'v+uv'$.
+
+- $u'=2x$.
+- $v=(x^2+1)^{1/2}$: aplicamos la **cadena** con exterior $t^{1/2}$ e interior $x^2+1$. $v'=\\tfrac12(x^2+1)^{-1/2}\\cdot 2x=\\dfrac{x}{\\sqrt{x^2+1}}$.
+
+**Paso 3 — Junta todo:**
+$$g'(x)=2x\\sqrt{x^2+1}+x^2\\cdot\\dfrac{x}{\\sqrt{x^2+1}}=\\dfrac{2x(x^2+1)+x^3}{\\sqrt{x^2+1}}=\\dfrac{3x^3+2x}{\\sqrt{x^2+1}}.$$
+
+### Consejo
+
+Cuando una expresión es un cociente cuya base o cuyo denominador es una composición, casi siempre es más rápido reescribirla como producto de potencias antes de derivar — o usar **derivación logarítmica** (nivel 46) si el exponente es variable.
 `,
   [
     {
-      prompt: "Rectángulo con perímetro $20$: ¿en qué valor de $x$ se maximiza el área?",
-      answer: 5,
-      solution: "$A'(x)=10-2x=0\\Rightarrow x=5$. Respuesta: $5.00$.",
+      prompt: "$g(x)=x^2\\sqrt{x^2+1}$. Halla $g'(1)$.",
+      answer: 3.54,
+      solution: "$g'(x)=\\dfrac{3x^3+2x}{\\sqrt{x^2+1}}$. En $x=1$: $\\dfrac{5}{\\sqrt 2}\\approx 3.54$. Respuesta: $3.54$.",
     },
     {
-      prompt: "Con el rectángulo anterior, ¿cuál es el área máxima?",
-      answer: 25,
-      solution: "$A(5)=5\\cdot5=25$. Respuesta: $25.00$.",
+      prompt: "$h(x)=\\dfrac{\\sin(2x)}{x^2+1}$. Halla $h'(0)$.",
+      answer: 2,
+      solution: "Cociente + cadena. $h'(x)=\\dfrac{2\\cos(2x)(x^2+1)-\\sin(2x)\\cdot 2x}{(x^2+1)^2}$. En $x=0$: $\\dfrac{2\\cdot 1\\cdot 1-0}{1}=2$. Respuesta: $2.00$.",
     },
     {
-      prompt: "Rectángulo con perímetro $40$: ¿en qué valor de $x$ se maximiza el área?",
-      answer: 10,
-      solution: "$y=20-x$, $A(x)=20x-x^2$, $A'(x)=20-2x=0\\Rightarrow x=10$. Respuesta: $10.00$.",
+      prompt: "$f(x)=e^{x}\\cdot\\ln(1+x^2)$. Halla $f'(0)$.",
+      answer: 0,
+      solution: "$f'=e^x\\ln(1+x^2)+e^x\\cdot\\dfrac{2x}{1+x^2}$. En $x=0$: $1\\cdot 0+1\\cdot 0=0$. Respuesta: $0.00$.",
     },
     {
-      prompt: "Dos números suman $16$ ($x+y=16$). ¿Qué valor de $x$ maximiza el producto $P=xy$?",
-      answer: 8,
-      solution: "$P(x)=16x-x^2$, $P'(x)=16-2x=0\\Rightarrow x=8$. Respuesta: $8.00$.",
+      prompt: "$p(x)=\\big(x+\\sqrt{x^2+1}\\big)^3$. Halla $p'(0)$.",
+      answer: 3,
+      solution: "Cadena: $p'=3(x+\\sqrt{x^2+1})^2\\cdot\\big(1+\\dfrac{x}{\\sqrt{x^2+1}}\\big)$. En $x=0$: $3\\cdot 1^2\\cdot 1=3$. Respuesta: $3.00$.",
     },
     {
-      prompt: "Con el ejercicio anterior, halla el producto máximo.",
-      answer: 64,
-      solution: "$P=8\\times8=64$. Respuesta: $64.00$.",
+      prompt: "$q(x)=\\dfrac{\\cos x}{1+\\sin x}$. Halla $q'(0)$.",
+      answer: -1,
+      solution: "$q'=\\dfrac{-\\sin x(1+\\sin x)-\\cos x\\cdot\\cos x}{(1+\\sin x)^2}$. En $x=0$: $\\dfrac{0-1}{1}=-1$. Respuesta: $-1.00$.",
     },
   ],
 );
