@@ -28,6 +28,28 @@ function WorldPage() {
   const progress = useProgress();
   const completed = progress.completed[worldId] ?? -1;
   const bossDone = progress.bossDefeated[worldId];
+  // Prerrequisito: haber vencido al jefe del mundo anterior.
+  const { WORLDS } = require("@/lib/content/worlds") as typeof import("@/lib/content/worlds");
+  const idx = WORLDS.findIndex((w) => w.id === worldId);
+  const prev = idx > 0 ? WORLDS[idx - 1] : null;
+  const prereqMet = !prev || progress.bossDefeated[prev.id];
+  if (!prereqMet) {
+    return (
+      <Shell>
+        <div className="max-w-2xl mx-auto px-6 py-16 text-center">
+          <div className="text-5xl">🔒</div>
+          <h1 className="text-2xl font-display tracking-tight mt-4">Mundo bloqueado</h1>
+          <p className="text-muted-foreground mt-2">
+            Debes vencer a <strong className="text-foreground">{prev!.boss?.name}</strong> en{" "}
+            <em>{prev!.title}</em> antes de acceder a este mundo.
+          </p>
+          <Link to="/mundos" className="inline-block mt-6 px-5 py-2.5 rounded-md bg-foreground text-background">
+            ← Volver a los mundos
+          </Link>
+        </div>
+      </Shell>
+    );
+  }
 
   return (
     <Shell>
