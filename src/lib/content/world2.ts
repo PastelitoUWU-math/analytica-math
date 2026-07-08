@@ -1501,44 +1501,56 @@ $f(x)=x^2$ en $a=2$: $f(2)=4$, $f'(2)=4$. Tangente: $y=4+4(x-2)=4x-4$.
 
 const lv32 = L(
   32,
-  "La recta normal",
-  "Perpendicular a la tangente",
+  "Aproximación lineal (linealización)",
+  "Usar la tangente para estimar valores cercanos",
   `
-### La ecuación de la normal
+### La idea
 
-La recta **normal** a $f$ en $x=a$ es perpendicular a la tangente en ese punto. Como pendientes perpendiculares son recíprocas y opuestas, su pendiente es $-\\dfrac{1}{f'(a)}$ (siempre que $f'(a)\\neq0$):
+Cerca de un punto $x=a$, la gráfica de $f$ se parece mucho a su recta tangente. Podemos usar esa recta para **estimar** $f(x)$ cuando $x$ está cerca de $a$, sin calcular la función exactamente:
 
-$$y - f(a) = -\\frac{1}{f'(a)}(x-a).$$
+$$f(x) \\approx L(x) = f(a) + f'(a)\\,(x-a).$$
+
+$L(x)$ es la **linealización** de $f$ en $a$. El error de la aproximación es pequeño cuando $x$ está cerca de $a$ (y crece cuando nos alejamos).
 
 ### Ejemplo
 
-$f(x)=x^2$ en $a=1$: $f(1)=1$, $f'(1)=2$, pendiente normal $=-\\tfrac12$. Normal: $y=1-\\tfrac12(x-1)$.
+Estimemos $\\sqrt{4.1}$ sin calculadora. Tomamos $f(x)=\\sqrt{x}$ y $a=4$ (porque $\\sqrt{4}=2$ es exacto y $4.1$ está cerca).
+
+$f'(x)=\\dfrac{1}{2\\sqrt{x}}$, así que $f'(4)=\\dfrac{1}{4}=0.25$.
+
+$$\\sqrt{4.1}\\approx f(4)+f'(4)(4.1-4)=2+0.25\\cdot 0.1=2.025.$$
+
+El valor real es $2.02485\\ldots$: la aproximación es excelente porque $4.1$ está muy cerca de $4$.
+
+### Notación con diferenciales
+
+A veces se escribe $\\Delta y\\approx f'(a)\\,\\Delta x$, o incluso $dy=f'(x)\\,dx$. Es la misma idea: pequeños cambios en $x$ producen cambios (aproximadamente) proporcionales a la derivada.
 `,
   [
     {
-      prompt: "$f(x)=x^2$ en $a=1$. Halla el valor de la recta normal en $x=3$.",
-      answer: 0,
-      solution: "Normal: $y=1.5-0.5x$. En $x=3$: $y=0$. Respuesta: $0.00$.",
+      prompt: "Con $f(x)=\\sqrt{x}$ y $a=4$, estima $\\sqrt{4.2}$ mediante linealización.",
+      answer: 2.05,
+      solution: "$L(x)=2+0.25(x-4)$. $L(4.2)=2+0.25\\cdot 0.2=2.05$. Respuesta: $2.05$.",
     },
     {
-      prompt: "$f(x)=x^3$ en $a=1$. Halla el valor de la recta normal en $x=4$.",
-      answer: 0,
-      solution: "$f'(1)=3$, pendiente normal $-1/3$. Normal: $y=1-\\tfrac13(x-1)$. En $x=4$: $y=0$. Respuesta: $0.00$.",
+      prompt: "Con $f(x)=x^3$ y $a=2$, estima $2.1^3$.",
+      answer: 9.2,
+      solution: "$f'(2)=12$, $L(x)=8+12(x-2)$. $L(2.1)=8+1.2=9.2$. Respuesta: $9.20$.",
     },
     {
-      prompt: "$f(x)=\\sqrt{x}$ en $a=4$. Halla el valor de la recta normal en $x=5$.",
-      answer: -2,
-      solution: "$f'(4)=0.25$, pendiente normal $-4$. Normal: $y=2-4(x-4)$. En $x=5$: $y=-2$. Respuesta: $-2.00$.",
+      prompt: "Con $f(x)=\\ln x$ y $a=1$, estima $\\ln(1.05)$.",
+      answer: 0.05,
+      solution: "$f'(1)=1$, $L(x)=0+1\\cdot(x-1)$. $L(1.05)=0.05$. Respuesta: $0.05$.",
     },
     {
-      prompt: "Pendiente de la recta normal a $f(x)=x^2$ en $x=2$.",
-      answer: -0.25,
-      solution: "$f'(2)=4$, pendiente normal $=-1/4=-0.25$. Respuesta: $-0.25$.",
+      prompt: "Con $f(x)=e^x$ y $a=0$, estima $e^{0.1}$.",
+      answer: 1.1,
+      solution: "$f'(0)=1$, $L(x)=1+x$. $L(0.1)=1.1$. Respuesta: $1.10$.",
     },
     {
-      prompt: "$f(x)=e^x$ en $a=0$. Halla el valor de la recta normal en $x=1$.",
-      answer: 0,
-      solution: "$f'(0)=1$, pendiente normal $-1$. Normal: $y=1-x$. En $x=1$: $y=0$. Respuesta: $0.00$.",
+      prompt: "Con $f(x)=\\sin x$ y $a=0$, estima $\\sin(0.02)$.",
+      answer: 0.02,
+      solution: "$f'(0)=\\cos 0=1$, $L(x)=x$. $L(0.02)=0.02$. Respuesta: $0.02$.",
     },
   ],
 );
