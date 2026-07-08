@@ -2427,9 +2427,9 @@ const leibnizBoss: Boss = {
     "¿No habrás olvidado la regla de la cadena, verdad?",
     "El cálculo no perdona la pereza.",
   ],
-  victory: "Bien hecho. Has vencido al inventor del cálculo.",
-  defeat:
+  victory:
     "Debería darte vergüenza presentarte ante el inventor del cálculo con unos conocimientos tan limitados. No vuelvas a venir aquí hasta que hayas dominado por completo el cálculo.",
+  defeat: "Bien hecho. Has vencido al inventor del cálculo.",
   exercises: [
     {
       prompt: "$f(x)=e^x\\cos x$. Calcula $f'\\!\\left(\\tfrac{\\pi}{2}\\right)$.",
