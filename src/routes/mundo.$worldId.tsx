@@ -29,7 +29,6 @@ function WorldPage() {
   const completed = progress.completed[worldId] ?? -1;
   const bossDone = progress.bossDefeated[worldId];
   // Prerrequisito: haber vencido al jefe del mundo anterior.
-  const { WORLDS } = require("@/lib/content/worlds") as typeof import("@/lib/content/worlds");
   const idx = WORLDS.findIndex((w) => w.id === worldId);
   const prev = idx > 0 ? WORLDS[idx - 1] : null;
   const prereqMet = !prev || progress.bossDefeated[prev.id];
