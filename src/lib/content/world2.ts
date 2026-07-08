@@ -715,7 +715,7 @@ const lv15 = L(
 
 $$\\frac{d}{dx}\\big[x^r\\big] = r\\,x^{r-1} \\qquad \\text{para cualquier número real } r.$$
 
-Ya viste el caso $r=\\tfrac12$ en el nivel 13 (con conjugado) y coincidió exactamente con esta fórmula. Una demostración completa para exponentes racionales usa la **derivación implícita** (nivel 28), pero por ahora aceptamos el resultado general y practicamos aplicándolo — igual que aceptaste $\\lim \\tfrac{\\sin x}{x}=1$ sin demostrarlo geométricamente cuando estudiaste límites.
+Ya viste el caso $r=\\tfrac12$ en el nivel 13 (con conjugado) y coincidió exactamente con esta fórmula. La demostración formal se consigue poniendo al número $e$ como base y derivando, usando técnicas más avanzadas como la regla de la cadena.
 
 ### Ejemplo
 
@@ -1501,44 +1501,56 @@ $f(x)=x^2$ en $a=2$: $f(2)=4$, $f'(2)=4$. Tangente: $y=4+4(x-2)=4x-4$.
 
 const lv32 = L(
   32,
-  "La recta normal",
-  "Perpendicular a la tangente",
+  "Aproximación lineal (linealización)",
+  "Usar la tangente para estimar valores cercanos",
   `
-### La ecuación de la normal
+### La idea
 
-La recta **normal** a $f$ en $x=a$ es perpendicular a la tangente en ese punto. Como pendientes perpendiculares son recíprocas y opuestas, su pendiente es $-\\dfrac{1}{f'(a)}$ (siempre que $f'(a)\\neq0$):
+Cerca de un punto $x=a$, la gráfica de $f$ se parece mucho a su recta tangente. Podemos usar esa recta para **estimar** $f(x)$ cuando $x$ está cerca de $a$, sin calcular la función exactamente:
 
-$$y - f(a) = -\\frac{1}{f'(a)}(x-a).$$
+$$f(x) \\approx L(x) = f(a) + f'(a)\\,(x-a).$$
+
+$L(x)$ es la **linealización** de $f$ en $a$. El error de la aproximación es pequeño cuando $x$ está cerca de $a$ (y crece cuando nos alejamos).
 
 ### Ejemplo
 
-$f(x)=x^2$ en $a=1$: $f(1)=1$, $f'(1)=2$, pendiente normal $=-\\tfrac12$. Normal: $y=1-\\tfrac12(x-1)$.
+Estimemos $\\sqrt{4.1}$ sin calculadora. Tomamos $f(x)=\\sqrt{x}$ y $a=4$ (porque $\\sqrt{4}=2$ es exacto y $4.1$ está cerca).
+
+$f'(x)=\\dfrac{1}{2\\sqrt{x}}$, así que $f'(4)=\\dfrac{1}{4}=0.25$.
+
+$$\\sqrt{4.1}\\approx f(4)+f'(4)(4.1-4)=2+0.25\\cdot 0.1=2.025.$$
+
+El valor real es $2.02485\\ldots$: la aproximación es excelente porque $4.1$ está muy cerca de $4$.
+
+### Notación con diferenciales
+
+A veces se escribe $\\Delta y\\approx f'(a)\\,\\Delta x$, o incluso $dy=f'(x)\\,dx$. Es la misma idea: pequeños cambios en $x$ producen cambios (aproximadamente) proporcionales a la derivada.
 `,
   [
     {
-      prompt: "$f(x)=x^2$ en $a=1$. Halla el valor de la recta normal en $x=3$.",
-      answer: 0,
-      solution: "Normal: $y=1.5-0.5x$. En $x=3$: $y=0$. Respuesta: $0.00$.",
+      prompt: "Con $f(x)=\\sqrt{x}$ y $a=4$, estima $\\sqrt{4.2}$ mediante linealización.",
+      answer: 2.05,
+      solution: "$L(x)=2+0.25(x-4)$. $L(4.2)=2+0.25\\cdot 0.2=2.05$. Respuesta: $2.05$.",
     },
     {
-      prompt: "$f(x)=x^3$ en $a=1$. Halla el valor de la recta normal en $x=4$.",
-      answer: 0,
-      solution: "$f'(1)=3$, pendiente normal $-1/3$. Normal: $y=1-\\tfrac13(x-1)$. En $x=4$: $y=0$. Respuesta: $0.00$.",
+      prompt: "Con $f(x)=x^3$ y $a=2$, estima $2.1^3$.",
+      answer: 9.2,
+      solution: "$f'(2)=12$, $L(x)=8+12(x-2)$. $L(2.1)=8+1.2=9.2$. Respuesta: $9.20$.",
     },
     {
-      prompt: "$f(x)=\\sqrt{x}$ en $a=4$. Halla el valor de la recta normal en $x=5$.",
-      answer: -2,
-      solution: "$f'(4)=0.25$, pendiente normal $-4$. Normal: $y=2-4(x-4)$. En $x=5$: $y=-2$. Respuesta: $-2.00$.",
+      prompt: "Con $f(x)=\\ln x$ y $a=1$, estima $\\ln(1.05)$.",
+      answer: 0.05,
+      solution: "$f'(1)=1$, $L(x)=0+1\\cdot(x-1)$. $L(1.05)=0.05$. Respuesta: $0.05$.",
     },
     {
-      prompt: "Pendiente de la recta normal a $f(x)=x^2$ en $x=2$.",
-      answer: -0.25,
-      solution: "$f'(2)=4$, pendiente normal $=-1/4=-0.25$. Respuesta: $-0.25$.",
+      prompt: "Con $f(x)=e^x$ y $a=0$, estima $e^{0.1}$.",
+      answer: 1.1,
+      solution: "$f'(0)=1$, $L(x)=1+x$. $L(0.1)=1.1$. Respuesta: $1.10$.",
     },
     {
-      prompt: "$f(x)=e^x$ en $a=0$. Halla el valor de la recta normal en $x=1$.",
-      answer: 0,
-      solution: "$f'(0)=1$, pendiente normal $-1$. Normal: $y=1-x$. En $x=1$: $y=0$. Respuesta: $0.00$.",
+      prompt: "Con $f(x)=\\sin x$ y $a=0$, estima $\\sin(0.02)$.",
+      answer: 0.02,
+      solution: "$f'(0)=\\cos 0=1$, $L(x)=x$. $L(0.02)=0.02$. Respuesta: $0.02$.",
     },
   ],
 );
@@ -2109,45 +2121,60 @@ Si $\\dfrac{dr}{dt}=3\\,\\text{cm/s}$ y $r=5\\,\\text{cm}$ (usando $\\pi\\approx
 
 const lv45 = L(
   45,
-  "Problemas de optimización",
-  "Encontrar el máximo o el mínimo posible",
+  "Repaso: producto, cociente y cadena combinadas",
+  "Reconocer qué regla aplicar y en qué orden",
   `
-### Estrategia general
+### Un solo problema, varias reglas
 
-1. Escribe la cantidad que quieres optimizar como función de una variable.
-2. Usa cualquier restricción para eliminar variables extra.
-3. Deriva e iguala a $0$ para hallar puntos críticos.
-4. Verifica que sea máximo o mínimo (segunda derivada, o el criterio del nivel 37).
+Muchas derivadas del mundo real combinan **producto**, **cociente** y **cadena** en la misma expresión. La clave no es memorizar más fórmulas, sino identificar la estructura:
 
-### Ejemplo
+1. Mira la operación **más externa** (¿es un producto?, ¿un cociente?, ¿una potencia?, ¿una composición?).
+2. Aplica esa regla, tratando los "trozos" como bloques que luego derivarás con la regla que les toque.
+3. Repite hasta llegar a derivadas elementales.
 
-Un rectángulo tiene perímetro $20$. Maximiza su área. Si los lados son $x,y$: $2x+2y=20 \\Rightarrow y=10-x$. Área: $A(x)=x(10-x)=10x-x^2$. $A'(x)=10-2x=0\\Rightarrow x=5$. Como $A''(x)=-2<0$, es un máximo. El área máxima es $A(5)=25$, con $x=y=5$ (¡un cuadrado!).
+### Ejemplo guiado
+
+Deriva $g(x)=x^2\\sqrt{x^2+1}$.
+
+**Paso 1 — Estructura externa:** es un producto $u\\cdot v$ con $u=x^2$ y $v=\\sqrt{x^2+1}$.
+
+**Paso 2 — Regla del producto:** $g'=u'v+uv'$.
+
+- $u'=2x$.
+- $v=(x^2+1)^{1/2}$: aplicamos la **cadena** con exterior $t^{1/2}$ e interior $x^2+1$. $v'=\\tfrac12(x^2+1)^{-1/2}\\cdot 2x=\\dfrac{x}{\\sqrt{x^2+1}}$.
+
+**Paso 3 — Junta todo:**
+$$g'(x)=2x\\sqrt{x^2+1}+x^2\\cdot\\dfrac{x}{\\sqrt{x^2+1}}=\\dfrac{2x(x^2+1)+x^3}{\\sqrt{x^2+1}}=\\dfrac{3x^3+2x}{\\sqrt{x^2+1}}.$$
+
+### Consejo
+
+Cuando una expresión es un cociente cuya base o cuyo denominador es una composición, casi siempre es más rápido reescribirla como producto de potencias antes de derivar — o usar **derivación logarítmica** (nivel 46) si el exponente es variable.
 `,
   [
     {
-      prompt: "Rectángulo con perímetro $20$: ¿en qué valor de $x$ se maximiza el área?",
-      answer: 5,
-      solution: "$A'(x)=10-2x=0\\Rightarrow x=5$. Respuesta: $5.00$.",
+      prompt: "$g(x)=x^2\\sqrt{x^2+1}$. Halla $g'(1)$.",
+      answer: 3.54,
+      solution: "$g'(x)=\\dfrac{3x^3+2x}{\\sqrt{x^2+1}}$. En $x=1$: $\\dfrac{5}{\\sqrt 2}\\approx 3.54$. Respuesta: $3.54$.",
     },
     {
-      prompt: "Con el rectángulo anterior, ¿cuál es el área máxima?",
-      answer: 25,
-      solution: "$A(5)=5\\cdot5=25$. Respuesta: $25.00$.",
+      prompt: "$h(x)=\\dfrac{\\sin(2x)}{x^2+1}$. Halla $h'(0)$.",
+      answer: 2,
+      solution: "Cociente + cadena. $h'(x)=\\dfrac{2\\cos(2x)(x^2+1)-\\sin(2x)\\cdot 2x}{(x^2+1)^2}$. En $x=0$: $\\dfrac{2\\cdot 1\\cdot 1-0}{1}=2$. Respuesta: $2.00$.",
     },
     {
-      prompt: "Rectángulo con perímetro $40$: ¿en qué valor de $x$ se maximiza el área?",
-      answer: 10,
-      solution: "$y=20-x$, $A(x)=20x-x^2$, $A'(x)=20-2x=0\\Rightarrow x=10$. Respuesta: $10.00$.",
+      prompt: "$f(x)=e^{x}\\cdot\\ln(1+x^2)$. Halla $f'(0)$.",
+      answer: 0,
+      solution: "$f'=e^x\\ln(1+x^2)+e^x\\cdot\\dfrac{2x}{1+x^2}$. En $x=0$: $1\\cdot 0+1\\cdot 0=0$. Respuesta: $0.00$.",
     },
     {
-      prompt: "Dos números suman $16$ ($x+y=16$). ¿Qué valor de $x$ maximiza el producto $P=xy$?",
-      answer: 8,
-      solution: "$P(x)=16x-x^2$, $P'(x)=16-2x=0\\Rightarrow x=8$. Respuesta: $8.00$.",
+      prompt: "$p(x)=\\big(x+\\sqrt{x^2+1}\\big)^3$. Halla $p'(0)$.",
+      answer: 3,
+      solution: "Cadena: $p'=3(x+\\sqrt{x^2+1})^2\\cdot\\big(1+\\dfrac{x}{\\sqrt{x^2+1}}\\big)$. En $x=0$: $3\\cdot 1^2\\cdot 1=3$. Respuesta: $3.00$.",
     },
     {
-      prompt: "Con el ejercicio anterior, halla el producto máximo.",
-      answer: 64,
-      solution: "$P=8\\times8=64$. Respuesta: $64.00$.",
+      prompt: "$q(x)=\\dfrac{\\cos x}{1+\\sin x}$. Halla $q'(0)$.",
+      answer: -1,
+      solution: "$q'=\\dfrac{-\\sin x(1+\\sin x)-\\cos x\\cdot\\cos x}{(1+\\sin x)^2}$. En $x=0$: $\\dfrac{0-1}{1}=-1$. Respuesta: $-1.00$.",
     },
   ],
 );
@@ -2427,9 +2454,9 @@ const leibnizBoss: Boss = {
     "¿No habrás olvidado la regla de la cadena, verdad?",
     "El cálculo no perdona la pereza.",
   ],
-  victory: "Bien hecho. Has vencido al inventor del cálculo.",
-  defeat:
+  victory:
     "Debería darte vergüenza presentarte ante el inventor del cálculo con unos conocimientos tan limitados. No vuelvas a venir aquí hasta que hayas dominado por completo el cálculo.",
+  defeat: "Bien hecho. Has vencido al inventor del cálculo.",
   exercises: [
     {
       prompt: "$f(x)=e^x\\cos x$. Calcula $f'\\!\\left(\\tfrac{\\pi}{2}\\right)$.",
@@ -2478,11 +2505,10 @@ const leibnizBoss: Boss = {
         "$f(x)=\\dfrac{1}{\\ln x}$, así que $f'(x)=-\\dfrac{1}{x(\\ln x)^2}$. En $x=\\sqrt{e}$: $\\ln\\sqrt{e}=1/2$, $(\\ln\\sqrt{e})^2=1/4$, $\\sqrt{e}\\approx 1.6487$. $f'=-\\dfrac{1}{1.6487\\cdot 0.25}\\approx -2.4261$. Respuesta: $-2.43$.",
     },
     {
-      prompt:
-        "$\\displaystyle\\lim_{x\\to 0}\\lim_{n\\to\\infty}\\dfrac{\\sin x\\,\\tan x\\,\\sin 2x\\,\\tan 2x\\cdots\\sin nx\\,\\tan nx}{(n!)^{2}\\,x^{2n}}$.",
-      answer: 1,
+      prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\ln(1-x)}{\\tan x}$.",
+      answer: -1,
       solution:
-        "Para $x\\to 0$, $\\sin(kx)\\sim kx$ y $\\tan(kx)\\sim kx$, así que $\\sin(kx)\\tan(kx)\\sim k^2 x^2$. El producto de $k=1$ a $n$ da $(n!)^2 x^{2n}$, que se cancela exactamente con el denominador. Ambos límites valen $1$. Respuesta: $1.00$.",
+        "Con equivalentes cerca de $0$: $\\ln(1-x)\\sim -x$ y $\\tan x\\sim x$. El cociente tiende a $-1$. Respuesta: $-1.00$.",
     },
     {
       prompt:
@@ -2492,10 +2518,10 @@ const leibnizBoss: Boss = {
         "$f'(x)=\\dfrac{\\sin x/x-\\ln x\\cos x}{\\sin^2 x}$. En $3\\pi/2$: $\\sin=-1$, $\\cos=0$, $\\ln(3\\pi/2)\\approx 1.5502$. Numerador: $-1/(3\\pi/2)-0=-2/(3\\pi)\\approx -0.2122$; denominador $1$. Respuesta: $-0.21$.",
     },
     {
-      prompt: "$f(x)=x^{x}$. ¿Cuál es $f'(e)$?",
-      answer: 30.3085,
+      prompt: "Si $f(x)=(\\pi x)^{x+1}$, ¿cuál es el valor de $f'(e)$?",
+      answer: 10209.4529,
       solution:
-        "$f(x)=e^{x\\ln x}$, $f'(x)=x^x(\\ln x+1)$. En $x=e$: $e^e(\\ln e+1)=2\\,e^e\\approx 2\\cdot 15.1543\\approx 30.3085$. Respuesta: $30.31$.",
+        "Tomando logaritmos: $\\ln f=(x+1)\\ln(\\pi x)$. Derivando: $\\dfrac{f'}{f}=\\ln(\\pi x)+\\dfrac{x+1}{x}$. En $x=e$: $\\ln(\\pi e)=1+\\ln\\pi\\approx 2.1447$ y $(e+1)/e\\approx 1.3679$. La suma $\\approx 3.5126$. $f(e)=(\\pi e)^{e+1}\\approx 2906.66$. $f'(e)\\approx 2906.66\\cdot 3.5126\\approx 10209.45$. Respuesta: $10209.45$.",
     },
   ],
 };

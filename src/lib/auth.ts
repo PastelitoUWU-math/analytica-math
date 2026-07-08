@@ -1,6 +1,7 @@
 // Cliente-side auth y perfil (Lovable Cloud / Supabase)
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { checkEmailAvailable } from "@/lib/account.functions";
 import type { User } from "@supabase/supabase-js";
 
 export type Profile = {
@@ -49,6 +50,14 @@ export async function signUp(email: string, password: string, username: string) 
   const { data: taken } = await supabase.from("profiles").select("id").eq("username", clean).maybeSingle();
   if (taken) return { error: "Ese nombre de usuario ya está en uso.", pendingVerification: false };
 
+  // Comprobar que el correo no esté ya vinculado a otra cuenta (verificada o no).
+  try {
+    const res = await checkEmailAvailable({ data: { email: email.trim() } });
+    if (res?.exists) {
+      return { error: "Ya existe una cuenta con ese correo electrónico. Inicia sesión o usa otro correo.", pendingVerification: false };
+    }
+  } catch { /* si el chequeo falla, continuamos y confiamos en Supabase */ }
+
   const emailRedirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
@@ -59,17 +68,23 @@ export async function signUp(email: string, password: string, username: string) 
 
   // Si Supabase requiere confirmación por email, no habrá sesión activa
   const pendingVerification = !data.session;
-  return { error: null, pendingVerification };
+  return { error: null, pendingVerification, username: clean };
 }
 
 // Verificación con código de 6 dígitos enviado por correo (OTP tipo signup)
-export async function verifySignupCode(email: string, code: string) {
-  const { error } = await supabase.auth.verifyOtp({
+export async function verifySignupCode(email: string, code: string, username?: string) {
+  const { data, error } = await supabase.auth.verifyOtp({
     email: email.trim(),
     token: code.trim(),
     type: "signup",
   });
   if (error) return { error: error.message };
+  // Asegura que exista el perfil (por si el trigger no está activo)
+  const uid = data.user?.id;
+  if (uid) {
+    const chosen = (username ?? (data.user?.user_metadata as { username?: string } | null)?.username ?? `user_${uid.slice(0, 8)}`).trim();
+    await supabase.from("profiles").insert({ id: uid, username: chosen }).select().maybeSingle();
+  }
   return { error: null };
 }
 
@@ -86,8 +101,18 @@ export async function resendSignupCode(email: string) {
 }
 
 export async function signIn(email: string, password: string) {
-  const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
   if (error) return { error: error.message };
+  // Si el perfil no existe (p. ej. porque el trigger no se disparó), créalo ahora.
+  const uid = data.user?.id;
+  if (uid) {
+    const { data: prof } = await supabase.from("profiles").select("id").eq("id", uid).maybeSingle();
+    if (!prof) {
+      const meta = (data.user?.user_metadata ?? {}) as { username?: string };
+      const username = (meta.username ?? `user_${uid.slice(0, 8)}`).trim();
+      await supabase.from("profiles").insert({ id: uid, username }).select().maybeSingle();
+    }
+  }
   return { error: null };
 }
 

@@ -711,7 +711,7 @@ export const world1Boss = {
     "Sustituye. Si rompe, factoriza. Si no factoriza, conjuga. Es un arte.",
     "Te queda mucho camino, aspirante.",
   ],
-  victory: "Bien hecho. Te has ganado tu lugar entre los analistas. Continúa.",
+  victory: "C'est dommage... Los límites no toleran tu negligencia.",
   defeat: "C'est impossible... Tu rigor supera el mío. Toma tu galardón.",
   exercises: [
     {
