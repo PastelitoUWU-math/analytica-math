@@ -715,7 +715,7 @@ const lv15 = L(
 
 $$\\frac{d}{dx}\\big[x^r\\big] = r\\,x^{r-1} \\qquad \\text{para cualquier número real } r.$$
 
-Ya viste el caso $r=\\tfrac12$ en el nivel 13 (con conjugado) y coincidió exactamente con esta fórmula. Una demostración completa para exponentes racionales usa la **derivación implícita** (nivel 28), pero por ahora aceptamos el resultado general y practicamos aplicándolo — igual que aceptaste $\\lim \\tfrac{\\sin x}{x}=1$ sin demostrarlo geométricamente cuando estudiaste límites.
+Ya viste el caso $r=\\tfrac12$ en el nivel 13 (con conjugado) y coincidió exactamente con esta fórmula. La demostración formal se consigue poniendo al número $e$ como base y derivando, usando técnicas más avanzadas como la regla de la cadena.
 
 ### Ejemplo
 
