@@ -771,7 +771,25 @@ const lv24 = L(
 
 $$\\lim_{x\\to 0}\\frac{\\sin x}{x} = 1$$
 
-(con $x$ medido en **radianes**). Este resultado no se obtiene por sustitución directa (daría $\\tfrac{0}{0}$) ni por factorización; se demuestra geométricamente comparando áreas, y simplemente lo **aceptamos como herramienta**.
+(con $x$ medido en **radianes**). Al sustituir da $\\tfrac{0}{0}$: no es una sustitución directa, ni sale por factorización. Vamos a **demostrarlo** usando la desigualdad geométrica
+
+$$\\sin x < x < \\tan x \\qquad \\text{para } 0<x<\\tfrac{\\pi}{2}.$$
+
+Se obtiene comparando, en la circunferencia unidad, el área del triángulo $\\tfrac12\\sin x$, el sector circular $\\tfrac12 x$, y el triángulo mayor $\\tfrac12\\tan x$: cada figura contiene a la anterior, y sus áreas están ordenadas.
+
+### Sándwich
+
+Dividiendo todo entre $\\sin x>0$:
+
+$$1<\\frac{x}{\\sin x}<\\frac{\\tan x}{\\sin x}=\\frac{1}{\\cos x}.$$
+
+Tomando recíprocos (todo positivo, así que se invierten las desigualdades):
+
+$$\\cos x<\\frac{\\sin x}{x}<1.$$
+
+Cuando $x\\to 0^+$, $\\cos x\\to 1$, así que $\\dfrac{\\sin x}{x}$ queda atrapado entre $\\cos x$ y $1$ y también tiende a $1$. Por simetría (la función $\\sin x/x$ es par: $\\sin(-x)/(-x)=\\sin x/x$), lo mismo vale por la izquierda. Por tanto:
+
+$$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1.$$
 
 ### Cómo usarlo en variantes
 
