@@ -2478,11 +2478,10 @@ const leibnizBoss: Boss = {
         "$f(x)=\\dfrac{1}{\\ln x}$, así que $f'(x)=-\\dfrac{1}{x(\\ln x)^2}$. En $x=\\sqrt{e}$: $\\ln\\sqrt{e}=1/2$, $(\\ln\\sqrt{e})^2=1/4$, $\\sqrt{e}\\approx 1.6487$. $f'=-\\dfrac{1}{1.6487\\cdot 0.25}\\approx -2.4261$. Respuesta: $-2.43$.",
     },
     {
-      prompt:
-        "$\\displaystyle\\lim_{x\\to 0}\\lim_{n\\to\\infty}\\dfrac{\\sin x\\,\\tan x\\,\\sin 2x\\,\\tan 2x\\cdots\\sin nx\\,\\tan nx}{(n!)^{2}\\,x^{2n}}$.",
-      answer: 1,
+      prompt: "$\\displaystyle\\lim_{x\\to 0}\\dfrac{\\ln(1-x)}{\\tan x}$.",
+      answer: -1,
       solution:
-        "Para $x\\to 0$, $\\sin(kx)\\sim kx$ y $\\tan(kx)\\sim kx$, así que $\\sin(kx)\\tan(kx)\\sim k^2 x^2$. El producto de $k=1$ a $n$ da $(n!)^2 x^{2n}$, que se cancela exactamente con el denominador. Ambos límites valen $1$. Respuesta: $1.00$.",
+        "Con equivalentes cerca de $0$: $\\ln(1-x)\\sim -x$ y $\\tan x\\sim x$. El cociente tiende a $-1$. Respuesta: $-1.00$.",
     },
     {
       prompt:
@@ -2492,10 +2491,10 @@ const leibnizBoss: Boss = {
         "$f'(x)=\\dfrac{\\sin x/x-\\ln x\\cos x}{\\sin^2 x}$. En $3\\pi/2$: $\\sin=-1$, $\\cos=0$, $\\ln(3\\pi/2)\\approx 1.5502$. Numerador: $-1/(3\\pi/2)-0=-2/(3\\pi)\\approx -0.2122$; denominador $1$. Respuesta: $-0.21$.",
     },
     {
-      prompt: "$f(x)=x^{x}$. ¿Cuál es $f'(e)$?",
-      answer: 30.3085,
+      prompt: "Si $f(x)=(\\pi x)^{x+1}$, ¿cuál es el valor de $f'(e)$?",
+      answer: 10209.4529,
       solution:
-        "$f(x)=e^{x\\ln x}$, $f'(x)=x^x(\\ln x+1)$. En $x=e$: $e^e(\\ln e+1)=2\\,e^e\\approx 2\\cdot 15.1543\\approx 30.3085$. Respuesta: $30.31$.",
+        "Tomando logaritmos: $\\ln f=(x+1)\\ln(\\pi x)$. Derivando: $\\dfrac{f'}{f}=\\ln(\\pi x)+\\dfrac{x+1}{x}$. En $x=e$: $\\ln(\\pi e)=1+\\ln\\pi\\approx 2.1447$ y $(e+1)/e\\approx 1.3679$. La suma $\\approx 3.5126$. $f(e)=(\\pi e)^{e+1}\\approx 2906.66$. $f'(e)\\approx 2906.66\\cdot 3.5126\\approx 10209.45$. Respuesta: $10209.45$.",
     },
   ],
 };
