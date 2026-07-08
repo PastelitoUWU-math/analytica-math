@@ -1,6 +1,7 @@
 // Cliente-side auth y perfil (Lovable Cloud / Supabase)
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { checkEmailAvailable } from "@/lib/account.functions";
 import type { User } from "@supabase/supabase-js";
 
 export type Profile = {
