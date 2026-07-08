@@ -101,8 +101,18 @@ export async function resendSignupCode(email: string) {
 }
 
 export async function signIn(email: string, password: string) {
-  const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
   if (error) return { error: error.message };
+  // Si el perfil no existe (p. ej. porque el trigger no se disparó), créalo ahora.
+  const uid = data.user?.id;
+  if (uid) {
+    const { data: prof } = await supabase.from("profiles").select("id").eq("id", uid).maybeSingle();
+    if (!prof) {
+      const meta = (data.user?.user_metadata ?? {}) as { username?: string };
+      const username = (meta.username ?? `user_${uid.slice(0, 8)}`).trim();
+      await supabase.from("profiles").insert({ id: uid, username }).select().maybeSingle();
+    }
+  }
   return { error: null };
 }
 
