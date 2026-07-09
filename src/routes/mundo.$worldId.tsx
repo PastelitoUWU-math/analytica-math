@@ -7,11 +7,16 @@ import { InlineMath } from "@/components/InlineMath";
 export const Route = createFileRoute("/mundo/$worldId")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
+    const url = `https://analytica-math.lovable.app/mundo/${params.worldId}`;
     return {
       meta: [
         { title: `${w?.title ?? "Mundo"} — Analytica` },
         { name: "description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analytica" },
+        { property: "og:title", content: `${w?.title ?? "Mundo"} — Analytica` },
+        { property: "og:description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analytica" },
+        { property: "og:url", content: url },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   loader: ({ params }) => {

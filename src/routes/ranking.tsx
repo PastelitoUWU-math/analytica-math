@@ -10,7 +10,11 @@ export const Route = createFileRoute("/ranking")({
     meta: [
       { title: "Clasificación — Analytica" },
       { name: "description", content: "Clasificación global de los mejores analistas matemáticos de Analytica, ordenada por puntos acumulados históricos." },
+      { property: "og:title", content: "Clasificación — Analytica" },
+      { property: "og:description", content: "Clasificación global de Analytica, ordenada por puntos acumulados históricos." },
+      { property: "og:url", content: "https://analytica-math.lovable.app/ranking" },
     ],
+    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/ranking" }],
   }),
   component: RankingPage,
 });

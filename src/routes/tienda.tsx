@@ -56,7 +56,11 @@ export const Route = createFileRoute("/tienda")({
         name: "description",
         content: "Cambia el tema visual de Analytica y compra potenciadores con tus puntos.",
       },
+      { property: "og:title", content: "Tienda — Analytica" },
+      { property: "og:description", content: "Personaliza tu experiencia y compra potenciadores con tus puntos." },
+      { property: "og:url", content: "https://analytica-math.lovable.app/tienda" },
     ],
+    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/tienda" }],
   }),
   component: ShopPage,
 });

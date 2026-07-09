@@ -10,14 +10,18 @@ import { defeatBoss } from "@/lib/game-state";
 export const Route = createFileRoute("/jefe/$worldId")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
+    const url = `https://analytica-math.lovable.app/jefe/${params.worldId}`;
+    const title = `Jefe ${w?.boss?.name ?? ""} — ${w?.title ?? ""}`;
+    const desc = `Batalla final de ${w?.title}: enfréntate a ${w?.boss?.name}.`;
     return {
       meta: [
-        { title: `Jefe ${w?.boss?.name ?? ""} — ${w?.title ?? ""}` },
-        {
-          name: "description",
-          content: `Batalla final de ${w?.title}: enfréntate a ${w?.boss?.name}.`,
-        },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   loader: ({ params }) => {

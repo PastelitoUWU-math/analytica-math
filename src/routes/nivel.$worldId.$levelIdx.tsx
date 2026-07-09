@@ -11,11 +11,18 @@ export const Route = createFileRoute("/nivel/$worldId/$levelIdx")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
     const lv = w?.levels[Number(params.levelIdx)];
+    const url = `https://analytica-math.lovable.app/nivel/${params.worldId}/${params.levelIdx}`;
+    const title = `${lv?.title ?? "Nivel"} — ${w?.title ?? ""}`;
+    const desc = lv?.concept ?? "Nivel de Analytica";
     return {
       meta: [
-        { title: `${lv?.title ?? "Nivel"} — ${w?.title ?? ""}` },
-        { name: "description", content: lv?.concept ?? "Nivel de Analytica" },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   loader: ({ params }) => {
