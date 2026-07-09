@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TiendaRouteImport } from './routes/tienda'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as MundosRouteImport } from './routes/mundos'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -21,6 +22,11 @@ import { Route as NivelWorldIdLevelIdxRouteImport } from './routes/nivel.$worldI
 const TiendaRoute = TiendaRouteImport.update({
   id: '/tienda',
   path: '/tienda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingRoute = RankingRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tienda': typeof TiendaRoute
   '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tienda': typeof TiendaRoute
   '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tienda': typeof TiendaRoute
   '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mundos'
     | '/ranking'
+    | '/sitemap.xml'
     | '/tienda'
     | '/jefe/$worldId'
     | '/mundo/$worldId'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mundos'
     | '/ranking'
+    | '/sitemap.xml'
     | '/tienda'
     | '/jefe/$worldId'
     | '/mundo/$worldId'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/mundos'
     | '/ranking'
+    | '/sitemap.xml'
     | '/tienda'
     | '/jefe/$worldId'
     | '/mundo/$worldId'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   MundosRoute: typeof MundosRoute
   RankingRoute: typeof RankingRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TiendaRoute: typeof TiendaRoute
   JefeWorldIdRoute: typeof JefeWorldIdRoute
   MundoWorldIdRoute: typeof MundoWorldIdRoute
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/tienda'
       fullPath: '/tienda'
       preLoaderRoute: typeof TiendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ranking': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   MundosRoute: MundosRoute,
   RankingRoute: RankingRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TiendaRoute: TiendaRoute,
   JefeWorldIdRoute: JefeWorldIdRoute,
   MundoWorldIdRoute: MundoWorldIdRoute,
