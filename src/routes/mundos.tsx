@@ -13,7 +13,11 @@ export const Route = createFileRoute("/mundos")({
         content:
           "Cinco mundos del análisis matemático: límites, continuidad, derivadas, integrales y series.",
       },
+      { property: "og:title", content: "Mundos — Analytica" },
+      { property: "og:description", content: "Recorre el análisis matemático en cinco etapas: límites, continuidad, derivadas, integrales y series." },
+      { property: "og:url", content: "https://analytica-math.lovable.app/mundos" },
     ],
+    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/mundos" }],
   }),
   component: WorldsPage,
 });
