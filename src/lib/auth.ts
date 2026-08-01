@@ -56,7 +56,7 @@ export function useAuth() {
 
 export async function signUp(email: string, password: string, username: string) {
   const clean = username.trim();
-  if (!/^[A-Za-z0-9_.\-]{3,24}$/.test(clean)) {
+  if (!/^[A-Za-z0-9_.-]{3,24}$/.test(clean)) {
     return { error: "El nombre de usuario debe tener 3-24 caracteres (letras, dígitos, _ . -).", pendingVerification: false };
   }
   const { data: taken } = await supabase.from("profiles").select("id").eq("username", clean).maybeSingle();
