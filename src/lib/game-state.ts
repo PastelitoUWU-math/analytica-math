@@ -2,7 +2,8 @@
 // Los puntos "de por vida" (lifetimePoints) SOLO suben — nunca bajan aunque
 // el jugador gaste puntos en la tienda. La clasificación usa ese valor.
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { syncProgressToProfile } from "./auth";
+import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 export type Progress = {
   completed: Record<string, number>;
@@ -16,7 +17,8 @@ export type Progress = {
   boosts: { hint: number; skip: number };
 };
 
-const KEY = "analytica.progress.v1";
+const GUEST_KEY = "analytica.progress.guest.v2";
+const LEGACY_KEY = "analytica.progress.v1";
 
 const DEFAULT: Progress = {
   completed: {},
@@ -31,34 +33,137 @@ const DEFAULT: Progress = {
 };
 
 let cache: Progress | null = null;
+let activeUserId: string | null = null;
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+const hydrationByUser = new Map<string, Promise<void>>();
 const listeners = new Set<() => void>();
+
+function normalize(value: Partial<Progress> | null | undefined): Progress {
+  return {
+    ...DEFAULT,
+    ...value,
+    completed: value?.completed ?? {},
+    bossDefeated: value?.bossDefeated ?? {},
+    ownedCosmetics: value?.ownedCosmetics ?? DEFAULT.ownedCosmetics,
+    boosts: { ...DEFAULT.boosts, ...(value?.boosts ?? {}) },
+  };
+}
 
 function read(): Progress {
   if (cache) return cache;
   if (typeof window === "undefined") return DEFAULT;
   try {
-    const raw = localStorage.getItem(KEY);
-    const parsed = raw ? { ...DEFAULT, ...JSON.parse(raw) } : DEFAULT;
+    const raw = localStorage.getItem(GUEST_KEY) ?? localStorage.getItem(LEGACY_KEY);
+    const parsed = normalize(raw ? JSON.parse(raw) : DEFAULT);
     // Migración: si no había lifetimePoints, arranca desde points actuales
     if (parsed.lifetimePoints < parsed.points) parsed.lifetimePoints = parsed.points;
     cache = parsed;
   } catch {
     cache = DEFAULT;
   }
-  return cache!;
+  return cache ?? DEFAULT;
 }
 function write(p: Progress) {
   const prev = cache;
   cache = p;
-  if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(p));
-  listeners.forEach((l) => l());
-  if (typeof window !== "undefined" && prev && (
-    prev.points !== p.points ||
-    prev.totalCorrect !== p.totalCorrect ||
-    prev.lifetimePoints !== p.lifetimePoints
-  )) {
-    syncProgressToProfile(p.points, p.totalCorrect, p.lifetimePoints).catch(() => {});
+  if (typeof window !== "undefined" && !activeUserId) {
+    localStorage.setItem(GUEST_KEY, JSON.stringify(p));
+    localStorage.removeItem(LEGACY_KEY);
   }
+  listeners.forEach((l) => l());
+  if (typeof window !== "undefined" && activeUserId && prev !== p) {
+    scheduleCloudSave(activeUserId, p);
+  }
+}
+
+function scheduleCloudSave(userId: string, progress: Progress) {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    if (activeUserId === userId) void saveCloudProgress(userId, progress);
+  }, 250);
+}
+
+async function saveCloudProgress(userId: string, progress: Progress) {
+  const { error } = await supabase.from("user_progress").upsert({
+    user_id: userId,
+    completed: progress.completed as Json,
+    boss_defeated: progress.bossDefeated as Json,
+    points: progress.points,
+    lifetime_points: progress.lifetimePoints,
+    total_correct: progress.totalCorrect,
+    owned_cosmetics: progress.ownedCosmetics as Json,
+    active_theme: progress.activeTheme,
+    boosts: progress.boosts as Json,
+  });
+  if (!error) {
+    await supabase.rpc("sync_progress", {
+      _points: progress.points,
+      _total_correct: progress.totalCorrect,
+      _lifetime: progress.lifetimePoints,
+    });
+  }
+}
+
+function fromCloud(row: {
+  completed: Json;
+  boss_defeated: Json;
+  points: number;
+  lifetime_points: number;
+  total_correct: number;
+  owned_cosmetics: Json;
+  active_theme: string;
+  boosts: Json;
+}): Progress {
+  return normalize({
+    completed: row.completed as Record<string, number>,
+    bossDefeated: row.boss_defeated as Record<string, boolean>,
+    points: row.points,
+    lifetimePoints: row.lifetime_points,
+    totalCorrect: row.total_correct,
+    ownedCosmetics: row.owned_cosmetics as string[],
+    activeTheme: row.active_theme,
+    boosts: row.boosts as Progress["boosts"],
+  });
+}
+
+export async function activateAccountProgress(userId: string, importGuestProgress = false) {
+  const existing = hydrationByUser.get(userId);
+  if (existing) return existing;
+  const task = (async () => {
+    const guest = read();
+    activeUserId = userId;
+    const { data } = await supabase.from("user_progress").select("*").eq("user_id", userId).maybeSingle();
+    let next = data ? fromCloud(data) : DEFAULT;
+    const cloudIsPristine = !data || (
+      data.points === 0 &&
+      data.lifetime_points === 0 &&
+      data.total_correct === 0 &&
+      Object.keys(data.completed as Record<string, number>).length === 0 &&
+      Object.keys(data.boss_defeated as Record<string, boolean>).length === 0
+    );
+    if (importGuestProgress && cloudIsPristine) next = normalize(guest);
+    cache = next;
+    listeners.forEach((listener) => listener());
+    if (!data || (importGuestProgress && cloudIsPristine)) await saveCloudProgress(userId, next);
+  })().finally(() => hydrationByUser.delete(userId));
+  hydrationByUser.set(userId, task);
+  return task;
+}
+
+export async function flushAccountProgress() {
+  if (!activeUserId || !cache) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = null;
+  await saveCloudProgress(activeUserId, cache);
+}
+
+export function activateGuestProgress() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = null;
+  activeUserId = null;
+  cache = null;
+  read();
+  listeners.forEach((listener) => listener());
 }
 
 export function useProgress() {

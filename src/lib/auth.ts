@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { checkEmailAvailable } from "@/lib/account.functions";
+import { activateAccountProgress, activateGuestProgress, flushAccountProgress } from "@/lib/game-state";
 import type { User } from "@supabase/supabase-js";
 
 export type Profile = {
@@ -19,16 +20,27 @@ export function useAuth() {
 
   useEffect(() => {
     let mounted = true;
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((evt, session) => {
       if (!mounted) return;
       setUser(session?.user ?? null);
-      if (session?.user) setTimeout(() => loadProfile(session.user.id), 0);
-      else setProfile(null);
+      if (session?.user) {
+        const shouldImportGuest = evt === "SIGNED_IN" && consumePendingGuestImport(session.user.email);
+        setTimeout(() => {
+          void activateAccountProgress(session.user.id, shouldImportGuest);
+          void loadProfile(session.user.id);
+        }, 0);
+      } else {
+        setProfile(null);
+        activateGuestProgress();
+      }
     });
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
       setUser(data.session?.user ?? null);
-      if (data.session?.user) loadProfile(data.session.user.id);
+      if (data.session?.user) {
+        void activateAccountProgress(data.session.user.id, consumePendingGuestImport(data.session.user.email));
+        void loadProfile(data.session.user.id);
+      } else activateGuestProgress();
       setLoading(false);
     });
     return () => { mounted = false; sub.subscription.unsubscribe(); };
@@ -44,7 +56,7 @@ export function useAuth() {
 
 export async function signUp(email: string, password: string, username: string) {
   const clean = username.trim();
-  if (!/^[A-Za-z0-9_.\-]{3,24}$/.test(clean)) {
+  if (!/^[A-Za-z0-9_.-]{3,24}$/.test(clean)) {
     return { error: "El nombre de usuario debe tener 3-24 caracteres (letras, dígitos, _ . -).", pendingVerification: false };
   }
   const { data: taken } = await supabase.from("profiles").select("id").eq("username", clean).maybeSingle();
@@ -65,6 +77,9 @@ export async function signUp(email: string, password: string, username: string) 
     options: { emailRedirectTo, data: { username: clean } },
   });
   if (error) return { error: error.message, pendingVerification: false };
+  if (typeof window !== "undefined") {
+    localStorage.setItem("analytica.pending-guest-import", email.trim().toLowerCase());
+  }
 
   // Si Supabase requiere confirmación por email, no habrá sesión activa
   const pendingVerification = !data.session;
@@ -84,6 +99,7 @@ export async function verifySignupCode(email: string, code: string, username?: s
   if (uid) {
     const chosen = (username ?? (data.user?.user_metadata as { username?: string } | null)?.username ?? `user_${uid.slice(0, 8)}`).trim();
     await supabase.from("profiles").insert({ id: uid, username: chosen }).select().maybeSingle();
+    await activateAccountProgress(uid, true);
   }
   return { error: null };
 }
@@ -101,6 +117,7 @@ export async function resendSignupCode(email: string) {
 }
 
 export async function signIn(email: string, password: string) {
+  if (typeof window !== "undefined") localStorage.removeItem("analytica.pending-guest-import");
   const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
   if (error) return { error: error.message };
   // Si el perfil no existe (p. ej. porque el trigger no se disparó), créalo ahora.
@@ -112,12 +129,15 @@ export async function signIn(email: string, password: string) {
       const username = (meta.username ?? `user_${uid.slice(0, 8)}`).trim();
       await supabase.from("profiles").insert({ id: uid, username }).select().maybeSingle();
     }
+    await activateAccountProgress(uid, false);
   }
   return { error: null };
 }
 
 export async function signOut() {
+  await flushAccountProgress();
   await supabase.auth.signOut();
+  activateGuestProgress();
 }
 
 // Sincroniza puntos actuales + históricos con el perfil del usuario autenticado.
@@ -130,4 +150,13 @@ export async function syncProgressToProfile(points: number, totalCorrect: number
     _total_correct: totalCorrect,
     _lifetime: lifetimePoints,
   });
+}
+
+function consumePendingGuestImport(email?: string) {
+  if (typeof window === "undefined" || !email) return false;
+  const key = "analytica.pending-guest-import";
+  const pending = localStorage.getItem(key);
+  if (pending !== email.toLowerCase()) return false;
+  localStorage.removeItem(key);
+  return true;
 }

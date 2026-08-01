@@ -189,8 +189,10 @@
     color: var(--color-foreground);
     font-family: var(--font-serif);
     font-feature-settings: "kern", "liga", "onum";
+    max-width: 100%;
+    overflow-x: clip;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: 0; }
   /* Subtle paper texture */
   body {
     background-image:
@@ -229,6 +231,9 @@
 .backdrop-float {
   animation: drift-up linear infinite;
   white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop-aurora, .backdrop-float, .shimmer-chip, .fade-in-up { animation: none; }
 }
 @keyframes drift-up {
   0%   { transform: translateY(8vh) translateX(0); opacity: 0; }

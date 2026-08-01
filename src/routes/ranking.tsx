@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
-import { useProgress } from "@/lib/game-state";
 import { useEffect, useState } from "react";
-import { useAuth, syncProgressToProfile } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/ranking")({
@@ -22,23 +21,9 @@ export const Route = createFileRoute("/ranking")({
 type Row = { id: string; username: string; points: number; lifetime_points: number; total_correct: number };
 
 function RankingPage() {
-  const progress = useProgress();
-  const { user, profile, reloadProfile } = useAuth();
+  const { user, profile } = useAuth();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Sincroniza el progreso local con el perfil cuando cambian los valores
-  useEffect(() => {
-    if (!user || !profile) return;
-    const needsSync =
-      progress.points !== profile.points ||
-      progress.totalCorrect > profile.total_correct ||
-      progress.lifetimePoints > profile.lifetime_points;
-    if (needsSync) {
-      syncProgressToProfile(progress.points, progress.totalCorrect, progress.lifetimePoints)
-        .then(() => reloadProfile());
-    }
-  }, [user, profile, progress.points, progress.totalCorrect, progress.lifetimePoints, reloadProfile]);
 
   useEffect(() => {
     let alive = true;

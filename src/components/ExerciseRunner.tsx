@@ -81,12 +81,13 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
       <form onSubmit={submit} className="mt-5 flex flex-wrap gap-3 items-center">
         <input
           type="text"
-          inputMode="decimal"
+          inputMode="text"
+          autoCapitalize="none"
           autoFocus
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={status === "correct" || status === "revealed"}
-          placeholder="p. ej. 1.23"
+          placeholder="p. ej. 1.23, No o Inf"
           className="flex-1 min-w-[200px] px-3 py-2 rounded-md border border-input bg-background font-mono tabular-nums text-lg focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
         <button

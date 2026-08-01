@@ -18,18 +18,18 @@ export function Shell({ children }: { children: ReactNode }) {
     { to: "/tienda", label: "Tienda" },
   ];
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative overflow-x-clip pb-16 sm:pb-0">
       <ThemeApplier />
       <Backdrop />
       <header className="border-b border-border/60 backdrop-blur sticky top-0 bg-background/85 z-30">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          <Link to="/" className="flex min-w-0 items-center gap-3 group">
             <Sigil />
             <span className="text-xl tracking-tight font-display">
               Analytica
             </span>
           </Link>
-          <nav className="flex items-center gap-6 text-sm">
+          <nav className="hidden sm:flex items-center gap-6 text-sm">
             {nav.map((n) => {
               const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
               return (
@@ -44,7 +44,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 </Link>
               );
             })}
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-md bg-secondary border border-border/60 shimmer-chip">
+            <span className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-md bg-secondary border border-border/60 shimmer-chip">
               <span className="text-accent">✦</span>
               <span className="tabular-nums">{progress.points}</span>
             </span>
@@ -59,12 +59,28 @@ export function Shell({ children }: { children: ReactNode }) {
               {user ? profile?.username ?? "Cuenta" : "Entrar"}
             </Link>
           </nav>
+          <Link
+            to="/auth"
+            className="sm:hidden max-w-28 truncate text-sm px-3 py-1.5 rounded-md border border-border/60 text-muted-foreground"
+          >
+            {user ? profile?.username ?? "Cuenta" : "Entrar"}
+          </Link>
         </div>
       </header>
-      <main className="flex-1">{children}</main>
-      <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
+      <main className="flex-1 relative z-10">{children}</main>
+      <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground relative z-10 bg-background/70">
         Analytica · Un juego para aprender análisis matemático paso a paso.
       </footer>
+      <nav className="sm:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border/60 bg-background/95 backdrop-blur" aria-label="Navegación principal">
+        {nav.map((n) => {
+          const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
+          return (
+            <Link key={n.to} to={n.to} className={`min-w-0 px-1 py-3 text-center text-xs ${active ? "text-foreground bg-secondary" : "text-muted-foreground"}`}>
+              {n.label}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
