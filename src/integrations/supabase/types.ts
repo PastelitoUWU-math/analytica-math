@@ -44,6 +44,62 @@ export type Database = {
         }
         Relationships: []
       }
+      user_progress: {
+        Row: {
+          achievements: Json
+          active_theme: string
+          boosts: Json
+          boss_defeated: Json
+          completed: Json
+          created_at: string
+          lifetime_points: number
+          owned_cosmetics: Json
+          points: number
+          streak: Json
+          total_correct: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements?: Json
+          active_theme?: string
+          boosts?: Json
+          boss_defeated?: Json
+          completed?: Json
+          created_at?: string
+          lifetime_points?: number
+          owned_cosmetics?: Json
+          points?: number
+          streak?: Json
+          total_correct?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements?: Json
+          active_theme?: string
+          boosts?: Json
+          boss_defeated?: Json
+          completed?: Json
+          created_at?: string
+          lifetime_points?: number
+          owned_cosmetics?: Json
+          points?: number
+          streak?: Json
+          total_correct?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
