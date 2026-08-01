@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { checkEmailAvailable } from "@/lib/account.functions";
-import { activateAccountProgress, activateGuestProgress } from "@/lib/game-state";
+import { activateAccountProgress, activateGuestProgress, flushAccountProgress } from "@/lib/game-state";
 import type { User } from "@supabase/supabase-js";
 
 export type Profile = {
@@ -99,6 +99,7 @@ export async function verifySignupCode(email: string, code: string, username?: s
   if (uid) {
     const chosen = (username ?? (data.user?.user_metadata as { username?: string } | null)?.username ?? `user_${uid.slice(0, 8)}`).trim();
     await supabase.from("profiles").insert({ id: uid, username: chosen }).select().maybeSingle();
+    await activateAccountProgress(uid, true);
   }
   return { error: null };
 }
@@ -134,6 +135,7 @@ export async function signIn(email: string, password: string) {
 }
 
 export async function signOut() {
+  await flushAccountProgress();
   await supabase.auth.signOut();
   activateGuestProgress();
 }

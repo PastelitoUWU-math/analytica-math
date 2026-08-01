@@ -134,13 +134,27 @@ export async function activateAccountProgress(userId: string, importGuestProgres
     activeUserId = userId;
     const { data } = await supabase.from("user_progress").select("*").eq("user_id", userId).maybeSingle();
     let next = data ? fromCloud(data) : DEFAULT;
-    if (importGuestProgress && !data) next = normalize(guest);
+    const cloudIsPristine = !data || (
+      data.points === 0 &&
+      data.lifetime_points === 0 &&
+      data.total_correct === 0 &&
+      Object.keys(data.completed as Record<string, number>).length === 0 &&
+      Object.keys(data.boss_defeated as Record<string, boolean>).length === 0
+    );
+    if (importGuestProgress && cloudIsPristine) next = normalize(guest);
     cache = next;
     listeners.forEach((listener) => listener());
-    if (!data) await saveCloudProgress(userId, next);
+    if (!data || (importGuestProgress && cloudIsPristine)) await saveCloudProgress(userId, next);
   })().finally(() => hydrationByUser.delete(userId));
   hydrationByUser.set(userId, task);
   return task;
+}
+
+export async function flushAccountProgress() {
+  if (!activeUserId || !cache) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = null;
+  await saveCloudProgress(activeUserId, cache);
 }
 
 export function activateGuestProgress() {
