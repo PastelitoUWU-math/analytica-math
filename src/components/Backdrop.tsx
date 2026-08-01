@@ -35,13 +35,13 @@ export function Backdrop() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden select-none"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none"
     >
       <div className="absolute inset-0 backdrop-aurora" />
       {items.map((it, i) => (
         <span
           key={i}
-          className="absolute opacity-[0.07] text-foreground backdrop-float"
+          className="absolute max-w-[18rem] opacity-[0.12] text-foreground backdrop-float"
           style={{
             left: `${it.left}%`,
             top: `${it.top}%`,
