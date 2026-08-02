@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
+import { StreakCard } from "@/components/StreakCard";
 import { useState } from "react";
 import { signIn, signUp, useAuth, signOut, verifySignupCode, resendSignupCode } from "@/lib/auth";
 import { sfx } from "@/lib/sfx";
@@ -91,6 +92,7 @@ function AuthPage() {
             Hola <strong className="text-foreground">{profile?.username ?? "…"}</strong>. Ya apareces en la
             clasificación global.
           </p>
+          <StreakCard />
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => navigate({ to: "/ranking" })}
@@ -105,6 +107,7 @@ function AuthPage() {
       </Shell>
     );
   }
+
 
   if (awaitingCode) {
     return (

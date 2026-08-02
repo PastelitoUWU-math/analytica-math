@@ -48,10 +48,13 @@ export type Database = {
         Row: {
           achievements: Json
           active_theme: string
+          best_streak: number
           boosts: Json
           boss_defeated: Json
           completed: Json
           created_at: string
+          current_streak: number
+          last_activity_date: string | null
           lifetime_points: number
           owned_cosmetics: Json
           points: number
@@ -63,10 +66,13 @@ export type Database = {
         Insert: {
           achievements?: Json
           active_theme?: string
+          best_streak?: number
           boosts?: Json
           boss_defeated?: Json
           completed?: Json
           created_at?: string
+          current_streak?: number
+          last_activity_date?: string | null
           lifetime_points?: number
           owned_cosmetics?: Json
           points?: number
@@ -78,10 +84,13 @@ export type Database = {
         Update: {
           achievements?: Json
           active_theme?: string
+          best_streak?: number
           boosts?: Json
           boss_defeated?: Json
           completed?: Json
           created_at?: string
+          current_streak?: number
+          last_activity_date?: string | null
           lifetime_points?: number
           owned_cosmetics?: Json
           points?: number

@@ -15,10 +15,15 @@ export type Progress = {
   ownedCosmetics: string[];
   activeTheme: string;
   boosts: { hint: number; skip: number };
+  currentStreak: number;
+  bestStreak: number;
+  lastActivityDate: string | null; // YYYY-MM-DD (local)
 };
 
 const GUEST_KEY = "analytica.progress.guest.v2";
 const LEGACY_KEY = "analytica.progress.v1";
+
+export const STREAK_RECOVERY_COST = 1000;
 
 const DEFAULT: Progress = {
   completed: {},
@@ -30,7 +35,35 @@ const DEFAULT: Progress = {
   ownedCosmetics: ["theme-pergamino"],
   activeTheme: "theme-pergamino",
   boosts: { hint: 0, skip: 0 },
+  currentStreak: 0,
+  bestStreak: 0,
+  lastActivityDate: null,
 };
+
+function dayKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+export function todayKey(): string {
+  return dayKey(new Date());
+}
+export function yesterdayKey(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return dayKey(d);
+}
+
+/** Racha visible: 0 si han pasado más de 24 h (más de un día natural) sin actividad. */
+export function effectiveStreak(p: Progress): number {
+  if (!p.lastActivityDate) return 0;
+  if (p.lastActivityDate === todayKey() || p.lastActivityDate === yesterdayKey()) return p.currentStreak;
+  return 0;
+}
+
+/** ¿Se ha perdido una racha que se puede recuperar pagando puntos? */
+export function streakLost(p: Progress): boolean {
+  return !!p.lastActivityDate && p.currentStreak > 0 && effectiveStreak(p) === 0;
+}
+
 
 let cache: Progress | null = null;
 let activeUserId: string | null = null;
@@ -94,6 +127,9 @@ async function saveCloudProgress(userId: string, progress: Progress) {
     owned_cosmetics: progress.ownedCosmetics as Json,
     active_theme: progress.activeTheme,
     boosts: progress.boosts as Json,
+    current_streak: progress.currentStreak,
+    best_streak: progress.bestStreak,
+    last_activity_date: progress.lastActivityDate,
   });
   if (!error) {
     await supabase.rpc("sync_progress", {
@@ -113,6 +149,9 @@ function fromCloud(row: {
   owned_cosmetics: Json;
   active_theme: string;
   boosts: Json;
+  current_streak?: number | null;
+  best_streak?: number | null;
+  last_activity_date?: string | null;
 }): Progress {
   return normalize({
     completed: row.completed as Record<string, number>,
@@ -123,8 +162,12 @@ function fromCloud(row: {
     ownedCosmetics: row.owned_cosmetics as string[],
     activeTheme: row.active_theme,
     boosts: row.boosts as Progress["boosts"],
+    currentStreak: row.current_streak ?? 0,
+    bestStreak: row.best_streak ?? 0,
+    lastActivityDate: row.last_activity_date ?? null,
   });
 }
+
 
 export async function activateAccountProgress(userId: string, importGuestProgress = false) {
   const existing = hydrationByUser.get(userId);
@@ -182,27 +225,60 @@ function earn(p: Progress, n: number): Progress {
   };
 }
 
+/** Registra actividad de hoy y devuelve el progreso con la racha actualizada. */
+function touchStreak(p: Progress): Progress {
+  const today = todayKey();
+  if (p.lastActivityDate === today) return p;
+  const continues = p.lastActivityDate === yesterdayKey();
+  const currentStreak = continues ? p.currentStreak + 1 : 1;
+  const bestStreak = Math.max(p.bestStreak, currentStreak);
+  notifyStreak(currentStreak, bestStreak > p.bestStreak);
+  return { ...p, currentStreak, bestStreak, lastActivityDate: today };
+}
+
+function notifyStreak(streak: number, isRecord: boolean) {
+  if (typeof window === "undefined") return;
+  void import("sonner").then(({ toast }) => {
+    toast(`🔥 ¡Racha de ${streak} día${streak === 1 ? "" : "s"}!`, {
+      description: isRecord ? "Nuevo récord personal. Sigue así." : "Vuelve mañana para mantenerla.",
+    });
+  });
+}
+
+/** Recupera una racha perdida pagando puntos. */
+export function recoverStreak(): boolean {
+  const p = read();
+  if (!streakLost(p) || p.points < STREAK_RECOVERY_COST) return false;
+  write({
+    ...p,
+    points: p.points - STREAK_RECOVERY_COST,
+    lastActivityDate: yesterdayKey(),
+  });
+  return true;
+}
+
 export function setPlayerName(name: string) {
   write({ ...read(), playerName: name });
 }
 export function addPoints(n: number) {
   const p = read();
-  write({ ...earn(p, n), totalCorrect: p.totalCorrect + 1 });
+  write(touchStreak({ ...earn(p, n), totalCorrect: p.totalCorrect + 1 }));
 }
+
 export function completeLevel(worldId: string, levelIdx: number, earned: number) {
   const p = read();
   const prev = p.completed[worldId] ?? -1;
-  write({
+  write(touchStreak({
     ...earn(p, earned),
     completed: { ...p.completed, [worldId]: Math.max(prev, levelIdx) },
-  });
+  }));
 }
 export function defeatBoss(worldId: string, earned: number) {
   const p = read();
-  write({
+  write(touchStreak({
     ...earn(p, earned),
     bossDefeated: { ...p.bossDefeated, [worldId]: true },
-  });
+  }));
 }
 export function buyCosmetic(id: string, cost: number): boolean {
   const p = read();
