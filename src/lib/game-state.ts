@@ -127,6 +127,9 @@ async function saveCloudProgress(userId: string, progress: Progress) {
     owned_cosmetics: progress.ownedCosmetics as Json,
     active_theme: progress.activeTheme,
     boosts: progress.boosts as Json,
+    current_streak: progress.currentStreak,
+    best_streak: progress.bestStreak,
+    last_activity_date: progress.lastActivityDate,
   });
   if (!error) {
     await supabase.rpc("sync_progress", {
@@ -146,6 +149,9 @@ function fromCloud(row: {
   owned_cosmetics: Json;
   active_theme: string;
   boosts: Json;
+  current_streak?: number | null;
+  best_streak?: number | null;
+  last_activity_date?: string | null;
 }): Progress {
   return normalize({
     completed: row.completed as Record<string, number>,
@@ -156,8 +162,12 @@ function fromCloud(row: {
     ownedCosmetics: row.owned_cosmetics as string[],
     activeTheme: row.active_theme,
     boosts: row.boosts as Progress["boosts"],
+    currentStreak: row.current_streak ?? 0,
+    bestStreak: row.best_streak ?? 0,
+    lastActivityDate: row.last_activity_date ?? null,
   });
 }
+
 
 export async function activateAccountProgress(userId: string, importGuestProgress = false) {
   const existing = hydrationByUser.get(userId);
