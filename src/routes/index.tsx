@@ -7,13 +7,13 @@ import { Rich } from "@/components/Rich";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Analytica — Aprende análisis matemático jugando" },
+      { title: "Analynx — Aprende análisis matemático jugando" },
       {
         name: "description",
         content:
-          "Analytica es un juego web en español para aprender análisis matemático paso a paso: límites, derivadas, integrales y series. Mundos, niveles y batallas contra matemáticos legendarios.",
+          "Analynx es un juego web en español para aprender análisis matemático paso a paso: límites, derivadas, integrales y series. Mundos, niveles y batallas contra matemáticos legendarios.",
       },
-      { property: "og:title", content: "Analytica" },
+      { property: "og:title", content: "Analynx" },
       {
         property: "og:description",
         content:
@@ -43,14 +43,14 @@ function Home() {
           </span>
         </div>
         <h1 className="text-4xl md:text-5xl font-display tracking-tight leading-[1.05]">
-          Bienvenido a <span className="italic">Analytica</span>
+          Bienvenido a <span className="italic">Analynx</span>
         </h1>
         <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
           Elige un mundo y empieza a aprender. Las lecciones avanzan despacio para
           consolidar cada concepto; al final de cada mundo, un matemático legendario te espera.
         </p>
         <p className="mt-3 text-xs text-muted-foreground/80 max-w-xl mx-auto">
-          Esta es la <strong className="text-foreground">versión beta</strong> de Analytica: aún quedan mundos y
+          Esta es la <strong className="text-foreground">versión beta</strong> de Analynx: aún quedan mundos y
           funcionalidades por incorporar.
         </p>
       </section>

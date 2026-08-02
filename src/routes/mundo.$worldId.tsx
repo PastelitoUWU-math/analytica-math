@@ -10,10 +10,10 @@ export const Route = createFileRoute("/mundo/$worldId")({
     const url = `https://analytica-math.lovable.app/mundo/${params.worldId}`;
     return {
       meta: [
-        { title: `${w?.title ?? "Mundo"} — Analytica` },
-        { name: "description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analytica" },
-        { property: "og:title", content: `${w?.title ?? "Mundo"} — Analytica` },
-        { property: "og:description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analytica" },
+        { title: `${w?.title ?? "Mundo"} — Analynx` },
+        { name: "description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analynx" },
+        { property: "og:title", content: `${w?.title ?? "Mundo"} — Analynx` },
+        { property: "og:description", content: w?.summary?.slice(0, 150) ?? "Mundo de Analynx" },
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],

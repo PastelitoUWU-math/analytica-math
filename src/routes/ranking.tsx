@@ -7,10 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/ranking")({
   head: () => ({
     meta: [
-      { title: "Clasificación — Analytica" },
-      { name: "description", content: "Clasificación global de los mejores analistas matemáticos de Analytica, ordenada por puntos acumulados históricos." },
-      { property: "og:title", content: "Clasificación — Analytica" },
-      { property: "og:description", content: "Clasificación global de Analytica, ordenada por puntos acumulados históricos." },
+      { title: "Clasificación — Analynx" },
+      { name: "description", content: "Clasificación global de los mejores analistas matemáticos de Analynx, ordenada por puntos acumulados históricos." },
+      { property: "og:title", content: "Clasificación — Analynx" },
+      { property: "og:description", content: "Clasificación global de Analynx, ordenada por puntos acumulados históricos." },
       { property: "og:url", content: "https://analytica-math.lovable.app/ranking" },
     ],
     links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/ranking" }],

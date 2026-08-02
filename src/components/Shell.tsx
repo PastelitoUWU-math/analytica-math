@@ -26,7 +26,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <Link to="/" className="flex min-w-0 items-center gap-3 group">
             <Sigil />
             <span className="text-xl tracking-tight font-display">
-              Analytica
+              Analynx
             </span>
           </Link>
           <nav className="hidden sm:flex items-center gap-6 text-sm">
@@ -69,7 +69,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
       <main className="flex-1 relative z-10">{children}</main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground relative z-10 bg-background/70">
-        Analytica · Un juego para aprender análisis matemático paso a paso.
+        Analynx · Un juego para aprender análisis matemático paso a paso.
       </footer>
       <nav className="sm:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border/60 bg-background/95 backdrop-blur" aria-label="Navegación principal">
         {nav.map((n) => {
