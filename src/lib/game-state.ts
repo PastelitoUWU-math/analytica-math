@@ -268,17 +268,17 @@ export function addPoints(n: number) {
 export function completeLevel(worldId: string, levelIdx: number, earned: number) {
   const p = read();
   const prev = p.completed[worldId] ?? -1;
-  write({
+  write(touchStreak({
     ...earn(p, earned),
     completed: { ...p.completed, [worldId]: Math.max(prev, levelIdx) },
-  });
+  }));
 }
 export function defeatBoss(worldId: string, earned: number) {
   const p = read();
-  write({
+  write(touchStreak({
     ...earn(p, earned),
     bossDefeated: { ...p.bossDefeated, [worldId]: true },
-  });
+  }));
 }
 export function buyCosmetic(id: string, cost: number): boolean {
   const p = read();
