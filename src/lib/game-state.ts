@@ -15,10 +15,15 @@ export type Progress = {
   ownedCosmetics: string[];
   activeTheme: string;
   boosts: { hint: number; skip: number };
+  currentStreak: number;
+  bestStreak: number;
+  lastActivityDate: string | null; // YYYY-MM-DD (local)
 };
 
 const GUEST_KEY = "analytica.progress.guest.v2";
 const LEGACY_KEY = "analytica.progress.v1";
+
+export const STREAK_RECOVERY_COST = 1000;
 
 const DEFAULT: Progress = {
   completed: {},
@@ -30,7 +35,35 @@ const DEFAULT: Progress = {
   ownedCosmetics: ["theme-pergamino"],
   activeTheme: "theme-pergamino",
   boosts: { hint: 0, skip: 0 },
+  currentStreak: 0,
+  bestStreak: 0,
+  lastActivityDate: null,
 };
+
+function dayKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+export function todayKey(): string {
+  return dayKey(new Date());
+}
+export function yesterdayKey(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return dayKey(d);
+}
+
+/** Racha visible: 0 si han pasado más de 24 h (más de un día natural) sin actividad. */
+export function effectiveStreak(p: Progress): number {
+  if (!p.lastActivityDate) return 0;
+  if (p.lastActivityDate === todayKey() || p.lastActivityDate === yesterdayKey()) return p.currentStreak;
+  return 0;
+}
+
+/** ¿Se ha perdido una racha que se puede recuperar pagando puntos? */
+export function streakLost(p: Progress): boolean {
+  return !!p.lastActivityDate && p.currentStreak > 0 && effectiveStreak(p) === 0;
+}
+
 
 let cache: Progress | null = null;
 let activeUserId: string | null = null;
