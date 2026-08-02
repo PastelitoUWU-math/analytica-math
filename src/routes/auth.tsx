@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
+import { StreakCard } from "@/components/StreakCard";
 import { useState } from "react";
 import { signIn, signUp, useAuth, signOut, verifySignupCode, resendSignupCode } from "@/lib/auth";
 import { sfx } from "@/lib/sfx";
