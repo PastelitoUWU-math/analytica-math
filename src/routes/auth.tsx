@@ -8,10 +8,10 @@ import { sfx } from "@/lib/sfx";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Cuenta — Analytica" },
-      { name: "description", content: "Inicia sesión o crea una cuenta verificada por correo para entrar en la clasificación global de Analytica." },
-      { property: "og:title", content: "Cuenta — Analytica" },
-      { property: "og:description", content: "Inicia sesión o regístrate para entrar en la clasificación global de Analytica." },
+      { title: "Cuenta — Analynx" },
+      { name: "description", content: "Inicia sesión o crea una cuenta verificada por correo para entrar en la clasificación global de Analynx." },
+      { property: "og:title", content: "Cuenta — Analynx" },
+      { property: "og:description", content: "Inicia sesión o regístrate para entrar en la clasificación global de Analynx." },
       { property: "og:url", content: "https://analytica-math.lovable.app/auth" },
       { name: "robots", content: "noindex" },
     ],

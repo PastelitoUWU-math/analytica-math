@@ -51,12 +51,12 @@ const BOOSTS = [
 export const Route = createFileRoute("/tienda")({
   head: () => ({
     meta: [
-      { title: "Tienda — Analytica" },
+      { title: "Tienda — Analynx" },
       {
         name: "description",
-        content: "Cambia el tema visual de Analytica y compra potenciadores con tus puntos.",
+        content: "Cambia el tema visual de Analynx y compra potenciadores con tus puntos.",
       },
-      { property: "og:title", content: "Tienda — Analytica" },
+      { property: "og:title", content: "Tienda — Analynx" },
       { property: "og:description", content: "Personaliza tu experiencia y compra potenciadores con tus puntos." },
       { property: "og:url", content: "https://analytica-math.lovable.app/tienda" },
     ],

@@ -7,13 +7,13 @@ import { Rich } from "@/components/Rich";
 export const Route = createFileRoute("/mundos")({
   head: () => ({
     meta: [
-      { title: "Mundos — Analytica" },
+      { title: "Mundos — Analynx" },
       {
         name: "description",
         content:
           "Cinco mundos del análisis matemático: límites, continuidad, derivadas, integrales y series.",
       },
-      { property: "og:title", content: "Mundos — Analytica" },
+      { property: "og:title", content: "Mundos — Analynx" },
       { property: "og:description", content: "Recorre el análisis matemático en cinco etapas: límites, continuidad, derivadas, integrales y series." },
       { property: "og:url", content: "https://analytica-math.lovable.app/mundos" },
     ],
