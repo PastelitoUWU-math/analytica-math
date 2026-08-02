@@ -225,13 +225,46 @@ function earn(p: Progress, n: number): Progress {
   };
 }
 
+/** Registra actividad de hoy y devuelve el progreso con la racha actualizada. */
+function touchStreak(p: Progress): Progress {
+  const today = todayKey();
+  if (p.lastActivityDate === today) return p;
+  const continues = p.lastActivityDate === yesterdayKey();
+  const currentStreak = continues ? p.currentStreak + 1 : 1;
+  const bestStreak = Math.max(p.bestStreak, currentStreak);
+  notifyStreak(currentStreak, bestStreak > p.bestStreak);
+  return { ...p, currentStreak, bestStreak, lastActivityDate: today };
+}
+
+function notifyStreak(streak: number, isRecord: boolean) {
+  if (typeof window === "undefined") return;
+  void import("sonner").then(({ toast }) => {
+    toast(`🔥 ¡Racha de ${streak} día${streak === 1 ? "" : "s"}!`, {
+      description: isRecord ? "Nuevo récord personal. Sigue así." : "Vuelve mañana para mantenerla.",
+    });
+  });
+}
+
+/** Recupera una racha perdida pagando puntos. */
+export function recoverStreak(): boolean {
+  const p = read();
+  if (!streakLost(p) || p.points < STREAK_RECOVERY_COST) return false;
+  write({
+    ...p,
+    points: p.points - STREAK_RECOVERY_COST,
+    lastActivityDate: yesterdayKey(),
+  });
+  return true;
+}
+
 export function setPlayerName(name: string) {
   write({ ...read(), playerName: name });
 }
 export function addPoints(n: number) {
   const p = read();
-  write({ ...earn(p, n), totalCorrect: p.totalCorrect + 1 });
+  write(touchStreak({ ...earn(p, n), totalCorrect: p.totalCorrect + 1 }));
 }
+
 export function completeLevel(worldId: string, levelIdx: number, earned: number) {
   const p = read();
   const prev = p.completed[worldId] ?? -1;
