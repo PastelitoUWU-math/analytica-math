@@ -91,6 +91,7 @@ function AuthPage() {
             Hola <strong className="text-foreground">{profile?.username ?? "…"}</strong>. Ya apareces en la
             clasificación global.
           </p>
+          <StreakCard />
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => navigate({ to: "/ranking" })}
@@ -105,6 +106,7 @@ function AuthPage() {
       </Shell>
     );
   }
+
 
   if (awaitingCode) {
     return (
