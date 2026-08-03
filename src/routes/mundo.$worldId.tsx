@@ -3,6 +3,7 @@ import { Shell } from "@/components/Shell";
 import { getWorld, WORLDS } from "@/lib/content/worlds";
 import { useProgress } from "@/lib/game-state";
 import { InlineMath } from "@/components/InlineMath";
+import { levelTopic } from "@/lib/unlock";
 
 export const Route = createFileRoute("/mundo/$worldId")({
   head: ({ params }) => {
@@ -64,11 +65,11 @@ function WorldPage() {
         <h1 className="text-3xl font-display tracking-tight mt-3">{world.title}</h1>
         <p className="text-muted-foreground italic">{world.subtitle}</p>
 
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {world.levels.map((lv, idx) => {
             const unlocked = idx <= completed + 1;
             const done = idx <= completed;
-            const cls = `relative aspect-square rounded-md border flex flex-col items-center justify-center p-2 text-center transition ${
+            const cls = `relative rounded-md border flex items-start gap-3 p-3 text-left transition ${
               unlocked
                 ? done
                   ? "bg-success/10 border-success/40 hover:bg-success/15"
@@ -77,9 +78,20 @@ function WorldPage() {
             }`;
             const inner = (
               <>
-                <div className="text-xs uppercase tracking-wider opacity-70">Nivel</div>
-                <div className="text-xl font-display">{idx + 1}</div>
+                <div className="shrink-0 w-9 text-center">
+                  <div className="text-[9px] uppercase tracking-wider opacity-70">Nivel</div>
+                  <div className="text-lg font-display leading-none">{idx + 1}</div>
+                </div>
+                <div className="min-w-0 flex-1 pr-4">
+                  <div className="text-sm leading-snug">
+                    <InlineMath source={levelTopic(lv.title)} />
+                  </div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                    <InlineMath source={lv.concept} />
+                  </div>
+                </div>
                 {done && <div className="absolute top-1.5 right-1.5 text-success text-xs">✓</div>}
+                {!unlocked && <div className="absolute top-1.5 right-1.5 text-xs">🔒</div>}
               </>
             );
             if (!unlocked) {

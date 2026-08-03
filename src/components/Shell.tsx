@@ -5,15 +5,18 @@ import { Backdrop } from "./Backdrop";
 import { ThemeApplier } from "./ThemeApplier";
 import { useAuth } from "@/lib/auth";
 import { installGlobalClickSfx } from "@/lib/sfx";
+import { AchievementPopup } from "./AchievementPopup";
+import { syncAchievements } from "@/lib/game-state";
 
 export function Shell({ children }: { children: ReactNode }) {
   const progress = useProgress();
   const { user, profile } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  useEffect(() => { installGlobalClickSfx(); }, []);
+  useEffect(() => { installGlobalClickSfx(); syncAchievements(); }, []);
   const nav = [
     { to: "/", label: "Inicio" },
     { to: "/mundos", label: "Mundos" },
+    { to: "/logros", label: "Logros" },
     { to: "/ranking", label: "Ranking" },
     { to: "/tienda", label: "Tienda" },
   ];
@@ -29,7 +32,7 @@ export function Shell({ children }: { children: ReactNode }) {
               Analynx
             </span>
           </Link>
-          <nav className="hidden sm:flex items-center gap-6 text-sm">
+          <nav className="hidden sm:flex items-center gap-5 text-sm">
             {nav.map((n) => {
               const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
               return (
@@ -67,11 +70,12 @@ export function Shell({ children }: { children: ReactNode }) {
           </Link>
         </div>
       </header>
+      <AchievementPopup />
       <main className="flex-1 relative z-10">{children}</main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground relative z-10 bg-background/70">
         Analynx · Un juego para aprender análisis matemático paso a paso.
       </footer>
-      <nav className="sm:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border/60 bg-background/95 backdrop-blur" aria-label="Navegación principal">
+      <nav className="sm:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border/60 bg-background/95 backdrop-blur" aria-label="Navegación principal">
         {nav.map((n) => {
           const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
           return (
