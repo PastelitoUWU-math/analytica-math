@@ -4,6 +4,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
+import { ACHIEVEMENTS, emitAchievement, type UnlockedAchievement } from "@/lib/achievements";
 
 export type Progress = {
   completed: Record<string, number>;
@@ -18,6 +19,7 @@ export type Progress = {
   currentStreak: number;
   bestStreak: number;
   lastActivityDate: string | null; // YYYY-MM-DD (local)
+  achievements: UnlockedAchievement[];
 };
 
 const GUEST_KEY = "analytica.progress.guest.v2";
@@ -38,6 +40,7 @@ const DEFAULT: Progress = {
   currentStreak: 0,
   bestStreak: 0,
   lastActivityDate: null,
+  achievements: [],
 };
 
 function dayKey(d: Date): string {
@@ -79,6 +82,7 @@ function normalize(value: Partial<Progress> | null | undefined): Progress {
     bossDefeated: value?.bossDefeated ?? {},
     ownedCosmetics: value?.ownedCosmetics ?? DEFAULT.ownedCosmetics,
     boosts: { ...DEFAULT.boosts, ...(value?.boosts ?? {}) },
+    achievements: Array.isArray(value?.achievements) ? value.achievements : [],
   };
 }
 
@@ -96,8 +100,34 @@ function read(): Progress {
   }
   return cache ?? DEFAULT;
 }
+/** Evalúa el catálogo de logros y concede los que correspondan (también retroactivamente). */
+function grantAchievements(p: Progress): Progress {
+  const owned = new Set(p.achievements.map((a) => a.id));
+  const newly = ACHIEVEMENTS.filter((a) => !owned.has(a.id) && a.check(p));
+  if (newly.length === 0) return p;
+  const now = new Date().toISOString();
+  const reward = newly.reduce((s, a) => s + a.recompensa_coins, 0);
+  if (typeof window !== "undefined") {
+    setTimeout(() => newly.forEach((a, i) => setTimeout(() => emitAchievement(a), i * 900)), 300);
+  }
+  return {
+    ...p,
+    points: p.points + reward,
+    lifetimePoints: p.lifetimePoints + reward,
+    achievements: [...p.achievements, ...newly.map((a) => ({ id: a.id, at: now }))],
+  };
+}
+
+/** Revisa logros pendientes con el estado actual (útil al arrancar o iniciar sesión). */
+export function syncAchievements() {
+  const p = read();
+  const next = grantAchievements(p);
+  if (next !== p) write(next);
+}
+
 function write(p: Progress) {
   const prev = cache;
+  p = grantAchievements(p);
   cache = p;
   if (typeof window !== "undefined" && !activeUserId) {
     localStorage.setItem(GUEST_KEY, JSON.stringify(p));
@@ -130,6 +160,7 @@ async function saveCloudProgress(userId: string, progress: Progress) {
     current_streak: progress.currentStreak,
     best_streak: progress.bestStreak,
     last_activity_date: progress.lastActivityDate,
+    achievements: progress.achievements as unknown as Json,
   });
   if (!error) {
     await supabase.rpc("sync_progress", {
@@ -152,6 +183,7 @@ function fromCloud(row: {
   current_streak?: number | null;
   best_streak?: number | null;
   last_activity_date?: string | null;
+  achievements?: Json;
 }): Progress {
   return normalize({
     completed: row.completed as Record<string, number>,
@@ -165,6 +197,9 @@ function fromCloud(row: {
     currentStreak: row.current_streak ?? 0,
     bestStreak: row.best_streak ?? 0,
     lastActivityDate: row.last_activity_date ?? null,
+    achievements: Array.isArray(row.achievements)
+      ? (row.achievements as unknown as UnlockedAchievement[])
+      : [],
   });
 }
 
@@ -185,9 +220,14 @@ export async function activateAccountProgress(userId: string, importGuestProgres
       Object.keys(data.boss_defeated as Record<string, boolean>).length === 0
     );
     if (importGuestProgress && cloudIsPristine) next = normalize(guest);
+    const granted = grantAchievements(next);
+    const achievementsChanged = granted !== next;
+    next = granted;
     cache = next;
     listeners.forEach((listener) => listener());
-    if (!data || (importGuestProgress && cloudIsPristine)) await saveCloudProgress(userId, next);
+    if (!data || (importGuestProgress && cloudIsPristine) || achievementsChanged) {
+      await saveCloudProgress(userId, next);
+    }
   })().finally(() => hydrationByUser.delete(userId));
   hydrationByUser.set(userId, task);
   return task;
@@ -268,6 +308,8 @@ export function addPoints(n: number) {
 export function completeLevel(worldId: string, levelIdx: number, earned: number) {
   const p = read();
   const prev = p.completed[worldId] ?? -1;
+  // Antitrampas: solo se puede completar el siguiente nivel desbloqueado.
+  if (levelIdx > prev + 1) return;
   write(touchStreak({
     ...earn(p, earned),
     completed: { ...p.completed, [worldId]: Math.max(prev, levelIdx) },
