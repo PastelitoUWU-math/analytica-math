@@ -3,6 +3,8 @@ import { Shell } from "@/components/Shell";
 import { WORLDS } from "@/lib/content/worlds";
 import { useProgress } from "@/lib/game-state";
 import { Rich } from "@/components/Rich";
+import { ACHIEVEMENTS } from "@/lib/achievements";
+import { worldPrereqMet } from "@/lib/unlock";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,6 +30,9 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const progress = useProgress();
+  const unlockedIds = new Set(progress.achievements.map((a) => a.id));
+  const achievementsDone = ACHIEVEMENTS.filter((a) => unlockedIds.has(a.id)).length;
+  const achievementsPct = Math.round((achievementsDone / ACHIEVEMENTS.length) * 100);
   return (
     <Shell>
       <section className="max-w-5xl mx-auto px-6 pt-14 pb-6 text-center">
@@ -64,11 +69,13 @@ function Home() {
             const totalLevels = w.levels.length;
             const pct = totalLevels ? Math.round(((completed + 1) / totalLevels) * 100) : 0;
             const bossDone = progress.bossDefeated[w.id];
+            const { prev: prevWorld, met: prereqMet } = worldPrereqMet(w.id, progress);
+            const locked = w.available && !prereqMet;
             return (
               <div
                 key={w.id}
                 className={`relative bg-card/90 border border-border/60 rounded-xl p-6 card-lift ${
-                  w.available ? "" : "opacity-70"
+                  w.available && !locked ? "" : "opacity-70"
                 }`}
               >
                 <div className="absolute -top-3 left-5 text-[10px] tracking-[0.25em] uppercase px-2 py-0.5 rounded-full bg-accent text-accent-foreground">
@@ -79,7 +86,13 @@ function Home() {
                 <div className="mt-3 text-[14px] leading-relaxed text-foreground/85">
                   <Rich source={w.summary} />
                 </div>
-                {w.available ? (
+                {w.available && locked ? (
+                  <div className="mt-5">
+                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-border/60 bg-secondary/40 text-muted-foreground text-sm">
+                      🔒 Vence a {prevWorld?.boss?.name ?? "el jefe anterior"} para desbloquear
+                    </div>
+                  </div>
+                ) : w.available ? (
                   <>
                     <div className="mt-4 text-xs text-muted-foreground">
                       {completed + 1} / {totalLevels} niveles · jefe {bossDone ? "vencido" : "pendiente"}
@@ -108,6 +121,53 @@ function Home() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      <div className="ink-rule max-w-3xl mx-auto my-4" />
+
+      <section className="max-w-5xl mx-auto px-6 py-10">
+        <div className="flex items-baseline justify-between gap-4 flex-wrap">
+          <h2 className="text-2xl font-display tracking-tight">Logros</h2>
+          <Link to="/logros" className="text-sm text-accent hover:underline underline-offset-4">
+            Ver todos →
+          </Link>
+        </div>
+        <div className="mt-4 bg-card/90 border border-border/60 rounded-xl p-6">
+          <div className="flex items-baseline justify-between text-sm">
+            <span>
+              Logros completados:{" "}
+              <strong className="tabular-nums">
+                {achievementsDone}/{ACHIEVEMENTS.length}
+              </strong>
+            </span>
+            <span className="text-2xl font-display tabular-nums">{achievementsPct}%</span>
+          </div>
+          <div className="mt-3 h-3 rounded bg-secondary overflow-hidden">
+            <div
+              className="h-full bg-accent transition-all duration-700"
+              style={{ width: `${achievementsPct}%` }}
+            />
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {ACHIEVEMENTS.slice(0, 8).map((a) => {
+              const got = unlockedIds.has(a.id);
+              return (
+                <span
+                  key={a.id}
+                  title={`${a.nombre} — ${a.descripcion}`}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs ${
+                    got
+                      ? "border-accent/50 bg-accent/10"
+                      : "border-border/50 text-muted-foreground opacity-70"
+                  }`}
+                >
+                  <span>{got ? a.icono : "🔒"}</span>
+                  {a.nombre}
+                </span>
+              );
+            })}
+          </div>
         </div>
       </section>
     </Shell>
