@@ -84,10 +84,10 @@ function WorldPage() {
                 </div>
                 <div className="min-w-0 flex-1 pr-4">
                   <div className="text-sm leading-snug">
-                    {unlocked ? <InlineMath source={levelTopic(lv.title)} /> : levelTopic(lv.title)}
+                    <InlineMath source={levelTopic(lv.title)} />
                   </div>
                   <div className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                    {lv.concept}
+                    <InlineMath source={lv.concept} />
                   </div>
                 </div>
                 {done && <div className="absolute top-1.5 right-1.5 text-success text-xs">✓</div>}
