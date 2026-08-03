@@ -5,7 +5,8 @@ import { Rich } from "@/components/Rich";
 import { InlineMath } from "@/components/InlineMath";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
 import { useEffect, useState } from "react";
-import { completeLevel } from "@/lib/game-state";
+import { completeLevel, useProgress } from "@/lib/game-state";
+import { levelUnlocked } from "@/lib/unlock";
 
 export const Route = createFileRoute("/nivel/$worldId/$levelIdx")({
   head: ({ params }) => {
@@ -44,6 +45,8 @@ function LevelPageOuter() {
 function LevelPage({ worldId, idx }: { worldId: string; idx: number }) {
   const world = getWorld(worldId)!;
   const level = world.levels[idx];
+  const progress = useProgress();
+  const unlocked = levelUnlocked(worldId, idx, progress);
   const navigate = useNavigate();
   const [phase, setPhase] = useState<"lesson" | "exercise" | "done">("lesson");
   const [exIdx, setExIdx] = useState(0);
@@ -57,6 +60,28 @@ function LevelPage({ worldId, idx }: { worldId: string; idx: number }) {
     setScore(0);
     setStats({ correct: 0, revealed: 0 });
   }, [worldId, idx]);
+
+  if (!unlocked) {
+    return (
+      <Shell>
+        <div className="max-w-2xl mx-auto px-6 py-16 text-center">
+          <div className="text-5xl">🔒</div>
+          <h1 className="text-2xl font-display tracking-tight mt-4">Nivel bloqueado</h1>
+          <p className="text-muted-foreground mt-2">
+            Este nivel aún no está desbloqueado. Completa los niveles anteriores de{" "}
+            <em>{world.title}</em> para acceder.
+          </p>
+          <Link
+            to="/mundo/$worldId"
+            params={{ worldId }}
+            className="inline-block mt-6 px-5 py-2.5 rounded-md bg-foreground text-background"
+          >
+            ← Volver al mundo
+          </Link>
+        </div>
+      </Shell>
+    );
+  }
 
   return (
     <Shell>

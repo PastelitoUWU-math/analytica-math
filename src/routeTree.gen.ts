@@ -13,6 +13,7 @@ import { Route as TiendaRouteImport } from './routes/tienda'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as MundosRouteImport } from './routes/mundos'
+import { Route as LogrosRouteImport } from './routes/logros'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
@@ -37,6 +38,11 @@ const RankingRoute = RankingRouteImport.update({
 const MundosRoute = MundosRouteImport.update({
   id: '/mundos',
   path: '/mundos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogrosRoute = LogrosRouteImport.update({
+  id: '/logros',
+  path: '/logros',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -68,6 +74,7 @@ const NivelWorldIdLevelIdxRoute = NivelWorldIdLevelIdxRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/logros': typeof LogrosRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/logros': typeof LogrosRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/logros': typeof LogrosRoute
   '/mundos': typeof MundosRoute
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/logros'
     | '/mundos'
     | '/ranking'
     | '/sitemap.xml'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/logros'
     | '/mundos'
     | '/ranking'
     | '/sitemap.xml'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/auth'
+    | '/logros'
     | '/mundos'
     | '/ranking'
     | '/sitemap.xml'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  LogrosRoute: typeof LogrosRoute
   MundosRoute: typeof MundosRoute
   RankingRoute: typeof RankingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/mundos'
       fullPath: '/mundos'
       preLoaderRoute: typeof MundosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logros': {
+      id: '/logros'
+      path: '/logros'
+      fullPath: '/logros'
+      preLoaderRoute: typeof LogrosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  LogrosRoute: LogrosRoute,
   MundosRoute: MundosRoute,
   RankingRoute: RankingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

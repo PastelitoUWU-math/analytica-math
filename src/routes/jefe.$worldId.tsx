@@ -5,7 +5,8 @@ import { BossPortrait } from "@/components/BossPortrait";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
 import { Rich } from "@/components/Rich";
 import { useEffect, useRef, useState } from "react";
-import { defeatBoss } from "@/lib/game-state";
+import { defeatBoss, useProgress } from "@/lib/game-state";
+import { bossUnlocked } from "@/lib/unlock";
 
 export const Route = createFileRoute("/jefe/$worldId")({
   head: ({ params }) => {
@@ -37,6 +38,8 @@ function BossPage() {
   const world = getWorld(worldId)!;
   const boss = world.boss!;
   const navigate = useNavigate();
+  const progress = useProgress();
+  const canFight = bossUnlocked(worldId, progress);
 
   const [phase, setPhase] = useState<"intro" | "fight" | "win" | "lose">("intro");
   const [introLine, setIntroLine] = useState(0);
