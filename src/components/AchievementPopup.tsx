@@ -8,12 +8,13 @@ export function AchievementPopup() {
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
-    return onAchievementUnlocked((a) => {
+    const off = onAchievementUnlocked((a) => {
       const key = Date.now() + Math.random();
       setItems((prev) => [...prev, { ...a, key }]);
       try { sfx.levelUp(); } catch { /* audio opcional */ }
       setTimeout(() => setItems((prev) => prev.filter((i) => i.key !== key)), 6500);
     });
+    return () => { off(); };
   }, []);
 
   if (items.length === 0) return null;
