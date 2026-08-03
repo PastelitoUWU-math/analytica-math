@@ -4,6 +4,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
+import { WORLDS } from "@/lib/content/worlds";
 import { ACHIEVEMENTS, emitAchievement, type UnlockedAchievement } from "@/lib/achievements";
 
 export type Progress = {
@@ -317,6 +318,9 @@ export function completeLevel(worldId: string, levelIdx: number, earned: number)
 }
 export function defeatBoss(worldId: string, earned: number) {
   const p = read();
+  // Antitrampas: el jefe solo cuenta si se han completado todos los niveles.
+  const world = WORLDS.find((w) => w.id === worldId);
+  if (!world || (p.completed[worldId] ?? -1) + 1 < world.levels.length) return;
   write(touchStreak({
     ...earn(p, earned),
     bossDefeated: { ...p.bossDefeated, [worldId]: true },
