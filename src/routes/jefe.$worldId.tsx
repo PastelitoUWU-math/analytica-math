@@ -88,6 +88,28 @@ function BossPage() {
             ? boss.taunts[tauntIdx % boss.taunts.length]
             : `Pregunta ${exIdx + 1} de ${boss.exercises.length}. Resuélvela si te atreves. (Fallos: ${fails}/3)`;
 
+  if (!canFight) {
+    return (
+      <Shell>
+        <div className="max-w-2xl mx-auto px-6 py-16 text-center">
+          <div className="text-5xl">🔒</div>
+          <h1 className="text-2xl font-display tracking-tight mt-4">Batalla bloqueada</h1>
+          <p className="text-muted-foreground mt-2">
+            Debes completar todos los niveles de <em>{world.title}</em> antes de enfrentarte a{" "}
+            <strong className="text-foreground">{boss.name}</strong>.
+          </p>
+          <Link
+            to="/mundo/$worldId"
+            params={{ worldId }}
+            className="inline-block mt-6 px-5 py-2.5 rounded-md bg-foreground text-background"
+          >
+            ← Volver al mundo
+          </Link>
+        </div>
+      </Shell>
+    );
+  }
+
   return (
     <Shell>
       <div className="max-w-5xl mx-auto px-6 py-8">
