@@ -119,10 +119,23 @@ function grantAchievements(p: Progress): Progress {
   };
 }
 
+/** Mínimo de ejercicios que forzosamente ha resuelto quien tiene niveles completados. */
+function estimatedCorrect(p: Progress): number {
+  let n = 0;
+  for (const w of WORLDS) {
+    const done = (p.completed[w.id] ?? -1) + 1;
+    for (let i = 0; i < done; i++) n += w.levels[i]?.exercises.length ?? 0;
+    if (p.bossDefeated[w.id]) n += w.boss?.exercises.length ?? 0;
+  }
+  return n;
+}
+
 /** Revisa logros pendientes con el estado actual (útil al arrancar o iniciar sesión). */
 export function syncAchievements() {
   const p = read();
-  const next = grantAchievements(p);
+  const floor = estimatedCorrect(p);
+  const base = floor > p.totalCorrect ? { ...p, totalCorrect: floor } : p;
+  const next = grantAchievements(base);
   if (next !== p) write(next);
 }
 
