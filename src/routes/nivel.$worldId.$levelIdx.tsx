@@ -4,6 +4,7 @@ import { getWorld } from "@/lib/content/worlds";
 import { Rich } from "@/components/Rich";
 import { InlineMath } from "@/components/InlineMath";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
+import { LessonPlayer } from "@/components/LessonPlayer";
 import { useEffect, useState } from "react";
 import { completeLevel, useProgress } from "@/lib/game-state";
 import { levelUnlocked } from "@/lib/unlock";
