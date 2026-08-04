@@ -210,7 +210,7 @@ function BossPage() {
                     } else {
                       const bonus = 100;
                       const total = newScore + bonus;
-                      defeatBoss(worldId, total);
+                      defeatBoss(worldId, total, Math.round(newScore / 20));
                       setScore(total);
                       setPhase("win");
                     }
