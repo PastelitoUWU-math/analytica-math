@@ -306,23 +306,52 @@ export function addPoints(n: number) {
   write(touchStreak({ ...earn(p, n), totalCorrect: p.totalCorrect + 1 }));
 }
 
-export function completeLevel(worldId: string, levelIdx: number, earned: number) {
+export function completeLevel(worldId: string, levelIdx: number, earned: number, correctCount = 0) {
   const p = read();
   const prev = p.completed[worldId] ?? -1;
   // Antitrampas: solo se puede completar el siguiente nivel desbloqueado.
   if (levelIdx > prev + 1) return;
   write(touchStreak({
     ...earn(p, earned),
+    totalCorrect: p.totalCorrect + Math.max(0, correctCount),
     completed: { ...p.completed, [worldId]: Math.max(prev, levelIdx) },
   }));
 }
-export function defeatBoss(worldId: string, earned: number) {
+export function defeatBoss(worldId: string, earned: number, correctCount = 0) {
   const p = read();
   // Antitrampas: el jefe solo cuenta si se han completado todos los niveles.
   const world = WORLDS.find((w) => w.id === worldId);
   if (!world || (p.completed[worldId] ?? -1) + 1 < world.levels.length) return;
   write(touchStreak({
     ...earn(p, earned),
+    totalCorrect: p.totalCorrect + Math.max(0, correctCount),
+    bossDefeated: { ...p.bossDefeated, [worldId]: true },
+  }));
+}
+
+/** Prueba de salto superada: desbloquea hasta `targetIdx` (marca como hechos los anteriores). */
+export function skipToLevel(worldId: string, targetIdx: number, correctCount = 0) {
+  const p = read();
+  const world = WORLDS.find((w) => w.id === worldId);
+  if (!world || targetIdx <= 0 || targetIdx > world.levels.length) return;
+  const prev = p.completed[worldId] ?? -1;
+  if (targetIdx - 1 <= prev) return;
+  write(touchStreak({
+    ...p,
+    totalCorrect: p.totalCorrect + Math.max(0, correctCount),
+    completed: { ...p.completed, [worldId]: targetIdx - 1 },
+  }));
+}
+
+/** Prueba de salto de mundo superada: niveles completados + jefe vencido. */
+export function skipWorld(worldId: string, correctCount = 0) {
+  const p = read();
+  const world = WORLDS.find((w) => w.id === worldId);
+  if (!world) return;
+  write(touchStreak({
+    ...p,
+    totalCorrect: p.totalCorrect + Math.max(0, correctCount),
+    completed: { ...p.completed, [worldId]: world.levels.length - 1 },
     bossDefeated: { ...p.bossDefeated, [worldId]: true },
   }));
 }
