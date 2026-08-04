@@ -1,7 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
 import { getWorld } from "@/lib/content/worlds";
-import { Rich } from "@/components/Rich";
 import { InlineMath } from "@/components/InlineMath";
 import { ExerciseRunner } from "@/components/ExerciseRunner";
 import { LessonPlayer } from "@/components/LessonPlayer";
