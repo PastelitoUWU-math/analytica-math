@@ -16,7 +16,6 @@ export function Shell({ children }: { children: ReactNode }) {
   const nav = [
     { to: "/", label: "Inicio" },
     { to: "/mundos", label: "Mundos" },
-    { to: "/logros", label: "Logros" },
     { to: "/ranking", label: "Ranking" },
     { to: "/tienda", label: "Tienda" },
   ];
@@ -75,7 +74,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground relative z-10 bg-background/70">
         Analynx · Un juego para aprender análisis matemático paso a paso.
       </footer>
-      <nav className="sm:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border/60 bg-background/95 backdrop-blur" aria-label="Navegación principal">
+      <nav className="sm:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border/60 bg-background/95 backdrop-blur" aria-label="Navegación principal">
         {nav.map((n) => {
           const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
           return (
