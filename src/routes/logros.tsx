@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Shell } from "@/components/Shell";
 import { ACHIEVEMENTS } from "@/lib/achievements";
 import { useProgress } from "@/lib/game-state";
+import { useAuth } from "@/lib/auth";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/logros")({
   head: () => ({
@@ -26,6 +28,34 @@ export const Route = createFileRoute("/logros")({
 
 function AchievementsPage() {
   const progress = useProgress();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <Shell>
+        <div className="max-w-4xl mx-auto px-6 py-16 text-sm text-muted-foreground">Cargando…</div>
+      </Shell>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Shell>
+        <div className="max-w-xl mx-auto px-6 py-20 text-center">
+          <div className="text-5xl">🔒</div>
+          <h1 className="text-2xl font-display tracking-tight mt-4">Logros bloqueados</h1>
+          <p className="text-muted-foreground mt-2">
+            Los logros forman parte de tu perfil. Inicia sesión o crea una cuenta para
+            desbloquearlos y guardarlos en la nube.
+          </p>
+          <Link to="/auth" className="inline-block mt-6 px-5 py-2.5 rounded-md bg-foreground text-background btn-glow">
+            Iniciar sesión
+          </Link>
+        </div>
+      </Shell>
+    );
+  }
+
   const unlockedMap = new Map(progress.achievements.map((a) => [a.id, a.at]));
   const total = ACHIEVEMENTS.length;
   const done = ACHIEVEMENTS.filter((a) => unlockedMap.has(a.id)).length;

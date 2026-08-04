@@ -93,7 +93,18 @@ function AuthPage() {
             clasificación global.
           </p>
           <StreakCard />
-          <div className="mt-6 flex gap-3">
+          <div className="mt-6 grid gap-3">
+            <button
+              onClick={() => navigate({ to: "/logros" })}
+              className="w-full px-4 py-3 rounded-md border border-accent/50 text-left hover:bg-accent/10 transition"
+            >
+              <span className="text-accent">🏆 Logros</span>
+              <span className="block text-xs text-muted-foreground mt-0.5">
+                Consulta tus logros desbloqueados y tu progreso.
+              </span>
+            </button>
+          </div>
+          <div className="mt-4 flex gap-3">
             <button
               onClick={() => navigate({ to: "/ranking" })}
               className="px-4 py-2 rounded-md bg-foreground text-background btn-glow"
