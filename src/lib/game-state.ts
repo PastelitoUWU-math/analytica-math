@@ -234,6 +234,8 @@ export async function activateAccountProgress(userId: string, importGuestProgres
       Object.keys(data.boss_defeated as Record<string, boolean>).length === 0
     );
     if (importGuestProgress && cloudIsPristine) next = normalize(guest);
+    const floor = estimatedCorrect(next);
+    if (floor > next.totalCorrect) next = { ...next, totalCorrect: floor };
     const granted = grantAchievements(next);
     const achievementsChanged = granted !== next;
     next = granted;
