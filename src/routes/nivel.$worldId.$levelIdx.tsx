@@ -103,20 +103,11 @@ function LevelPage({ worldId, idx }: { worldId: string; idx: number }) {
         </div>
 
         {phase === "lesson" && (
-          <section className="mt-6 bg-card/90 border border-border/60 rounded-lg p-8 card-lift animate-fade-in">
-            <div className="text-xs uppercase tracking-widest text-accent mb-3">
-              Lección — léela con calma
-            </div>
-            <Rich source={level.lesson.body} />
-            <div className="mt-8 flex justify-end">
-              <button
-                onClick={() => setPhase("exercise")}
-                className="px-5 py-2.5 rounded-md bg-foreground text-background hover:opacity-90 btn-glow"
-              >
-                Empezar ejercicios ({level.exercises.length}) →
-              </button>
-            </div>
-          </section>
+          <LessonPlayer
+            body={level.lesson.body}
+            exerciseCount={level.exercises.length}
+            onFinish={() => setPhase("exercise")}
+          />
         )}
 
         {phase === "exercise" && (
@@ -129,21 +120,23 @@ function LevelPage({ worldId, idx }: { worldId: string; idx: number }) {
               onComplete={({ correct, revealed }) => {
                 const earned = correct ? 10 : 0;
                 setScore((s) => s + earned);
-                setStats((st) => ({
-                  correct: st.correct + (correct ? 1 : 0),
-                  revealed: st.revealed + (revealed ? 1 : 0),
-                }));
+                const nextStats = {
+                  correct: stats.correct + (correct ? 1 : 0),
+                  revealed: stats.revealed + (revealed ? 1 : 0),
+                };
+                setStats(nextStats);
                 if (exIdx + 1 < level.exercises.length) {
                   setExIdx(exIdx + 1);
                 } else {
                   const bonus = 20;
                   const total = score + earned + bonus;
-                  completeLevel(worldId, idx, total);
+                  completeLevel(worldId, idx, total, nextStats.correct);
                   setScore(total);
                   setPhase("done");
                 }
               }}
             />
+
             <button
               onClick={() => setPhase("lesson")}
               className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
