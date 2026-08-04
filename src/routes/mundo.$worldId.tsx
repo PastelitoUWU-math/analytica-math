@@ -82,7 +82,7 @@ function WorldPage() {
                   <div className="text-[9px] uppercase tracking-wider opacity-70">Nivel</div>
                   <div className="text-lg font-display leading-none">{idx + 1}</div>
                 </div>
-                <div className="min-w-0 flex-1 pr-4">
+                <div className="min-w-0 flex-1 pr-4 pb-4">
                   <div className="text-sm leading-snug">
                     <InlineMath source={levelTopic(lv.title)} />
                   </div>
@@ -98,6 +98,14 @@ function WorldPage() {
               return (
                 <div key={lv.id} className={cls} aria-disabled>
                   {inner}
+                  <Link
+                    to="/prueba/$worldId/$target"
+                    params={{ worldId, target: String(idx) }}
+                    className="absolute bottom-1.5 right-1.5 text-[10px] px-1.5 py-0.5 rounded border border-accent/50 text-accent hover:bg-accent/10 transition"
+                    title="Haz una prueba para saltarte los niveles intermedios"
+                  >
+                    Saltar aquí
+                  </Link>
                 </div>
               );
             }
@@ -113,6 +121,25 @@ function WorldPage() {
             );
           })}
         </div>
+
+        {completed + 1 < world.levels.length && (
+          <div className="mt-8 rounded-lg border border-accent/30 bg-accent/5 p-5 flex flex-wrap items-center justify-between gap-4">
+            <div className="text-sm">
+              <div className="font-display text-lg">¿Ya dominas esto?</div>
+              <p className="text-muted-foreground">
+                Salta niveles superando una prueba con un ejercicio de cada nivel que quieras
+                saltarte. Pulsa «Saltar aquí» en cualquier nivel bloqueado, o sáltate el mundo entero.
+              </p>
+            </div>
+            <Link
+              to="/prueba/$worldId/$target"
+              params={{ worldId, target: "mundo" }}
+              className="px-4 py-2 rounded-md border border-accent/60 text-accent hover:bg-accent/10 transition whitespace-nowrap"
+            >
+              Prueba para saltar el mundo →
+            </Link>
+          </div>
+        )}
 
         {world.boss && (
           <div className="mt-10 border border-accent/40 rounded-lg p-6 bg-gradient-to-br from-accent/5 to-transparent">

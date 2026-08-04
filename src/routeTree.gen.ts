@@ -18,6 +18,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
 import { Route as JefeWorldIdRouteImport } from './routes/jefe.$worldId'
+import { Route as PruebaWorldIdTargetRouteImport } from './routes/prueba.$worldId.$target'
 import { Route as NivelWorldIdLevelIdxRouteImport } from './routes/nivel.$worldId.$levelIdx'
 
 const TiendaRoute = TiendaRouteImport.update({
@@ -65,6 +66,11 @@ const JefeWorldIdRoute = JefeWorldIdRouteImport.update({
   path: '/jefe/$worldId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PruebaWorldIdTargetRoute = PruebaWorldIdTargetRouteImport.update({
+  id: '/prueba/$worldId/$target',
+  path: '/prueba/$worldId/$target',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NivelWorldIdLevelIdxRoute = NivelWorldIdLevelIdxRouteImport.update({
   id: '/nivel/$worldId/$levelIdx',
   path: '/nivel/$worldId/$levelIdx',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
   '/nivel/$worldId/$levelIdx': typeof NivelWorldIdLevelIdxRoute
+  '/prueba/$worldId/$target': typeof PruebaWorldIdTargetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
   '/nivel/$worldId/$levelIdx': typeof NivelWorldIdLevelIdxRoute
+  '/prueba/$worldId/$target': typeof PruebaWorldIdTargetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/jefe/$worldId': typeof JefeWorldIdRoute
   '/mundo/$worldId': typeof MundoWorldIdRoute
   '/nivel/$worldId/$levelIdx': typeof NivelWorldIdLevelIdxRoute
+  '/prueba/$worldId/$target': typeof PruebaWorldIdTargetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/jefe/$worldId'
     | '/mundo/$worldId'
     | '/nivel/$worldId/$levelIdx'
+    | '/prueba/$worldId/$target'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/jefe/$worldId'
     | '/mundo/$worldId'
     | '/nivel/$worldId/$levelIdx'
+    | '/prueba/$worldId/$target'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/jefe/$worldId'
     | '/mundo/$worldId'
     | '/nivel/$worldId/$levelIdx'
+    | '/prueba/$worldId/$target'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   JefeWorldIdRoute: typeof JefeWorldIdRoute
   MundoWorldIdRoute: typeof MundoWorldIdRoute
   NivelWorldIdLevelIdxRoute: typeof NivelWorldIdLevelIdxRoute
+  PruebaWorldIdTargetRoute: typeof PruebaWorldIdTargetRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JefeWorldIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prueba/$worldId/$target': {
+      id: '/prueba/$worldId/$target'
+      path: '/prueba/$worldId/$target'
+      fullPath: '/prueba/$worldId/$target'
+      preLoaderRoute: typeof PruebaWorldIdTargetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nivel/$worldId/$levelIdx': {
       id: '/nivel/$worldId/$levelIdx'
       path: '/nivel/$worldId/$levelIdx'
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   JefeWorldIdRoute: JefeWorldIdRoute,
   MundoWorldIdRoute: MundoWorldIdRoute,
   NivelWorldIdLevelIdxRoute: NivelWorldIdLevelIdxRoute,
+  PruebaWorldIdTargetRoute: PruebaWorldIdTargetRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
