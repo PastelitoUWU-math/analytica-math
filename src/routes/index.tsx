@@ -5,6 +5,7 @@ import { useProgress } from "@/lib/game-state";
 import { Rich } from "@/components/Rich";
 import { ACHIEVEMENTS } from "@/lib/achievements";
 import { worldPrereqMet } from "@/lib/unlock";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const progress = useProgress();
+  const { user } = useAuth();
   const unlockedIds = new Set(progress.achievements.map((a) => a.id));
   const achievementsDone = ACHIEVEMENTS.filter((a) => unlockedIds.has(a.id)).length;
   const achievementsPct = Math.round((achievementsDone / ACHIEVEMENTS.length) * 100);
