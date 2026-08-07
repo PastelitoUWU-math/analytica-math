@@ -57,7 +57,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAt
           Ejercicio {index + 1} de {total}
         </span>
         <span className="text-xs text-muted-foreground">
-          Intentos: {attempts}/{bossMode ? 2 : 5}
+          Intentos: {attempts}/{maxAttempts}
         </span>
       </div>
       <Rich source={exercise.prompt} className="text-lg" />
@@ -120,7 +120,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAt
 
       {status === "wrong" && (
         <div className="mt-4 p-3 rounded border border-destructive/40 bg-destructive/5 text-destructive text-sm">
-          No es correcto. Te quedan {(bossMode ? 2 : 5) - attempts} intento(s) antes de que te revele la solución.
+          No es correcto. Te quedan {maxAttempts - attempts} intento(s) antes de que te revele la solución.
         </div>
       )}
 
