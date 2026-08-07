@@ -12,10 +12,10 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Inicia sesión o crea una cuenta verificada por correo para entrar en la clasificación global de Analynx." },
       { property: "og:title", content: "Cuenta — Analynx" },
       { property: "og:description", content: "Inicia sesión o regístrate para entrar en la clasificación global de Analynx." },
-      { property: "og:url", content: "https://analytica-math.lovable.app/auth" },
+      { property: "og:url", content: "https://analynx-math.lovable.app/auth" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/auth" }],
+    links: [{ rel: "canonical", href: "https://analynx-math.lovable.app/auth" }],
   }),
   component: AuthPage,
 });

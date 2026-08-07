@@ -22,9 +22,9 @@ export const Route = createFileRoute("/")({
         content:
           "Aprende cálculo desde cero con explicaciones rigurosas paso a paso, en formato de juego.",
       },
-      { property: "og:url", content: "https://analytica-math.lovable.app/" },
+      { property: "og:url", content: "https://analynx-math.lovable.app/" },
     ],
-    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://analynx-math.lovable.app/" }],
   }),
   component: Home,
 });

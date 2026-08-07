@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { WORLDS } from "@/lib/content/worlds";
 
-const BASE_URL = "https://analytica-math.lovable.app";
+const BASE_URL = "https://analynx-math.lovable.app";
 
 interface SitemapEntry {
   path: string;

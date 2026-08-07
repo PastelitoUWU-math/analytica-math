@@ -11,7 +11,7 @@ import { bossUnlocked } from "@/lib/unlock";
 export const Route = createFileRoute("/jefe/$worldId")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
-    const url = `https://analytica-math.lovable.app/jefe/${params.worldId}`;
+    const url = `https://analynx-math.lovable.app/jefe/${params.worldId}`;
     const title = `Jefe ${w?.boss?.name ?? ""} — ${w?.title ?? ""}`;
     const desc = `Batalla final de ${w?.title}: enfréntate a ${w?.boss?.name}.`;
     return {

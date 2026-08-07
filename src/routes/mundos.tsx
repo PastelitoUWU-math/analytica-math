@@ -15,9 +15,9 @@ export const Route = createFileRoute("/mundos")({
       },
       { property: "og:title", content: "Mundos — Analynx" },
       { property: "og:description", content: "Recorre el análisis matemático en cinco etapas: límites, continuidad, derivadas, integrales y series." },
-      { property: "og:url", content: "https://analytica-math.lovable.app/mundos" },
+      { property: "og:url", content: "https://analynx-math.lovable.app/mundos" },
     ],
-    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/mundos" }],
+    links: [{ rel: "canonical", href: "https://analynx-math.lovable.app/mundos" }],
   }),
   component: WorldsPage,
 });

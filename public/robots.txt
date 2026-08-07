@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://analytica-math.lovable.app/sitemap.xml
+Sitemap: https://analynx-math.lovable.app/sitemap.xml

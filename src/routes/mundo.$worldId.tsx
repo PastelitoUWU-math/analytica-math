@@ -8,7 +8,7 @@ import { levelTopic } from "@/lib/unlock";
 export const Route = createFileRoute("/mundo/$worldId")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
-    const url = `https://analytica-math.lovable.app/mundo/${params.worldId}`;
+    const url = `https://analynx-math.lovable.app/mundo/${params.worldId}`;
     return {
       meta: [
         { title: `${w?.title ?? "Mundo"} — Analynx` },
