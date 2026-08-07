@@ -140,6 +140,10 @@ export function onAchievementUnlocked(fn: Listener) {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
+const emitted = new Set<string>();
 export function emitAchievement(a: Achievement) {
+  if (emitted.has(a.id)) return; // evita notificaciones duplicadas
+  emitted.add(a.id);
   listeners.forEach((l) => l(a));
 }
+

@@ -10,15 +10,17 @@ type Props = {
   index: number;
   total: number;
   bossMode?: boolean;
+  maxAttempts?: number;
   onComplete: (result: { correct: boolean; revealed: boolean; attempts: number }) => void;
 };
 
-export function ExerciseRunner({ exercise, index, total, bossMode = false, onComplete }: Props) {
+export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAttempts: maxAttemptsProp, onComplete }: Props) {
   const [input, setInput] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState<"idle" | "correct" | "wrong" | "revealed">("idle");
   const [showHint, setShowHint] = useState(false);
   const progress = useProgress();
+  const maxAttempts = maxAttemptsProp ?? (bossMode ? 2 : 5);
 
   const submit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -31,7 +33,6 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
     }
     const next = attempts + 1;
     setAttempts(next);
-    const maxAttempts = bossMode ? 2 : 5;
     if (next >= maxAttempts) {
       setStatus("revealed");
       sfx.reveal();
@@ -40,6 +41,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
       sfx.wrong();
     }
   };
+
 
   const useHint = () => {
     if (useBoost("hint")) setShowHint(true);
@@ -55,7 +57,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
           Ejercicio {index + 1} de {total}
         </span>
         <span className="text-xs text-muted-foreground">
-          Intentos: {attempts}/{bossMode ? 2 : 5}
+          Intentos: {attempts}/{maxAttempts}
         </span>
       </div>
       <Rich source={exercise.prompt} className="text-lg" />
@@ -118,7 +120,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
 
       {status === "wrong" && (
         <div className="mt-4 p-3 rounded border border-destructive/40 bg-destructive/5 text-destructive text-sm">
-          No es correcto. Te quedan {(bossMode ? 2 : 5) - attempts} intento(s) antes de que te revele la solución.
+          No es correcto. Te quedan {maxAttempts - attempts} intento(s) antes de que te revele la solución.
         </div>
       )}
 
