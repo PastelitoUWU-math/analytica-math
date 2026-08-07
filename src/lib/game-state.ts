@@ -103,9 +103,12 @@ function read(): Progress {
 }
 /** Evalúa el catálogo de logros y concede los que correspondan (también retroactivamente). */
 function grantAchievements(p: Progress): Progress {
+  // Los logros solo se conceden con la sesión iniciada.
+  if (!activeUserId) return p;
   const owned = new Set(p.achievements.map((a) => a.id));
   const newly = ACHIEVEMENTS.filter((a) => !owned.has(a.id) && a.check(p));
   if (newly.length === 0) return p;
+
   const now = new Date().toISOString();
   const reward = newly.reduce((s, a) => s + a.recompensa_coins, 0);
   if (typeof window !== "undefined") {
