@@ -19,9 +19,9 @@ export const Route = createFileRoute("/logros")({
         property: "og:description",
         content: "Desbloquea logros resolviendo ejercicios, venciendo jefes y manteniendo tu racha diaria.",
       },
-      { property: "og:url", content: "https://analytica-math.lovable.app/logros" },
+      { property: "og:url", content: "https://analynx-math.lovable.app/logros" },
     ],
-    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/logros" }],
+    links: [{ rel: "canonical", href: "https://analynx-math.lovable.app/logros" }],
   }),
   component: AchievementsPage,
 });

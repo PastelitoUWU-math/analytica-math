@@ -58,9 +58,9 @@ export const Route = createFileRoute("/tienda")({
       },
       { property: "og:title", content: "Tienda — Analynx" },
       { property: "og:description", content: "Personaliza tu experiencia y compra potenciadores con tus puntos." },
-      { property: "og:url", content: "https://analytica-math.lovable.app/tienda" },
+      { property: "og:url", content: "https://analynx-math.lovable.app/tienda" },
     ],
-    links: [{ rel: "canonical", href: "https://analytica-math.lovable.app/tienda" }],
+    links: [{ rel: "canonical", href: "https://analynx-math.lovable.app/tienda" }],
   }),
   component: ShopPage,
 });

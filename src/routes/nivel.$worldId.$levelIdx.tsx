@@ -12,7 +12,7 @@ export const Route = createFileRoute("/nivel/$worldId/$levelIdx")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
     const lv = w?.levels[Number(params.levelIdx)];
-    const url = `https://analytica-math.lovable.app/nivel/${params.worldId}/${params.levelIdx}`;
+    const url = `https://analynx-math.lovable.app/nivel/${params.worldId}/${params.levelIdx}`;
     const title = `${lv?.title ?? "Nivel"} — ${w?.title ?? ""}`;
     const desc = lv?.concept ?? "Nivel de Analynx";
     return {

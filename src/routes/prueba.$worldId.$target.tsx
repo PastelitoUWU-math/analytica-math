@@ -12,7 +12,7 @@ import { sfx } from "@/lib/sfx";
 export const Route = createFileRoute("/prueba/$worldId/$target")({
   head: ({ params }) => {
     const w = getWorld(params.worldId);
-    const url = `https://analytica-math.lovable.app/prueba/${params.worldId}/${params.target}`;
+    const url = `https://analynx-math.lovable.app/prueba/${params.worldId}/${params.target}`;
     const title = `Prueba de salto — ${w?.title ?? "Analynx"}`;
     const desc = `Demuestra que dominas los niveles que quieres saltarte en ${w?.title ?? "Analynx"}.`;
     return {
