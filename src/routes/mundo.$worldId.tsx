@@ -95,20 +95,24 @@ function WorldPage() {
               </>
             );
             if (!unlocked) {
+              const canSkipHere = idx - (completed + 1) >= 2;
               return (
                 <div key={lv.id} className={cls} aria-disabled>
                   {inner}
-                  <Link
-                    to="/prueba/$worldId/$target"
-                    params={{ worldId, target: String(idx) }}
-                    className="absolute bottom-1.5 right-1.5 text-[10px] px-1.5 py-0.5 rounded border border-accent/50 text-accent hover:bg-accent/10 transition"
-                    title="Haz una prueba para saltarte los niveles intermedios"
-                  >
-                    Saltar aquí
-                  </Link>
+                  {canSkipHere && (
+                    <Link
+                      to="/prueba/$worldId/$target"
+                      params={{ worldId, target: String(idx) }}
+                      className="absolute bottom-1.5 right-1.5 text-[10px] px-1.5 py-0.5 rounded border border-accent/50 text-accent hover:bg-accent/10 transition"
+                      title="Haz una prueba para saltarte los niveles intermedios"
+                    >
+                      Saltar aquí
+                    </Link>
+                  )}
                 </div>
               );
             }
+
             return (
               <Link
                 key={lv.id}
