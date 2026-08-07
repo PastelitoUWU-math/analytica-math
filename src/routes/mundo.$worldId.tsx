@@ -126,7 +126,7 @@ function WorldPage() {
           })}
         </div>
 
-        {completed + 1 < world.levels.length && (
+        {world.levels.length - (completed + 1) >= 2 && (
           <div className="mt-8 rounded-lg border border-accent/30 bg-accent/5 p-5 flex flex-wrap items-center justify-between gap-4">
             <div className="text-sm">
               <div className="font-display text-lg">¿Ya dominas esto?</div>
