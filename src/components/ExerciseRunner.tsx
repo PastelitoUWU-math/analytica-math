@@ -10,15 +10,17 @@ type Props = {
   index: number;
   total: number;
   bossMode?: boolean;
+  maxAttempts?: number;
   onComplete: (result: { correct: boolean; revealed: boolean; attempts: number }) => void;
 };
 
-export function ExerciseRunner({ exercise, index, total, bossMode = false, onComplete }: Props) {
+export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAttempts: maxAttemptsProp, onComplete }: Props) {
   const [input, setInput] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [status, setStatus] = useState<"idle" | "correct" | "wrong" | "revealed">("idle");
   const [showHint, setShowHint] = useState(false);
   const progress = useProgress();
+  const maxAttempts = maxAttemptsProp ?? (bossMode ? 2 : 5);
 
   const submit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -31,7 +33,6 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
     }
     const next = attempts + 1;
     setAttempts(next);
-    const maxAttempts = bossMode ? 2 : 5;
     if (next >= maxAttempts) {
       setStatus("revealed");
       sfx.reveal();
@@ -40,6 +41,7 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, onCom
       sfx.wrong();
     }
   };
+
 
   const useHint = () => {
     if (useBoost("hint")) setShowHint(true);
