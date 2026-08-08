@@ -18,7 +18,7 @@ export function checkAnswer(userInput: string, exact: AnswerValue): boolean {
   }
 
   // El usuario podría haber escrito una sentinela — solo se acepta si coincide.
-  if (/^[+-]?(inf|infty|infinito|no|si|s[ií]|n\/?a|na)$/i.test(stripAccents(raw))) return false;
+  if (/^[+-]?(inf|infty|infinito|no|si|s[ií]|n\/?a|na|diverge\w*)$/i.test(stripAccents(raw))) return false;
 
   const s = raw.replace(",", ".");
   if (!/^-?\d+(\.\d+)?$/.test(s)) return false;
@@ -47,8 +47,9 @@ function stripAccents(s: string) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
 
-function normalizeSentinel(s: string): "No" | "Inf" | "-Inf" | "Si" | "N/A" | null {
+function normalizeSentinel(s: string): "No" | "Inf" | "-Inf" | "Si" | "N/A" | "Diverge" | null {
   const t = stripAccents(s.replace(/\s+/g, "").toLowerCase());
+  if (t === "diverge" || t === "diverges" || t === "divergente") return "Diverge";
   if (t === "no" || t === "noexiste" || t === "dne") return "No";
   if (t === "si" || t === "sisi" || t === "yes") return "Si";
   if (t === "n/a" || t === "na" || t === "noaplica") return "N/A";

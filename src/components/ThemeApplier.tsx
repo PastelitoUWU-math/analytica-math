@@ -7,7 +7,7 @@ export function ThemeApplier() {
   const { activeTheme } = useProgress();
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.documentElement.dataset.theme = activeTheme || "theme-pergamino";
+    document.documentElement.dataset.theme = activeTheme || "theme-nocturno";
   }, [activeTheme]);
   return null;
 }

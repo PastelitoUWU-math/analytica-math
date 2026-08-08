@@ -41,7 +41,7 @@
   --font-mono: "KaTeX_Typewriter", "Computer Modern Typewriter", ui-monospace, monospace;
 }
 
-:root, :root[data-theme="theme-pergamino"] {
+:root[data-theme="theme-pergamino"] {
   --radius: 0.5rem;
   --parchment: oklch(0.985 0.008 85);
   --ink: oklch(0.18 0.015 250);
@@ -71,7 +71,7 @@
   --aurora-3: oklch(0.93 0.06 320 / 0.22);
 }
 
-:root[data-theme="theme-nocturno"] {
+:root, :root[data-theme="theme-nocturno"] {
   --parchment: oklch(0.18 0.03 260);
   --ink: oklch(0.96 0.01 90);
   --background: oklch(0.16 0.03 260);

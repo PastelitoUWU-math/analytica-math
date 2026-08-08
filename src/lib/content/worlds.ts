@@ -1,6 +1,7 @@
 import type { World } from "./types";
 import { world1Levels, world1Boss } from "./world1";
 import { world2Levels, world2Boss } from "./world2";
+import { world3Levels, world3Boss } from "./world3";
 
 export const WORLDS: World[] = [
   {
@@ -29,9 +30,9 @@ export const WORLDS: World[] = [
     subtitle: "Sumar lo infinitamente pequeño",
     summary:
       "La integral definida y el teorema fundamental, técnicas de integración y aplicaciones. Jefe: Newton.",
-    available: false,
-    levels: [],
-    boss: null,
+    available: true,
+    levels: world3Levels,
+    boss: world3Boss,
   },
   {
     id: "series",
