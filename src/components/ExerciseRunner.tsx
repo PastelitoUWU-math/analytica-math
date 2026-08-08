@@ -157,7 +157,9 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAt
         <code className="font-mono">8.0093</code>). Si vale exactamente $5$, escribe{" "}
         <code className="font-mono">5.00</code>. Casos especiales: escribe <code className="font-mono">No</code>{" "}
         si el límite no existe, <code className="font-mono">Inf</code> si tiende a $+\infty$,{" "}
-        <code className="font-mono">-Inf</code> si tiende a $-\infty$.
+        <code className="font-mono">-Inf</code> si tiende a $-\infty$, y{" "}
+        <code className="font-mono">Diverge</code> si la integral diverge.
+      </div>
         </>
       )}
 
