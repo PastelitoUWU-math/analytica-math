@@ -6,16 +6,16 @@ type Cosmetic = { id: string; name: string; cost: number; preview: string[] };
 
 const COSMETICS: Cosmetic[] = [
   {
-    id: "theme-pergamino",
-    name: "Pergamino (incluido)",
+    id: "theme-nocturno",
+    name: "Tinta nocturna (incluido)",
     cost: 0,
-    preview: ["#fdfaf0", "#2d2a26", "#a8682a", "#7a4a18"],
+    preview: ["#0e1322", "#e7e4d8", "#8aa1d6", "#c97a52"],
   },
   {
-    id: "theme-nocturno",
-    name: "Tinta nocturna",
+    id: "theme-pergamino",
+    name: "Pergamino",
     cost: 150,
-    preview: ["#0e1322", "#e7e4d8", "#8aa1d6", "#c97a52"],
+    preview: ["#fdfaf0", "#2d2a26", "#a8682a", "#7a4a18"],
   },
   {
     id: "theme-jardin",

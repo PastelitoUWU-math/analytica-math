@@ -20,7 +20,24 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAt
   const [status, setStatus] = useState<"idle" | "correct" | "wrong" | "revealed">("idle");
   const [showHint, setShowHint] = useState(false);
   const progress = useProgress();
-  const maxAttempts = maxAttemptsProp ?? (bossMode ? 2 : 5);
+  // Preguntas de Sí/No: tipo test con un único intento.
+  const isYesNo =
+    (exercise.answer === "Si" || exercise.answer === "No") &&
+    /\(s[ií]\s*\/\s*no\)/i.test(exercise.prompt);
+  const maxAttempts = isYesNo ? 1 : (maxAttemptsProp ?? (bossMode ? 2 : 5));
+
+  const answerYesNo = (value: "Si" | "No") => {
+    if (status !== "idle") return;
+    setInput(value);
+    if (value === exercise.answer) {
+      setStatus("correct");
+      sfx.correct();
+    } else {
+      setAttempts(1);
+      setStatus("revealed");
+      sfx.reveal();
+    }
+  };
 
   const submit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -80,6 +97,31 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAt
         </div>
       )}
 
+      {isYesNo ? (
+        <div className="mt-5 flex flex-wrap gap-3">
+          {(["Si", "No"] as const).map((opt) => {
+            const chosen = input === opt;
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => answerYesNo(opt)}
+                disabled={status !== "idle"}
+                className={`px-6 py-2.5 rounded-md border transition ${
+                  chosen
+                    ? status === "correct"
+                      ? "border-success bg-success/10 text-success"
+                      : "border-destructive bg-destructive/10 text-destructive"
+                    : "border-border hover:bg-secondary"
+                } disabled:opacity-60`}
+              >
+                {opt === "Si" ? "Sí" : "No"}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <>
       <form onSubmit={submit} className="mt-5 flex flex-wrap gap-3 items-center">
         <input
           type="text"
@@ -115,8 +157,11 @@ export function ExerciseRunner({ exercise, index, total, bossMode = false, maxAt
         <code className="font-mono">8.0093</code>). Si vale exactamente $5$, escribe{" "}
         <code className="font-mono">5.00</code>. Casos especiales: escribe <code className="font-mono">No</code>{" "}
         si el límite no existe, <code className="font-mono">Inf</code> si tiende a $+\infty$,{" "}
-        <code className="font-mono">-Inf</code> si tiende a $-\infty$.
+        <code className="font-mono">-Inf</code> si tiende a $-\infty$, y{" "}
+        <code className="font-mono">Diverge</code> si la integral diverge.
       </div>
+        </>
+      )}
 
       {status === "wrong" && (
         <div className="mt-4 p-3 rounded border border-destructive/40 bg-destructive/5 text-destructive text-sm">

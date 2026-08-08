@@ -1,5 +1,5 @@
 // Tipos del contenido del juego
-export type AnswerValue = number | "No" | "Inf" | "-Inf" | "Si" | "N/A";
+export type AnswerValue = number | "No" | "Inf" | "-Inf" | "Si" | "N/A" | "Diverge";
 
 export type Exercise = {
   // Texto/Enunciado en markdown ligero.
