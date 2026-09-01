@@ -150,6 +150,7 @@ function readGuest(): Progress {
  */
 function read(): Progress {
   if (accountUserId) return accountCache ?? DEFAULT;
+  if (status === "loading") return DEFAULT; // sesión restaurándose: nunca datos de invitado
   return readGuest();
 }
 
