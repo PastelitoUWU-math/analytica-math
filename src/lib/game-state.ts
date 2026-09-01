@@ -223,7 +223,7 @@ export function syncAchievements() {
 
 function write(p: Progress) {
   // Con sesión iniciada, prohibido mutar hasta que los datos remotos estén cargados.
-  if (accountUserId && status !== "ready") {
+  if (status === "loading" || status === "error" || (accountUserId && status !== "ready")) {
     log("WRITE_BLOCKED", { reason: status });
     return;
   }
