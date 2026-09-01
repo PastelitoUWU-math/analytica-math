@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useProgress } from "@/lib/game-state";
+import { useProgress, useProgressStatus } from "@/lib/game-state";
 import { useEffect, type ReactNode } from "react";
 import { Backdrop } from "./Backdrop";
 import { ThemeApplier } from "./ThemeApplier";
@@ -11,8 +11,10 @@ import { syncAchievements } from "@/lib/game-state";
 export function Shell({ children }: { children: ReactNode }) {
   const progress = useProgress();
   const { user, profile } = useAuth();
+  const { isLoading, isError, retry } = useProgressStatus();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => { installGlobalClickSfx(); syncAchievements(); }, []);
+  const gated = (isLoading || isError) && pathname !== "/auth";
   const nav = [
     { to: "/", label: "Inicio" },
     { to: "/mundos", label: "Mundos" },
