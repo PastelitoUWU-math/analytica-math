@@ -83,7 +83,20 @@ export function streakLost(p: Progress): boolean {
 // ---------------------------------------------------------------------------
 export type ProgressStatus = "guest" | "loading" | "ready" | "error";
 
-let status: ProgressStatus = "guest";
+/** ¿El navegador tiene una sesión persistida? Evita mostrar datos de invitado
+ *  a un usuario autenticado mientras Supabase todavía restaura la sesión. */
+function hasStoredSession(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && /^sb-.*-auth-token$/.test(k)) return true;
+    }
+  } catch { /* almacenamiento no disponible */ }
+  return false;
+}
+
+let status: ProgressStatus = hasStoredSession() ? "loading" : "guest";
 let accountUserId: string | null = null;
 let accountCache: Progress | null = null;
 let guestCache: Progress | null = null;
