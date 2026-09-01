@@ -69,11 +69,40 @@ export function streakLost(p: Progress): boolean {
 }
 
 
-let cache: Progress | null = null;
-let activeUserId: string | null = null;
+// ---------------------------------------------------------------------------
+// Máquina de estados de la persistencia.
+//
+//  guest    → sin sesión: la fuente de verdad es localStorage.
+//  loading  → hay sesión, todavía NO sabemos cuál es el progreso remoto.
+//  ready    → hay sesión y la fila remota está cargada (o creada) con éxito.
+//  error    → hay sesión pero la lectura falló: NO sabemos el progreso.
+//
+// Regla de oro: en `loading` y `error` está PROHIBIDO escribir en la nube.
+// Ningún fallo de red, RLS o carrera puede sustituir el progreso remoto por
+// valores por defecto.
+// ---------------------------------------------------------------------------
+export type ProgressStatus = "guest" | "loading" | "ready" | "error";
+
+let status: ProgressStatus = "guest";
+let accountUserId: string | null = null;
+let accountCache: Progress | null = null;
+let guestCache: Progress | null = null;
+let loadError: string | null = null;
+let generation = 0; // invalida hidrataciones obsoletas (cambio de usuario / logout)
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
-const hydrationByUser = new Map<string, Promise<void>>();
+let hydration: { userId: string; promise: Promise<void> } | null = null;
 const listeners = new Set<() => void>();
+
+const DEV = typeof import.meta !== "undefined" && import.meta.env?.DEV;
+function log(event: string, data: Record<string, unknown> = {}) {
+  if (!DEV) return;
+  // Solo identificadores, nunca datos sensibles.
+  console.info(`[progress] ${event}`, { userId: accountUserId ?? null, status, ...data });
+}
+
+function notify() {
+  listeners.forEach((l) => l());
+}
 
 function normalize(value: Partial<Progress> | null | undefined): Progress {
   return {
@@ -87,24 +116,60 @@ function normalize(value: Partial<Progress> | null | undefined): Progress {
   };
 }
 
-function read(): Progress {
-  if (cache) return cache;
+function readGuest(): Progress {
+  if (guestCache) return guestCache;
   if (typeof window === "undefined") return DEFAULT;
   try {
     const raw = localStorage.getItem(GUEST_KEY) ?? localStorage.getItem(LEGACY_KEY);
     const parsed = normalize(raw ? JSON.parse(raw) : DEFAULT);
-    // Migración: si no había lifetimePoints, arranca desde points actuales
     if (parsed.lifetimePoints < parsed.points) parsed.lifetimePoints = parsed.points;
-    cache = parsed;
+    guestCache = parsed;
   } catch {
-    cache = DEFAULT;
+    guestCache = DEFAULT;
   }
-  return cache ?? DEFAULT;
+  return guestCache ?? DEFAULT;
 }
+
+/**
+ * Progreso visible. Con sesión iniciada NUNCA devuelve el progreso de invitado:
+ * mientras carga (o si falla) devuelve DEFAULT, pero la UI debe usar
+ * `useProgressStatus()` para no presentarlo como dato real.
+ */
+function read(): Progress {
+  if (accountUserId) return accountCache ?? DEFAULT;
+  return readGuest();
+}
+
+export function progressStatus(): ProgressStatus {
+  return status;
+}
+
+/** Estado explícito de carga para la UI (cargando / error / listo). */
+export function useProgressStatus() {
+  const snapshot = useSyncExternalStore(
+    (cb) => { listeners.add(cb); return () => listeners.delete(cb); },
+    () => statusSnapshot(),
+    () => "guest|null",
+  );
+  const [st, err] = snapshot.split("|");
+  return {
+    status: st as ProgressStatus,
+    error: err === "null" ? null : err,
+    isLoading: st === "loading",
+    isError: st === "error",
+    /** Datos fiables: invitado (local) o cuenta cargada. */
+    isReady: st === "guest" || st === "ready",
+    retry: () => { if (accountUserId) void activateAccountProgress(accountUserId, false, true); },
+  };
+}
+function statusSnapshot() {
+  return `${status}|${loadError ?? "null"}`;
+}
+
 /** Evalúa el catálogo de logros y concede los que correspondan (también retroactivamente). */
 function grantAchievements(p: Progress): Progress {
-  // Los logros solo se conceden con la sesión iniciada.
-  if (!activeUserId) return p;
+  // Los logros solo se conceden con la sesión iniciada y los datos ya cargados.
+  if (!accountUserId || status !== "ready") return p;
   const owned = new Set(p.achievements.map((a) => a.id));
   const newly = ACHIEVEMENTS.filter((a) => !owned.has(a.id) && a.check(p));
   if (newly.length === 0) return p;
@@ -135,6 +200,7 @@ function estimatedCorrect(p: Progress): number {
 
 /** Revisa logros pendientes con el estado actual (útil al arrancar o iniciar sesión). */
 export function syncAchievements() {
+  if (accountUserId && status !== "ready") return; // nunca durante loading/error
   const p = read();
   const floor = estimatedCorrect(p);
   const base = floor > p.totalCorrect ? { ...p, totalCorrect: floor } : p;
@@ -143,28 +209,39 @@ export function syncAchievements() {
 }
 
 function write(p: Progress) {
-  const prev = cache;
+  // Con sesión iniciada, prohibido mutar hasta que los datos remotos estén cargados.
+  if (accountUserId && status !== "ready") {
+    log("WRITE_BLOCKED", { reason: status });
+    return;
+  }
+  const prev = read();
   p = grantAchievements(p);
-  cache = p;
-  if (typeof window !== "undefined" && !activeUserId) {
+  if (accountUserId) {
+    accountCache = p;
+    notify();
+    if (typeof window !== "undefined" && prev !== p) scheduleCloudSave(accountUserId, p, generation);
+    return;
+  }
+  guestCache = p;
+  if (typeof window !== "undefined") {
     localStorage.setItem(GUEST_KEY, JSON.stringify(p));
     localStorage.removeItem(LEGACY_KEY);
   }
-  listeners.forEach((l) => l());
-  if (typeof window !== "undefined" && activeUserId && prev !== p) {
-    scheduleCloudSave(activeUserId, p);
-  }
+  notify();
 }
 
-function scheduleCloudSave(userId: string, progress: Progress) {
+function scheduleCloudSave(userId: string, progress: Progress, gen: number) {
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    if (activeUserId === userId) void saveCloudProgress(userId, progress);
+    saveTimer = null;
+    if (accountUserId === userId && generation === gen && status === "ready") {
+      void saveCloudProgress(userId, progress);
+    }
   }, 250);
 }
 
-async function saveCloudProgress(userId: string, progress: Progress) {
-  const { error } = await supabase.from("user_progress").upsert({
+function toRow(userId: string, progress: Progress) {
+  return {
     user_id: userId,
     completed: progress.completed as Json,
     boss_defeated: progress.bossDefeated as Json,
@@ -178,14 +255,33 @@ async function saveCloudProgress(userId: string, progress: Progress) {
     best_streak: progress.bestStreak,
     last_activity_date: progress.lastActivityDate,
     achievements: progress.achievements as unknown as Json,
-  });
-  if (!error) {
-    await supabase.rpc("sync_progress", {
-      _points: progress.points,
-      _total_correct: progress.totalCorrect,
-      _lifetime: progress.lifetimePoints,
-    });
+  };
+}
+
+async function saveCloudProgress(userId: string, progress: Progress, attempt = 0): Promise<boolean> {
+  // Solo se guarda cuando sabemos con certeza cuál es el progreso del usuario.
+  if (status !== "ready" || accountUserId !== userId) {
+    log("SAVE_SKIPPED", { reason: status });
+    return false;
   }
+  log("STATS_UPDATE", { attempt });
+  const { error } = await supabase.from("user_progress").upsert(toRow(userId, progress), {
+    onConflict: "user_id",
+  });
+  if (error) {
+    log("STATS_UPDATE_ERROR", { message: error.message, attempt });
+    if (attempt < 2) {
+      await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+      return saveCloudProgress(userId, progress, attempt + 1);
+    }
+    return false;
+  }
+  await supabase.rpc("sync_progress", {
+    _points: progress.points,
+    _total_correct: progress.totalCorrect,
+    _lifetime: progress.lifetimePoints,
+  });
+  return true;
 }
 
 function fromCloud(row: {
@@ -220,35 +316,102 @@ function fromCloud(row: {
   });
 }
 
+/**
+ * Carga (o crea, solo si se confirma que no existe) el progreso del usuario.
+ * Idempotente por usuario: llamadas concurrentes comparten la misma promesa.
+ */
+export async function activateAccountProgress(
+  userId: string,
+  importGuestProgress = false,
+  force = false,
+) {
+  if (!force && hydration?.userId === userId) return hydration.promise;
+  if (!force && accountUserId === userId && status === "ready") return;
 
-export async function activateAccountProgress(userId: string, importGuestProgress = false) {
-  const existing = hydrationByUser.get(userId);
-  if (existing) return existing;
+  const gen = ++generation;
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+  accountUserId = userId;
+  accountCache = null;
+  loadError = null;
+  status = "loading";
+  log("STATS_LOAD_STARTED", { force });
+  notify();
+
+  const stale = () => generation !== gen;
+
   const task = (async () => {
-    const guest = read();
-    activeUserId = userId;
-    const { data } = await supabase.from("user_progress").select("*").eq("user_id", userId).maybeSingle();
-    let next = data ? fromCloud(data) : DEFAULT;
-    const cloudIsPristine = !data || (
-      data.points === 0 &&
-      data.lifetime_points === 0 &&
-      data.total_correct === 0 &&
-      Object.keys(data.completed as Record<string, number>).length === 0 &&
-      Object.keys(data.boss_defeated as Record<string, boolean>).length === 0
-    );
-    if (importGuestProgress && cloudIsPristine) next = normalize(guest);
-    const floor = estimatedCorrect(next);
-    if (floor > next.totalCorrect) next = { ...next, totalCorrect: floor };
-    const granted = grantAchievements(next);
-    const achievementsChanged = granted !== next;
-    next = granted;
-    cache = next;
-    listeners.forEach((listener) => listener());
-    if (!data || (importGuestProgress && cloudIsPristine) || achievementsChanged) {
-      await saveCloudProgress(userId, next);
+    const guest = readGuest();
+    const { data, error } = await supabase
+      .from("user_progress")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (stale()) { log("STATS_LOAD_ABORTED"); return; }
+
+    if (error) {
+      // NO existe ninguna certeza sobre el progreso → estado de error, sin escrituras.
+      status = "error";
+      loadError = error.message;
+      accountCache = null;
+      log("STATS_LOAD_ERROR", { message: error.message });
+      notify();
+      return;
     }
-  })().finally(() => hydrationByUser.delete(userId));
-  hydrationByUser.set(userId, task);
+
+    if (data) {
+      status = "ready";
+      accountCache = fromCloud(data);
+      log("STATS_LOAD_SUCCESS", { points: accountCache.points });
+      notify();
+      // Ajustes derivados (suelo de ejercicios + logros retroactivos) por la vía normal.
+      const floor = estimatedCorrect(accountCache);
+      if (floor > accountCache.totalCorrect) write({ ...accountCache, totalCorrect: floor });
+      else syncAchievements();
+      return;
+    }
+
+    // Confirmado por el servidor: el usuario no tiene fila todavía → creación única.
+    log("STATS_LOAD_EMPTY");
+    const seed = importGuestProgress ? normalize(guest) : DEFAULT;
+    log("STATS_CREATE_STARTED", { imported: importGuestProgress });
+    const { error: insertError } = await supabase.from("user_progress").insert(toRow(userId, seed));
+    if (stale()) return;
+
+    if (insertError) {
+      // Carrera: otra pestaña la creó antes → recargamos la fila real, nunca sobrescribimos.
+      const { data: retry, error: retryError } = await supabase
+        .from("user_progress")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (stale()) return;
+      if (retry) {
+        status = "ready";
+        accountCache = fromCloud(retry);
+        log("STATS_LOAD_SUCCESS", { afterInsertConflict: true });
+        notify();
+        syncAchievements();
+        return;
+      }
+      status = "error";
+      loadError = retryError?.message ?? insertError.message;
+      accountCache = null;
+      log("STATS_CREATE_ERROR", { message: loadError });
+      notify();
+      return;
+    }
+
+    status = "ready";
+    accountCache = seed;
+    log("STATS_CREATE_SUCCESS");
+    notify();
+    syncAchievements();
+    if (importGuestProgress) await saveCloudProgress(userId, accountCache);
+  })().finally(() => {
+    if (hydration?.userId === userId) hydration = null;
+  });
+
+  hydration = { userId, promise: task };
   return task;
 }
 
