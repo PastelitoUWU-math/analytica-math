@@ -415,20 +415,27 @@ export async function activateAccountProgress(
   return task;
 }
 
+/** Guarda pendientes antes de cerrar sesión. Solo si los datos eran fiables. */
 export async function flushAccountProgress() {
-  if (!activeUserId || !cache) return;
-  if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = null;
-  await saveCloudProgress(activeUserId, cache);
+  if (!accountUserId || status !== "ready" || !accountCache) return;
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+  await saveCloudProgress(accountUserId, accountCache);
 }
 
+/** Vuelve al modo invitado. No borra nada remoto y descarta hidrataciones en curso. */
 export function activateGuestProgress() {
-  if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = null;
-  activeUserId = null;
-  cache = null;
-  read();
-  listeners.forEach((listener) => listener());
+  if (accountUserId === null && status === "guest") return;
+  generation++;
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+  hydration = null;
+  accountUserId = null;
+  accountCache = null;
+  loadError = null;
+  status = "guest";
+  guestCache = null; // no mezclar el estado del usuario anterior
+  readGuest();
+  log("SIGNED_OUT_GUEST_MODE");
+  notify();
 }
 
 export function useProgress() {
