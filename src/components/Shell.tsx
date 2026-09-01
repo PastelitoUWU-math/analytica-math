@@ -50,7 +50,7 @@ export function Shell({ children }: { children: ReactNode }) {
             })}
             <span className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-md bg-secondary border border-border/60 shimmer-chip">
               <span className="text-accent">✦</span>
-              <span className="tabular-nums">{progress.points}</span>
+              <span className="tabular-nums">{isLoading ? "…" : isError ? "—" : progress.points}</span>
             </span>
             <Link
               to="/auth"
