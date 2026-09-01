@@ -72,7 +72,28 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <AchievementPopup />
-      <main className="flex-1 relative z-10">{children}</main>
+      <main className="flex-1 relative z-10">
+        {gated ? (
+          <div className="max-w-md mx-auto px-6 py-24 text-center">
+            {isError ? (
+              <>
+                <h2 className="text-2xl font-display tracking-tight">No hemos podido cargar tu progreso.</h2>
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Tu progreso sigue guardado a salvo. No se ha modificado nada.
+                </p>
+                <button
+                  onClick={retry}
+                  className="mt-6 px-5 py-2.5 rounded-md bg-foreground text-background font-medium btn-glow"
+                >Reintentar</button>
+              </>
+            ) : (
+              <p className="text-muted-foreground text-sm animate-pulse">Cargando tu progreso…</p>
+            )}
+          </div>
+        ) : (
+          children
+        )}
+      </main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground relative z-10 bg-background/70">
         Analynx · Un juego para aprender análisis matemático paso a paso.
       </footer>
