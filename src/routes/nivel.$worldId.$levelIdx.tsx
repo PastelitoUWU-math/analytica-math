@@ -37,7 +37,8 @@ export const Route = createFileRoute("/nivel/$worldId/$levelIdx")({
 });
 
 function LevelPageOuter() {
-  const { worldId, idx } = Route.useLoaderData();
+  const { worldId, levelIdx } = Route.useParams();
+  const idx = Number(levelIdx);
   // key forces full remount when the level changes, resetting all state
   return <LevelPage key={`${worldId}/${idx}`} worldId={worldId} idx={idx} />;
 }

@@ -34,7 +34,7 @@ export const Route = createFileRoute("/jefe/$worldId")({
 });
 
 function BossPage() {
-  const { worldId } = Route.useLoaderData();
+  const { worldId } = Route.useParams();
   const world = getWorld(worldId)!;
   const boss = world.boss!;
   const navigate = useNavigate();
