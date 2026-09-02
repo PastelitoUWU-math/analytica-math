@@ -117,6 +117,20 @@ function notify() {
   listeners.forEach((l) => l());
 }
 
+// Salvavidas: si la sesión persistida nunca llega a restaurarse (red caída,
+// token corrupto), no dejamos la app bloqueada en «cargando» para siempre.
+if (typeof window !== "undefined" && status === "loading") {
+  setTimeout(() => {
+    if (status === "loading" && !accountUserId) {
+      status = "error";
+      loadError = "No se ha podido restaurar tu sesión. Comprueba tu conexión.";
+      log("STATS_LOAD_TIMEOUT");
+      notify();
+    }
+  }, 12000);
+}
+
+
 function normalize(value: Partial<Progress> | null | undefined): Progress {
   return {
     ...DEFAULT,
@@ -173,7 +187,10 @@ export function useProgressStatus() {
     isError: st === "error",
     /** Datos fiables: invitado (local) o cuenta cargada. */
     isReady: st === "guest" || st === "ready",
-    retry: () => { if (accountUserId) void activateAccountProgress(accountUserId, false, true); },
+    retry: () => {
+      if (accountUserId) void activateAccountProgress(accountUserId, false, true);
+      else if (typeof window !== "undefined") window.location.reload();
+    },
   };
 }
 function statusSnapshot() {
