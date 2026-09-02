@@ -187,7 +187,10 @@ export function useProgressStatus() {
     isError: st === "error",
     /** Datos fiables: invitado (local) o cuenta cargada. */
     isReady: st === "guest" || st === "ready",
-    retry: () => { if (accountUserId) void activateAccountProgress(accountUserId, false, true); },
+    retry: () => {
+      if (accountUserId) void activateAccountProgress(accountUserId, false, true);
+      else if (typeof window !== "undefined") window.location.reload();
+    },
   };
 }
 function statusSnapshot() {
