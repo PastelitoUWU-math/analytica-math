@@ -29,7 +29,7 @@ export const Route = createFileRoute("/mundo/$worldId")({
 });
 
 function WorldPage() {
-  const { worldId } = Route.useLoaderData();
+  const { worldId } = Route.useParams();
   const world = getWorld(worldId)!;
   const progress = useProgress();
   const completed = progress.completed[worldId] ?? -1;

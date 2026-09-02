@@ -46,7 +46,8 @@ function allowedFails(nSkipped: number): number {
 }
 
 function SkipTestPage() {
-  const { worldId, target } = Route.useLoaderData();
+  const { worldId, target: rawTarget } = Route.useParams();
+  const target: number | "mundo" = rawTarget === "mundo" ? "mundo" : Number(rawTarget);
   const world = getWorld(worldId)!;
   const progress = useProgress();
   const navigate = useNavigate();
