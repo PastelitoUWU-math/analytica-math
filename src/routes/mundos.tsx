@@ -31,7 +31,7 @@ function WorldsPage() {
         <p className="text-muted-foreground mb-10">
           Recorre el análisis matemático en cinco etapas. Avanza a tu ritmo.
         </p>
-        <div className="space-y-6">
+        <div className="space-y-6 stagger">
           {WORLDS.map((w) => {
             const completed = progress.completed[w.id] ?? -1;
             const totalLevels = w.levels.length;
@@ -45,7 +45,7 @@ function WorldsPage() {
             return (
               <div
                 key={w.id}
-                className={`bg-card border border-border/60 rounded-lg p-6 ${
+                className={`bg-card border border-border/60 rounded-lg p-6 card-lift ${
                   w.available && !locked ? "" : "opacity-60"
                 }`}
               >
@@ -84,7 +84,7 @@ function WorldsPage() {
                           <Link
                             to="/mundo/$worldId"
                             params={{ worldId: w.id }}
-                            className="flex-1 text-center px-3 py-2 rounded-md bg-foreground text-background text-sm hover:opacity-90"
+                            className="flex-1 text-center px-3 py-2 rounded-md bg-foreground text-background text-sm hover:opacity-90 btn-glow sheen"
                           >
                             Entrar
                           </Link>

@@ -65,7 +65,7 @@ function WorldPage() {
         <h1 className="text-3xl font-display tracking-tight mt-3">{world.title}</h1>
         <p className="text-muted-foreground italic">{world.subtitle}</p>
 
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 stagger">
           {world.levels.map((lv, idx) => {
             const unlocked = idx <= completed + 1;
             const done = idx <= completed;
