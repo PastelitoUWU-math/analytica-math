@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Analynx — Aprende análisis matemático jugando" },
       { property: "og:description", content: "Analynx es un juego web en español para aprender análisis matemático paso a paso: límites, derivadas, integrales y series. Mundos, niveles y batallas contra matemáticos legendarios." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Analynx" },
       { name: "twitter:title", content: "Analynx — Aprende análisis matemático jugando" },
       { name: "twitter:description", content: "Analynx es un juego web en español para aprender análisis matemático paso a paso: límites, derivadas, integrales y series. Mundos, niveles y batallas contra matemáticos legendarios." },
