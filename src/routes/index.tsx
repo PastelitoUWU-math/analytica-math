@@ -65,7 +65,7 @@ function Home() {
       <div className="ink-rule max-w-3xl mx-auto my-4" />
 
       <section className="max-w-5xl mx-auto px-6 py-8">
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid md:grid-cols-2 gap-5 stagger">
           {WORLDS.map((w, i) => {
             const completed = progress.completed[w.id] ?? -1;
             const totalLevels = w.levels.length;
