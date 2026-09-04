@@ -304,3 +304,51 @@
   pointer-events: none;
 }
 .btn-glow:hover::after { opacity: .55; }
+
+/* ── Animaciones globales de interacción ───────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  button, a, [role="button"], summary {
+    transition-property: transform, background-color, color, border-color, opacity, box-shadow, filter;
+    transition-duration: 220ms;
+    transition-timing-function: cubic-bezier(.2,.7,.2,1);
+    will-change: transform;
+  }
+  button:hover, [role="button"]:hover, a:hover {
+    transform: translateY(-1.5px);
+  }
+  button:active, [role="button"]:active, a:active {
+    transform: translateY(1px) scale(0.98);
+  }
+  /* Tarjetas y bloques: elevación suave */
+  .card-lift:hover { transform: translateY(-4px) scale(1.006); }
+}
+
+/* Aparición escalonada de listas */
+.stagger > * { animation: fade-in-up .5s cubic-bezier(.2,.7,.2,1) both; }
+.stagger > *:nth-child(1) { animation-delay: .04s; }
+.stagger > *:nth-child(2) { animation-delay: .10s; }
+.stagger > *:nth-child(3) { animation-delay: .16s; }
+.stagger > *:nth-child(4) { animation-delay: .22s; }
+.stagger > *:nth-child(5) { animation-delay: .28s; }
+.stagger > *:nth-child(6) { animation-delay: .34s; }
+.stagger > *:nth-child(n+7) { animation-delay: .40s; }
+@media (prefers-reduced-motion: reduce) {
+  .stagger > * { animation: none; }
+}
+
+/* Brillo que recorre un botón al pasar el ratón */
+@utility sheen {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-120%);
+    background: linear-gradient(100deg, transparent 20%,
+      color-mix(in oklch, var(--accent) 45%, transparent) 50%, transparent 80%);
+    transition: transform .7s cubic-bezier(.2,.7,.2,1);
+    pointer-events: none;
+  }
+  &:hover::before { transform: translateX(120%); }
+}
