@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
+import ogImage from "../assets/analynx-og.jpg.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -88,8 +89,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Analynx" },
       { name: "twitter:title", content: "Analynx — Aprende análisis matemático jugando" },
       { name: "twitter:description", content: "Analynx es un juego web en español para aprender análisis matemático paso a paso: límites, derivadas, integrales y series. Mundos, niveles y batallas contra matemáticos legendarios." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/c8628e9f-9ac9-4ba7-b6ea-54849127b80d" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/c8628e9f-9ac9-4ba7-b6ea-54849127b80d" },
+      { property: "og:image", content: `https://analynx-math.lovable.app${ogImage.url}` },
+      { name: "twitter:image", content: `https://analynx-math.lovable.app${ogImage.url}` },
     ],
     links: [
       {
