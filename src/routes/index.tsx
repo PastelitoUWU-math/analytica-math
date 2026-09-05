@@ -33,6 +33,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const progress = useProgress();
   const { user } = useAuth();
+  const expand = useExpandNav();
   const unlockedIds = new Set(progress.achievements.map((a) => a.id));
   const achievementsDone = ACHIEVEMENTS.filter((a) => unlockedIds.has(a.id)).length;
   const achievementsPct = Math.round((achievementsDone / ACHIEVEMENTS.length) * 100);

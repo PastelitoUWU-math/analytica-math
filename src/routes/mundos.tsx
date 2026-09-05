@@ -3,6 +3,7 @@ import { Shell } from "@/components/Shell";
 import { WORLDS } from "@/lib/content/worlds";
 import { useProgress } from "@/lib/game-state";
 import { Rich } from "@/components/Rich";
+import { useExpandNav } from "@/components/ExpandNav";
 
 export const Route = createFileRoute("/mundos")({
   head: () => ({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/mundos")({
 
 function WorldsPage() {
   const progress = useProgress();
+  const expand = useExpandNav();
   return (
     <Shell>
       <div className="max-w-4xl mx-auto px-6 py-12">
@@ -45,6 +47,7 @@ function WorldsPage() {
             return (
               <div
                 key={w.id}
+                data-expand-card
                 className={`bg-card border border-border/60 rounded-lg p-6 card-lift ${
                   w.available && !locked ? "" : "opacity-60"
                 }`}
@@ -84,6 +87,13 @@ function WorldsPage() {
                           <Link
                             to="/mundo/$worldId"
                             params={{ worldId: w.id }}
+                            onClick={(e) => {
+                              const card = e.currentTarget.closest("[data-expand-card]");
+                              if (card instanceof HTMLElement) {
+                                e.preventDefault();
+                                expand(card, { to: "/mundo/$worldId", params: { worldId: w.id } });
+                              }
+                            }}
                             className="flex-1 text-center px-3 py-2 rounded-md bg-foreground text-background text-sm hover:opacity-90 btn-glow sheen"
                           >
                             Entrar
