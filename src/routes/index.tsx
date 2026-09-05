@@ -6,6 +6,7 @@ import { Rich } from "@/components/Rich";
 import { ACHIEVEMENTS } from "@/lib/achievements";
 import { worldPrereqMet } from "@/lib/unlock";
 import { useAuth } from "@/lib/auth";
+import { useExpandNav } from "@/components/ExpandNav";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -76,6 +77,7 @@ function Home() {
             return (
               <div
                 key={w.id}
+                data-expand-card
                 className={`relative bg-card/90 border border-border/60 rounded-xl p-6 card-lift ${
                   w.available && !locked ? "" : "opacity-70"
                 }`}
@@ -109,6 +111,13 @@ function Home() {
                       <Link
                         to="/mundo/$worldId"
                         params={{ worldId: w.id }}
+                        onClick={(e) => {
+                          const card = e.currentTarget.closest("[data-expand-card]");
+                          if (card instanceof HTMLElement) {
+                            e.preventDefault();
+                            expand(card, { to: "/mundo/$worldId", params: { worldId: w.id } });
+                          }
+                        }}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-foreground text-background btn-glow"
                       >
                         {completed >= 0 ? "Continuar" : "Empezar"} →
