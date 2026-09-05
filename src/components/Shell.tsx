@@ -8,7 +8,6 @@ import { installGlobalClickSfx } from "@/lib/sfx";
 import { AchievementPopup } from "./AchievementPopup";
 import { syncAchievements } from "@/lib/game-state";
 import { PageTransition } from "./PageTransition";
-import { ExpandNavProvider } from "./ExpandNav";
 
 export function Shell({ children }: { children: ReactNode }) {
   const progress = useProgress();
@@ -93,9 +92,7 @@ export function Shell({ children }: { children: ReactNode }) {
             )}
           </div>
         ) : (
-          <ExpandNavProvider>
-            <PageTransition>{children}</PageTransition>
-          </ExpandNavProvider>
+          <PageTransition>{children}</PageTransition>
         )}
       </main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground relative z-10 bg-background/70">
