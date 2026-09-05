@@ -4,6 +4,7 @@ import { getWorld, WORLDS } from "@/lib/content/worlds";
 import { useProgress } from "@/lib/game-state";
 import { InlineMath } from "@/components/InlineMath";
 import { levelTopic } from "@/lib/unlock";
+import { useExpandNav } from "@/components/ExpandNav";
 
 export const Route = createFileRoute("/mundo/$worldId")({
   head: ({ params }) => {
@@ -32,6 +33,7 @@ function WorldPage() {
   const { worldId } = Route.useParams();
   const world = getWorld(worldId)!;
   const progress = useProgress();
+  const expand = useExpandNav();
   const completed = progress.completed[worldId] ?? -1;
   const bossDone = progress.bossDefeated[worldId];
   // Prerrequisito: haber vencido al jefe del mundo anterior.
@@ -118,6 +120,13 @@ function WorldPage() {
                 key={lv.id}
                 to="/nivel/$worldId/$levelIdx"
                 params={{ worldId, levelIdx: String(idx) }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  expand(e.currentTarget, {
+                    to: "/nivel/$worldId/$levelIdx",
+                    params: { worldId, levelIdx: String(idx) },
+                  });
+                }}
                 className={cls}
               >
                 {inner}
